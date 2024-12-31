@@ -74,8 +74,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
    
     Route::get('/jabatan', [UserController::class, 'index'])->name('list-jabatan');
     Route::get('/document', [DocumentController::class, 'index'])->name('document');
-    Route::get('/laporan/{index}', [LaporanController::class, 'index'])->name('laporan');
-    Route::get('/surat/{index}', [SuratController::class, 'index'])->name('surat');
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
+    Route::get('/surat', [SuratController::class, 'index'])->name('surat');
     
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
