@@ -1,5 +1,27 @@
 @extends('dashboard.index')
 
+@php
+$active_detail = (!isset($_GET['index']) || $_GET['index'] === '1') ? "active-tab" : "";
+$active_pengadaan = (isset($_GET['index']) && $_GET['index'] === '2') ? "active-tab" : "";
+$active_pembayaran = (isset($_GET['index']) && $_GET['index'] === '3') ? "active-tab" : "";
+
+$display_detail = (isset($_GET['index']) && $_GET['index'] !== '') ? 'display: none;' : '';
+$display_pengadaan = (!isset($_GET['index'])) ? "display: none;" : "";
+$display_pembayaran = (!isset($_GET['index'])) ? "display: none;" : "";
+
+if(isset($_GET['tab'])){
+if($_GET['tab'] !== '1'){
+$display_pengadaan = 'display: none;';
+}
+if($_GET['tab'] !== '2'){
+$display_pembayaran = 'display: none;';
+}
+if($_GET['tab'] !== '3'){
+$display_pengguna = 'display: none;';
+}
+}
+@endphp
+
 @section("content")
 <div class="main-container">
     <div class="pd-ltr-20 xs-pd-20-10">
@@ -48,9 +70,6 @@
                         </div>
                         <div class="col-2">
                             <div class="dropdown" style="float: right;">
-                                <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                                    Action
-                                </a>
                                 <div class="dropdown-menu dropdown-menu-right">
                                     <a class="dropdown-item" href="#">
                                         <i class="bi bi-calendar-date"></i> &nbsp;Date Filter
@@ -67,7 +86,31 @@
                     </div>
                 </div>
                 <div class="pb-20" style="overflow: auto;">
-                    <div style="clear: both; height: 10px;"></div>
+                <div class="mt-40">
+                <div style="display: flex; flex-direction: row; margin-top: 10px; padding:0 10px;">
+                    <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_detail }}" id="tab-one-detail" onclick="active_tab(this.id , 1)">
+                        Permohonan
+                    </div>
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pengadaan }}" id="tab-two-detail" onclick="active_tab(this.id , 2)">
+                        Pembayaran
+                    </div>
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pembayaran }}" id="tab-three-detail" onclick="active_tab(this.id , 3)">
+                        Petty Cash
+                    </div>
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pembayaran }}" id="tab-three-detail" onclick="active_tab(this.id , 3)">
+                        Urgent
+                    </div>
+                </div>
+                <div style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="padding:0 10px; width: 170px;"></div>
+                        <div style="padding:0 10px; width: 170px;"></div>
+                        <div style="padding:0 10px; width: 152px;"></div>
+                        <div style="padding:0 10px; width: 140px;"></div>
+                    </div>
+                </div>
+            </div>
+                    <div style="clear: both; height: 30px;"></div>
                     <div style="padding: 0 15px 20px 15px;">
                         <div class="row">
                             <div class="col-3">
@@ -91,14 +134,14 @@
                                 <th>Perihal</th>
                                 <th>Nominal Pengajuan</th>
                                 <th>Status Surat</th>
-                                <th class="datatable-nosort">Action</th>
+                                <th>Status Pembelian</th>
                             </tr>
                         </thead>
                         <tbody>
                             @php
                             $an = 0;
                             @endphp
-                            @foreach($users as $row)
+                            @foreach($pengadaan as $row)
                             @php
                             $an++;
                             @endphp
@@ -106,25 +149,26 @@
                                 <td> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></td>
                                 <td class="table-plus">
                                     @php
-                                    echo $row->name
+                                    echo "<b>".$row->no_surat."</b><br /><span style='color: #666666'>".app('App\Helpers\Date')->tanggal_waktu($row->created_at , false)."</span>"
                                     @endphp
                                 </td>
                                 <td>
                                     @php
-                                    echo $row->email
+                                    echo $row->perihal
                                     @endphp
                                 </td>
                                 <td>
                                     @php
-                                    echo $row->role
+                                    echo app('App\Helpers\Str')->rupiah($row->nominal_pengajuan)
                                     @endphp
                                 </td>
                                 <td>
-                                    @php
-                                    echo $row->created_at
-                                    @endphp
+                                    -
                                 </td>
                                 <td>
+                                    -
+                                </td>
+                                <!-- <td>
                                     <div class="dropdown">
                                         <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
                                             <i class="dw dw-more"></i>
@@ -135,7 +179,7 @@
                                             <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                         </div>
                                     </div>
-                                </td>
+                                </td> -->
                             </tr>
                             @endforeach
                         </tbody>
@@ -143,7 +187,7 @@
                 </div>
 
                 <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
-                    <div> @php echo $users->links('pagination::bootstrap-4'); @endphp </div>
+                    <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div>
                 </div>
             </div>
         </div>
