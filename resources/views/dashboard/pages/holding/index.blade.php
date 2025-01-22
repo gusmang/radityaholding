@@ -13,7 +13,8 @@
                         <p class="font-18 max-width-600"> Atur dan lihat daftar pengguna pada tabel dibawah </p>
                     </div>
                     <div class="col-md-4" style="padding:0!important; margin:0!important;">
-                        <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+                        <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg"
+                            type="button">
                             <button class="btn btn-primary" style="float: right;">
                                 <i class="fa fa-plus"></i>&nbsp; Tambah Role
                             </button>
@@ -55,7 +56,8 @@
                     <table class="table stripe hover nowrap">
                         <thead style="background: #F5F5F5; height: 60px;">
                             <tr>
-                                <th> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></th>
+                                <th> <input type="checkbox" name="chk_name" id="chk_name"
+                                        style="transform: scale(1.5);" /></th>
                                 <th class="table-plus datatable-nosort">Nama</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -72,7 +74,8 @@
                             $an++;
                             @endphp
                             <tr>
-                                <td> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></td>
+                                <td> <input type="checkbox" name="chk_name" id="chk_name"
+                                        style="transform: scale(1.5);" /></td>
                                 <td class="table-plus">
                                     @php
                                     echo $row->name
@@ -95,24 +98,34 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                                            href="#" role="button" data-toggle="dropdown">
                                             <i class="dw dw-more"></i>
                                         </a>
                                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addSignature-modal-lg" onclick="$('#sig_t_index').val({{ $row->id}});">
+                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                data-target="#bd-addSignature-modal-lg"
+                                                onclick="$('#sig_t_index').val({{ $row->id}});">
                                                 <i class="fa fa-paper-plane"></i> Add / Edit Signature
                                             </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-viewSignature-modal-lg" onclick="$('#sig_image_signature').attr('src','{{ url('storage/'.$row->signature_url) }}');">
+                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                data-target="#bd-viewSignature-modal-lg"
+                                                onclick="$('#sig_image_signature').attr('src','{{ asset('storage/'.$row->signature_url) }}');">
                                                 <i class="fa fa-eye"></i> View Signature
                                             </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addAccMenu-modal-lg" onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
+                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                data-target="#bd-addAccMenu-modal-lg"
+                                                onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
                                                 <i class="fa fa-eye"></i> Access Menu
                                             </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-password-modal-lg">
+                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                                data-target="#bd-password-modal-lg">
                                                 <i class="dw dw-lock"></i> Ganti Password
                                             </a>
                                             <a class="dropdown-item"><i class="dw dw-eye"></i> View</a>
-                                            <a class="dropdown-item" data-toggle="modal" data-target="#bd-example-edit-modal-lg" onClick="showEdit({{ $row }})"><i class="dw dw-edit2"></i> Edit</a>
+                                            <a class="dropdown-item" data-toggle="modal"
+                                                data-target="#bd-example-edit-modal-lg"
+                                                onClick="showEdit({{ $row }})"><i class="dw dw-edit2"></i> Edit</a>
                                             <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                         </div>
                                     </div>
@@ -123,7 +136,8 @@
                     </table>
                 </div>
 
-                <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
+                <div
+                    style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
                     <div> @php echo $users->links('pagination::bootstrap-4'); @endphp </div>
                 </div>
             </div>
@@ -147,11 +161,11 @@
         //$("#chk_menus_1").prop("checked", 1);
 
         $.ajax({
-            type: "GET"
-            , data: ""
-            , dataType: "json"
-            , url: urlGet
-            , success: function(response) {
+            type: "GET",
+            data: "",
+            dataType: "json",
+            url: urlGet,
+            success: function(response) {
                 const resData = response.data
 
                 for (let an = 0; an < resData.length; an++) {
@@ -172,17 +186,15 @@
         let urlDoc = "{{ route('update-holding') }}";
 
         $.ajax({
-            type: "PUT"
-            , url: urlDoc
-            , data: $(this).serialize() + "&_token={{ csrf_token() }}"
-            , dataType: "json"
-            , success: function(data) {
+            type: "PUT",
+            url: urlDoc,
+            data: $(this).serialize() + "&_token={{ csrf_token() }}",
+            dataType: "json",
+            success: function(data) {
                 console.log("datas", data);
                 if (data.status === 200) {
                     Swal.fire(
-                        'Confirmed!'
-                        , 'Edit Holding SuccessFull'
-                        , 'success'
+                        'Confirmed!', 'Edit Holding SuccessFull', 'success'
                     ).then((result) => {
                         if (result.isConfirmed) {
                             window.location = data.redirectUrl;
@@ -193,6 +205,5 @@
         });
 
     });
-
 </script>
 @endsection

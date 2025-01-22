@@ -19,7 +19,7 @@ $display_pengadaan = 'display: none;';
 if($_GET['tab'] !== 'pembayaran'){
 $display_pembayaran = 'display: none;';
 }
-if($_GET['tab'] !== 'petty-cash'){
+if($_GET['tab'] !== 'pettycash'){
 $display_cash = 'display: none;';
 }
 if($_GET['tab'] !== 'users'){
@@ -33,10 +33,12 @@ $display_pengguna = 'display: none;';
         <div class="min-height-200px">
             <div class="mb-20" style="padding: 15px;">
                 <div class="row align-items-center">
-                    <div class="col-md-12" style="padding:0!important; margin:0!important; display: flex; align-items: center;">
+                    <div class="col-md-12"
+                        style="padding:0!important; margin:0!important; display: flex; align-items: center;">
                         <div>
                             <a href="{{ route('unit-usaha') }}">
-                                <div style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
+                                <div
+                                    style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
                                     <i class="fa fa-arrow-left" style="font-size: 18px;"></i>
                                 </div>
                             </a>
@@ -54,19 +56,25 @@ $display_pengguna = 'display: none;';
 
             <div class="mt-40">
                 <div style="display: flex; flex-direction: row; margin-top: 60px;">
-                    <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_detail }}" id="tab-one-detail" onclick="active_tab(this.id , 1)">
+                    <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;"
+                        class="tab-list {{ $active_detail }}" id="tab-one-detail" onclick="active_tab(this.id , 1)">
                         Detail Unit Usaha
                     </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pengadaan }}" id="tab-two-detail" onclick="active_tab(this.id , 2)">
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                        class="tab-list {{ $active_pengadaan }}" id="tab-two-detail" onclick="active_tab(this.id , 2)">
                         Alur Pengadaan
                     </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pembayaran }}" id="tab-three-detail" onclick="active_tab(this.id , 3)">
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                        class="tab-list {{ $active_pembayaran }}" id="tab-three-detail"
+                        onclick="active_tab(this.id , 3)">
                         Alur Pembayaran
                     </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_cash }}" id="tab-five-detail" onclick="active_tab(this.id , 5)">
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_cash }}"
+                        id="tab-five-detail" onclick="active_tab(this.id , 5)">
                         Alur Petty Cash
                     </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pengguna }}" id="tab-four-detail" onclick="active_tab(this.id , 4)">
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                        class="tab-list {{ $active_pengguna }}" id="tab-four-detail" onclick="active_tab(this.id , 4)">
                         Akun Pengguna
                     </div>
                 </div>
@@ -113,8 +121,6 @@ $display_pengguna = 'display: none;';
             @include("dashboard.pages.unitUsaha.component.pengadaan.modalPengadaan")
             @include("dashboard.pages.unitUsaha.component.pengadaan.modalPembayaran")
             @include("dashboard.pages.unitUsaha.component.pengadaan.modalPettyCash")
-
-
         </div>
     </div>
 </div>
@@ -141,6 +147,5 @@ $display_pengguna = 'display: none;';
             $("#div_tab_cash").fadeIn("slow");
         }
     }
-
 </script>
 @endsection

@@ -8,10 +8,12 @@
             <div class="min-height-200px">
                 <div class="mb-20" style="padding: 15px;">
                     <div class="row align-items-center">
-                        <div class="col-md-8" style="padding:0!important; margin:0!important; display: flex; align-items: center;">
+                        <div class="col-md-8"
+                            style="padding:0!important; margin:0!important; display: flex; align-items: center;">
                             <div>
-                                <a href="{{ route('pengadaan') }}">
-                                    <div style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
+                                <a href="{{ route('petty_cash') }}">
+                                    <div
+                                        style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
                                         <i class="fa fa-arrow-left" style="font-size: 18px;"></i>
                                     </div>
                                 </a>
@@ -25,7 +27,8 @@
                                 </h4>
                             </div>
                         </div>
-                        <div class="col-md-4" style="display: flex; flex-direction: row; justify-content: flex-end; align-items: flex-end;">
+                        <div class="col-md-4"
+                            style="display: flex; flex-direction: row; justify-content: flex-end; align-items: flex-end;">
 
                             <a href="{{ route('addPengadaan') }}" class="mr-4" type="button">
                                 <button class="btn btn-primary-outlined">
@@ -66,7 +69,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="date" class="form-control" name="cmbTglPengajuan" id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
+                                            <input type="date" class="form-control" name="cmbTglPengajuan"
+                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -94,7 +98,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="text" class="form-control" name="inp_perihal" id="inp_perihal" placeholder="Input Perihal ..." required />
+                                            <input type="text" class="form-control" name="inp_perihal" id="inp_perihal"
+                                                placeholder="Input Perihal ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -106,7 +111,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan" id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
+                                            <input type="number" class="form-control" name="nominalPengajuan"
+                                                id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -149,15 +155,18 @@
                         <div style="width: 100%; margin-top: 10px;">
                             <h5 class="small-text">Diajukan Oleh</h5>
                             <h3 class="sub-title-text">Goesmang Asmara</h3>
-                            <input type="hidden" class="form-control mt-2" name="inp_diajukan" id="inp_diajukan" placeholder="Input Diajukan ..." required />
+                            <input type="hidden" class="form-control mt-2" name="inp_diajukan" id="inp_diajukan"
+                                placeholder="Input Diajukan ..." required />
                         </div>
 
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Unit Usaha</h5>
                             <div class="mt-2">
                                 {{ app('App\Helpers\Str')->getUserLog()->name }}
-                                <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha" value={{ app('App\Helpers\Str')->getUserLog()->id }} />
-                                <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName" value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
+                                <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
+                                    value={{ app('App\Helpers\Str')->getUserLog()->id }} />
+                                <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
+                                    value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
 
                                 {{-- <select class="form-control mt-2" name="cmbUnitUsaha" id="cmbUnitUsaha" placeholder="Pilih Tanggal ..." required>
                                     <option value="">- Pilih Unit Usaha -</option>
@@ -172,7 +181,8 @@
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Nomor Invoice</h5>
                             <div>
-                                <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice" placeholder="Input Invoice ..." required />
+                                <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
+                                    placeholder="Input Invoice ..." required />
                                 {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
                             </div>
                         </div>
@@ -201,7 +211,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="file" multiple class="form-control" name="docFile[]" id="docFile" placeholder="Pilih Dokumen ..." />
+                                            <input type="file" multiple class="form-control" name="docFile[]"
+                                                id="docFile" placeholder="Pilih Dokumen ..." />
                                         </div>
                                     </div>
                                 </div>
@@ -277,30 +288,29 @@
             // Send AJAX request
             $.ajax({
                 url: urlPengadaan, // Laravel route
-                method: 'POST'
-                , data: formData
-                , processData: false, // Important for FormData
+                method: 'POST',
+                data: formData,
+                processData: false, // Important for FormData
                 contentType: false, // Important for FormData
                 success: function(response) {
                     //console.log('Success:', response);
                     Swal.fire({
-                        icon: "success"
-                        , title: "Success !"
-                        , text: response.message
+                        icon: "success",
+                        title: "Success !",
+                        text: response.message
                     }).then((result) => {
                         if (result.isConfirmed) {
                             window.location = "{{ route('petty_cash') }}";
                         }
                     });
 
-                }
-                , error: function(xhr, status, error) {
+                },
+                error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);
                 },
 
             })
         })
     })
-
 </script>
 @endsection

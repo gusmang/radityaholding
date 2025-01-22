@@ -5105,6 +5105,16 @@ input[type=checkbox] {
     padding: 3px 8px;
 }
 
+.label-success {
+    color: #FFFFFF;
+    background: #2D6E50;
+    width: auto !important;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 12px;
+    padding: 3px 8px;
+}
+
 .label-current {
     color: #a98c16;
     background: #fae5b1;

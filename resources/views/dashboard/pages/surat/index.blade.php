@@ -45,7 +45,8 @@ $display_pengguna = 'display: none;';
                     </div>
                     <div class="col-md-6 col-sm-12 text-right">
                         <div style="padding:0; width: 100%; clear: both;">
-                            <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+                            <a href="#" onClick="" class="btn-block" data-toggle="modal"
+                                data-target="#bd-example-modal-lg" type="button">
                                 <button class="btn btn-primary" style="float: right;">
                                     Export Data
                                 </button>
@@ -66,7 +67,8 @@ $display_pengguna = 'display: none;';
                             <h4 class="font-20 weight-500 mb-10 text-capitalize">
                                 <div class="weight-600 font-21">Semua Surat</div>
                             </h4>
-                            <p class="font-16 max-width-600"> Lihat progress surat yang diajukan melalui tabel dibawah. </p>
+                            <p class="font-16 max-width-600"> Lihat progress surat yang diajukan melalui tabel dibawah.
+                            </p>
                         </div>
                         <div class="col-2">
                             <div class="dropdown" style="float: right;">
@@ -86,111 +88,74 @@ $display_pengguna = 'display: none;';
                     </div>
                 </div>
                 <div class="pb-20" style="overflow: auto;">
-                <div class="mt-40">
-                <div style="display: flex; flex-direction: row; margin-top: 10px; padding:0 10px;">
-                    <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_detail }}" id="tab-one-detail" onclick="active_tab(this.id , 1)">
-                        Permohonan
-                    </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pengadaan }}" id="tab-two-detail" onclick="active_tab(this.id , 2)">
-                        Pembayaran
-                    </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pembayaran }}" id="tab-three-detail" onclick="active_tab(this.id , 3)">
-                        Petty Cash
-                    </div>
-                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list {{ $active_pembayaran }}" id="tab-three-detail" onclick="active_tab(this.id , 3)">
-                        Urgent
-                    </div>
-                </div>
-                <div style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
-                    <div style="display: flex; flex-direction: row;">
-                        <div style="padding:0 10px; width: 170px;"></div>
-                        <div style="padding:0 10px; width: 170px;"></div>
-                        <div style="padding:0 10px; width: 152px;"></div>
-                        <div style="padding:0 10px; width: 140px;"></div>
-                    </div>
-                </div>
-            </div>
-                    <div style="clear: both; height: 30px;"></div>
-                    <div style="padding: 0 15px 20px 15px;">
-                        <div class="row">
-                            <div class="col-3">
-                                <input type="text" name="search_surat" placeholder="Cari Surat ..." class="form-control" />
+                    <div class="mt-40">
+                        <div style="display: flex; flex-direction: row; margin-top: 10px; padding:0 10px;">
+                            <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;"
+                                class="tab-list {{ $active_detail }} " id="tab-one-detail"
+                                onclick="active_tab(this.id , 1)">
+                                Permohonan
                             </div>
-                            <div class="col-3">
-                                <select name="status_surat" placeholder="Status Surat ..." class="form-control">
-                                    <option value="">- Pilih Status Surat -</option>
-                                </select>
+                            <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                                class="tab-list {{ $active_pengadaan }} " id="tab-two-detail"
+                                onclick="active_tab(this.id , 2)">
+                                Pembayaran
                             </div>
-                            <div class="col-3">
-                                <input type="date" name="tanggal_surat" placeholder="Tanggal Pengajuan ..." class="form-control" />
+                            <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                                class="tab-list {{ $active_pembayaran }} " id="tab-three-detail"
+                                onclick="active_tab(this.id , 3)">
+                                Petty Cash
+                            </div>
+                            <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                                class="tab-list {{ $active_pembayaran }} " id="tab-three-detail"
+                                onclick="active_tab(this.id , 3)">
+                                Urgent
+                            </div>
+                        </div>
+                        <div
+                            style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
+                            <div style="display: flex; flex-direction: row;">
+                                <div style="padding:0 10px; width: 170px;"></div>
+                                <div style="padding:0 10px; width: 170px;"></div>
+                                <div style="padding:0 10px; width: 152px;"></div>
+                                <div style="padding:0 10px; width: 140px;"></div>
                             </div>
                         </div>
                     </div>
-                    <table class="table stripe hover nowrap">
-                        <thead style="background: #F5F5F5; height: 60px;">
-                            <tr>
-                                <th> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></th>
-                                <th class="table-plus datatable-nosort">No. Surat</th>
-                                <th>Perihal</th>
-                                <th>Nominal Pengajuan</th>
-                                <th>Status Surat</th>
-                                <th>Status Pembelian</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                            $an = 0;
-                            @endphp
-                            @foreach($pengadaan as $row)
-                            @php
-                            $an++;
-                            @endphp
-                            <tr>
-                                <td> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></td>
-                                <td class="table-plus">
-                                    @php
-                                    echo "<b>".$row->no_surat."</b><br /><span style='color: #666666'>".app('App\Helpers\Date')->tanggal_waktu($row->created_at , false)."</span>"
-                                    @endphp
-                                </td>
-                                <td>
-                                    @php
-                                    echo $row->perihal
-                                    @endphp
-                                </td>
-                                <td>
-                                    @php
-                                    echo app('App\Helpers\Str')->rupiah($row->nominal_pengajuan)
-                                    @endphp
-                                </td>
-                                <td>
-                                    -
-                                </td>
-                                <td>
-                                    -
-                                </td>
-                                <!-- <td>
-                                    <div class="dropdown">
-                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                                            <i class="dw dw-more"></i>
-                                        </a>
-                                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                            <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                                            <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                                            <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                                        </div>
-                                    </div>
-                                </td> -->
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div style="clear: both; height: 30px;"></div>
+                    @include("dashboard.pages.surat.components.permohonan")
+                    @include("dashboard.pages.surat.components.pembayaran")
+                    @include("dashboard.pages.surat.components.pettyCash")
+                    @include("dashboard.pages.surat.components.urgent")
                 </div>
 
-                <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
+                <div
+                    style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
                     <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+function active_tab(id, page) {
+    $(".tab-list").removeClass("active-tab");
+    $("#" + id).addClass("active-tab");
+
+    if (page === 1) {
+        $(".div_display_unit").hide();
+        $("#suratPermohonanContainer").fadeIn("slow");
+    } else if (page === 2) {
+        $(".div_display_unit").hide();
+        $("#suratPembayaranContainer").fadeIn("slow");
+    } else if (page === 3) {
+        $(".div_display_unit").hide();
+        $("#suratPettyCashContainer").fadeIn("slow");
+    } else if (page === 4) {
+        $(".div_display_unit").hide();
+        $("#suratUrgentContainer").fadeIn("slow");
+    }
+}
+</script>
+
 @endsection

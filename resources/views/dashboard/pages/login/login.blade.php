@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- Basic Page Info -->
     <meta charset="utf-8" />
@@ -8,13 +9,14 @@
 
     @include("dashboard.pages.global.header")
 </head>
+
 <body class="login-page" style="background: #FFFFFF !important;">
     <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
 
         <div class="col-md-5 col-12" style="min-height: 200px;">
             <div>
                 <div class="col-md-12 col-12">
-                    <img src="{{ url('vendors/images/logo.png') }}" height="43" />
+                    <img src="{{ asset('vendors/images/logo.png') }}" height="43" />
                 </div>
 
                 <div class="col-md-12 col-12 mt-4">
@@ -44,7 +46,8 @@
                                     <label class="required-label">Kata Sandi</label>
                                 </div>
                                 <div>
-                                    <input type="password" class="form-control" placeholder="Masukkan Kata Sandi" name="password" />
+                                    <input type="password" class="form-control" placeholder="Masukkan Kata Sandi"
+                                        name="password" />
                                 </div>
                             </div>
 
@@ -61,7 +64,8 @@
                             </div>
 
                             {{-- <div class="mt-4">
-                                <a href="<?php //echo url('/register' ); ?>">
+                                <a href="<?php //echo url('/register' ); 
+                                            ?>">
                                     <button class="btn btn-primary-outlined form-control" type="button">
                                         Daftar Sebagai Unit Usaha
                                     </button>
@@ -77,4 +81,5 @@
     <!-- js -->
     @include("dashboard.pages.global.footer")
 </body>
+
 </html>

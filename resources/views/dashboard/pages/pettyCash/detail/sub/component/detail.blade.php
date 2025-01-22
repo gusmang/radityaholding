@@ -11,37 +11,19 @@
                         <div style="clear: both;"></div>
                     </div>
                     <div style="float:left;">
-                        <?php
-                        $pos = -1;
-                        $roles = "";
-                        $disetujui = "";
-                        $person = "";
-                        $role_id = "";
-                        $next_role = "";
-                        foreach($jabatan as $rowsJ){
-                            
-                            if($pos === $pengadaan->position){
-                                $person = $rowsJ->name;
-                                $roles = $rowsJ->role;
-                                $role_id = $rowsJ->role_id;
-                                $next_role = $jabatan[$pengadaan->position === 5 ?$pos+1 : $pos+2]->name;
 
-
-                                break;
-                            }
-                            $disetujui .= '<h3 class="sub-title-text">'.$rowsJ->name.' ( '.$rowsJ->role.' )</h3>';
-
-                            $pos++;
-                        }
-                        ?>
                         <h5 style="color: #555555; font-weight: normal;"> Informasi dasar </h5>
                         <div style="clear: both;"></div>
 
-                        <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha" value={{ app('App\Helpers\Str')->getUserLog()->id }} />
-                        <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName" value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
+                        <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
+                            value={{ app('App\Helpers\Str')->getUserLog()->id }} />
+                        <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
+                            value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
 
-                        <input type="hidden" id="teks_branch_approval" name="teks_branch_approval" value="{{ $roles }}" />
-                        <input type="hidden" id="teks_person_approval" name="teks_person_approval" value="{{ $person }}" />
+                        <input type="hidden" id="teks_branch_approval" name="teks_branch_approval"
+                            value="{{ $roles }}" />
+                        <input type="hidden" id="teks_person_approval" name="teks_person_approval"
+                            value="{{ $person }}" />
                     </div>
                     <div style="clear: both;"></div>
                     <div style="width: 95%; margin-left: 50px; display: none;" id="div-informasi-persetujuan">
@@ -53,7 +35,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="text" class="form-control" name="teksNomorSurat" id="teksNomorSurat" placeholder="Ketik Nomor Surat ..." required />
+                                            <input type="text" class="form-control" name="teksNomorSurat"
+                                                id="teksNomorSurat" placeholder="Ketik Nomor Surat ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -66,7 +49,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="date" class="form-control" name="cmbTglPengajuan" id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
+                                            <input type="date" class="form-control" name="cmbTglPengajuan"
+                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -95,7 +79,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="text" class="form-control" name="inp_perihal" id="inp_perihal" placeholder="Input Perihal ..." required />
+                                            <input type="text" class="form-control" name="inp_perihal" id="inp_perihal"
+                                                placeholder="Input Perihal ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -107,7 +92,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan" id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
+                                            <input type="number" class="form-control" name="nominalPengajuan"
+                                                id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
                                         </div>
                                     </div>
                                 </div>
@@ -130,7 +116,8 @@
                         </div>
                     </div>
                     <div style="width: 95%; margin-left: 50px;" id="div-informasi-dasar">
-                        <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
                             <div class="row">
                                 <div class="col-md-5 font-500">
                                     <label> Tanggal Pengajuan </label>
@@ -144,7 +131,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12" style="padding:15px 0 15px 0; margin: 5px 0 0 0; border-bottom: 1px solid #DDDDDD;">
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 5px 0 0 0; border-bottom: 1px solid #DDDDDD;">
                             <div class="row">
                                 <div class="col-md-5 font-500">
                                     <label> Tipe Surat </label>
@@ -156,7 +144,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
                             <div class="row">
                                 <div class="col-md-5 font-500">
                                     <label> Perihal </label>
@@ -168,7 +157,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
                             <div class="row">
                                 <div class="col-md-5 font-500">
                                     <label> Nominal Pengajuan </label>
@@ -182,7 +172,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
                             <div class="row">
                                 <div class="col-md-5 font-500">
                                     <label> Detail Isi Surat </label>
@@ -222,7 +213,8 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="file" multiple class="form-control" name="docFile[]" id="docFile" placeholder="Pilih Dokumen ..." />
+                                            <input type="file" multiple class="form-control" name="docFile[]"
+                                                id="docFile" placeholder="Pilih Dokumen ..." />
                                         </div>
                                     </div>
                                 </div>
@@ -349,71 +341,62 @@
                     <div style="margin-top: -20px;">
                         <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
                             <?php
-                            if(Session::get('roleId') === $lastApprove){
+                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                             ?>
-                            <div style="width: 50%; margin-top: 10px;">
-                                <div style="display: flex; margin-top: 5px;">
-                                    <div>
-                                        <?php
-                                        if(strtolower(Auth::user()->role) == "sekretariat"){
-                                        ?>
-                                        <button type="button" class="btn btn-primary form-control" onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                            <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
-                                        </button>
-                                        <?php
-                                        }
-                                        else{
-                                        ?>
-                                        <button type="button" class="btn btn-primary form-control" onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')" style="color: white; font-size: 14px;">
-
-                                            <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
-                                        </button>
-                                        <?php
-                                        }
-                                        ?>
+                                <div style="width: 50%; margin-top: 10px;">
+                                    <div style="display: flex; margin-top: 5px;">
+                                        <div>
+                                            <button type="button" class="btn btn-primary form-control"
+                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
+                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <?php
                             }
                             ?>
 
                             <?php
-                            if(Session::get('roleId') === $lastApprove){
+                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                             ?>
-                            <div style="width: 50%; margin-top: 10px;">
-                                <div style="display: flex; margin-top: 5px;">
-                                    <div>
-                                        <?php
-                                        if(strtolower(Auth::user()->role) == "sekretariat"){
-                                        ?>
-                                        <button type="button" class="btn btn-danger form-control" onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                            <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
-                                        </button>
-                                        <?php
-                                        }
-                                        else{
-                                        ?>
-                                        <button type="button" class="btn btn-danger form-control" onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');" style="color: white; font-size: 14px;">
-                                            <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
-                                        </button>
-                                        <?php
-                                        }
-                                        ?>
+                                <div style="width: 50%; margin-top: 10px;">
+                                    <div style="display: flex; margin-top: 5px;">
+                                        <div>
+                                            <?php
+                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            ?>
+                                                <button type="button" class="btn btn-danger form-control"
+                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                </button>
+                                            <?php
+                                            } else {
+                                            ?>
+                                                <button type="button" class="btn btn-danger form-control"
+                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
+                                                    style="color: white; font-size: 14px;">
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                </button>
+                                            <?php
+                                            }
+                                            ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
                             <?php
                             }
                             ?>
                         </div>
                     </div>
-                    <div style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
+
+                    <div
+                        style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
                         <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
                             <i class="micon bi bi-file-pdf"></i>
                         </div>
 
-                        <div style="font-weight: 600;">
+                        <div style="font-weight: 600; width: 90%;">
                             Surat Permohonan {{ $pengadaan->no_surat }}.pdf <br />
                             <div style="font-size: 14px; font-weight: normal;">
                                 Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at) }}
@@ -421,49 +404,30 @@
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
                             @php
-                            $urlPdf = 'show-pengadaan-pdf';
+                            $urlPdf = 'show-pettycash-pdf';
                             @endphp
                             <a href="{{ route($urlPdf,['index'=> $pengadaan->id]) }}" target="_blank">
                                 <i class="micon bi bi-download"></i>
                             </a>
                         </div>
                     </div>
-
-                    <?php
-                    if(count($setuju) > 0){
-                    ?>
-                    <div style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
-                        <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
-                            <i class="micon bi bi-file-pdf"></i>
-                        </div>
-
-                        <div style="font-weight: 600;">
-                            Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
-                            <div style="font-size: 14px; font-weight: normal;">
-                                Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
-                            </div>
-                        </div>
-                        <div style="font-size: 18px; margin-right: 10px;">
-                            @php
-                            $urlPdf = 'show-persetujuan-pdf';
-                            @endphp
-                            <a href="{{ route($urlPdf,['index'=> $setuju[0]->id]) }}" target="_blank">
-                                <i class="micon bi bi-download"></i>
-                            </a>
-                        </div>
-                    </div>
-                    <?php
-                    }
-                    ?>
-
-                    {{-- <h3 class="sub-title-text">{{ $pengadaan->no_surat }}</h3> --}}
                 </div>
 
                 <div style="width: 100%; margin-top: 30px;">
                     <h5 class="small-text">Status</h5>
                     <div style="display: flex; margin-top: 5px;">
-                        <div class="label-waiting mr-2"> Waiting Approval </div>
-                        <div class="label-current"> {{ $roles}} </div>
+                        <?php
+                        if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 1) {
+                        ?>
+                            <div class="label-success mr-2"> Approved </div>
+                        <?php
+                        } else {
+                        ?>
+                            <div class="label-waiting mr-2"> Waiting Approval </div>
+                            <div class="label-current"> {{ $approvalNext }} </div>
+                        <?php
+                        }
+                        ?>
                     </div>
                 </div>
 
@@ -477,7 +441,7 @@
                 <div style="width: 100%; margin-top: 30px;">
                     <h5 class="small-text">Diajukan Oleh</h5>
                     <div>
-                        <h3 class="sub-title-text">{{ $pengadaan->diajukan }}</h3>
+                        <h3 class="sub-title-text">{{ $diajukan }}</h3>
                     </div>
                 </div>
 

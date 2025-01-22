@@ -13,7 +13,8 @@
                         <p class="font-18 max-width-600"> Atur dan lihat daftar unit usaha pada tabel dibawah </p>
                     </div>
                     <div class="col-md-4" style="padding:0!important; margin:0!important;">
-                        <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-addUnit-modal-lg" type=" button">
+                        <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-addUnit-modal-lg"
+                            type=" button">
                             <button class="btn btn-primary" style="float: right;">
                                 Tambah Unit Usaha
                             </button>
@@ -57,8 +58,9 @@
                     <table class="table stripe hover nowrap">
                         <thead style="background: #F5F5F5; height: 60px;">
                             <tr>
-                                <th> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></th>
-                                <th class="table-plus datatable-nosort">Nama</th>
+                                <th> <input type="checkbox" name="chk_name" id="chk_name"
+                                        style="transform: scale(1.5);" /></th>
+                                <th class="table-plus datatable-nosort">Nama Unit Usaha</th>
                                 <th>Limit Petty Cash</th>
                                 <th>Jumlah Akun</th>
                                 <th>Unit Bisnis</th>
@@ -75,7 +77,8 @@
                             $an++;
                             @endphp
                             <tr>
-                                <td> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></td>
+                                <td> <input type="checkbox" name="chk_name" id="chk_name"
+                                        style="transform: scale(1.5);" /></td>
                                 <td class="table-plus">
                                     @php
                                     echo $row->name
@@ -104,12 +107,14 @@
                                 </td>
                                 <td>
                                     <div class="dropdown">
-                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle"
+                                            href="#" role="button" data-toggle="dropdown">
                                             <i class="dw dw-more"></i>
                                         </a>
 
                                         <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                            <a class="dropdown-item" href="{{route('detailUsaha',['index'=> $row->id])}}">
+                                            <a class="dropdown-item"
+                                                href="{{route('detailUsaha',['index'=> $row->id])}}">
                                                 <i class="dw dw-eye"></i> Detail
                                             </a>
                                         </div>
@@ -121,7 +126,8 @@
                     </table>
                 </div>
 
-                <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
+                <div
+                    style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
                     <div> @php echo $unitUsaha->links('pagination::bootstrap-4'); @endphp </div>
                 </div>
             </div>

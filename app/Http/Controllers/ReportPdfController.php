@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\approval_surat_pety_cash;
 use App\Models\User;
 use App\Models\Pengadaan;
 use App\Models\Persetujuan;
+use App\Models\pettyCash;
+use App\Models\rolePettyCash;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
@@ -15,38 +18,39 @@ use Illuminate\Support\Facades\Storage;
 class ReportPdfController extends Controller
 {
 
-    public function signature_new(Request $request){
+    public function signature_new(Request $request)
+    {
         return view("dashboard.pages.dashboard.canvas");
     }
 
     public function generatePDF(Request $request)
     {
-            $fileName = 'signatures/' . uniqid('signature_', true) . '.png';
+        $fileName = 'signatures/' . uniqid('signature_', true) . '.png';
 
-            $data = [
-                'title' => 'Laravel Dompdf Example',
-                'date' => date('m/d/Y'),
-                'signaturePath' => public_path('storage/'.\Session::get("imageSaved")),
-            ];
-    
-            $pdf = PDF::loadView('pdf.sample', $data);
-    
-            // Optionally, stream or download the PDF
-            return $pdf->stream('sample.pdf'); // Stream in the browser
-            // return $pdf->download('sample.pdf'); // Download directly
+        $data = [
+            'title' => 'Laravel Dompdf Example',
+            'date' => date('m/d/Y'),
+            'signaturePath' => public_path('storage/' . \Session::get("imageSaved")),
+        ];
+
+        $pdf = PDF::loadView('pdf.sample', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream('sample.pdf'); // Stream in the browser
+        // return $pdf->download('sample.pdf'); // Download directly
     }
 
-    public function showPDF(Request $request , $index)
-    {       
-            $approval_doc = Pengadaan::where("id" , $index)->first();
+    public function showPDF(Request $request, $index)
+    {
+        $approval_doc = Pengadaan::where("id", $index)->first();
 
-            //$user = User::where("id" , Auth::user()->id)->first();
+        //$user = User::where("id" , Auth::user()->id)->first();
 
-            $pengadaan = Pengadaan::where("id" , $index)->first();
+        $pengadaan = Pengadaan::where("id", $index)->first();
 
-            $user = User::where("id" , $pengadaan->id_unit_usaha)->first();
+        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
 
-            $jabatan = DB::table('users')
+        $jabatan = DB::table('users')
             ->where(function ($query) use ($user) {
                 $query->where('id_positions',  0)
                     ->orWhere('id_positions',  $user->id_positions);
@@ -59,33 +63,60 @@ class ReportPdfController extends Controller
             ->orderBy('role_pengadaan', 'asc')
             ->get();
 
-            $data = [
-                'title' => 'Laravel Dompdf Example',
-                'date' => date('m/d/Y'),
-                'logoPath' => public_path('storage/vendors/images/logo.png'),
-                'data' => $approval_doc,
-                'jabatan' => $jabatan
-            ];
-    
-            $pdf = PDF::loadView('pdf.suratPengadaan', $data);
-    
-            // Optionally, stream or download the PDF
-            return $pdf->stream('sample.pdf'); // Stream in the browser
-            // return $pdf->download('sample.pdf'); // Download directly
+        $data = [
+            'title' => 'Laravel Dompdf Example',
+            'date' => date('m/d/Y'),
+            'logoPath' => public_path('storage/vendors/images/logo.png'),
+            'data' => $approval_doc,
+            'jabatan' => $jabatan
+        ];
+
+        $pdf = PDF::loadView('pdf.suratPengadaan', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream('sample.pdf'); // Stream in the browser
+        // return $pdf->download('sample.pdf'); // Download directly
     }
 
-    public function showPersetujuanPDF(Request $request , $index)
-    {       
-            $persetujuan = Persetujuan::where("id", $index)->first();
-            $approval_doc = Pengadaan::where("id" , $persetujuan->id_permohonan)->first();
-            //$user = User::where("id" , Auth::user()->id)->first();
-            $approval_docs = Pengadaan::where("id" , $persetujuan->id_permohonan)->first();
+    public function showPettyCash(Request $request, $index)
+    {
+        $approval_doc = pettyCash::where("id", $index)->first();
 
-            $pengadaan = Pengadaan::where("id" , $persetujuan->id_permohonan)->first();
+        //$user = User::where("id" , Auth::user()->id)->first();
 
-            $user = User::where("id" , $pengadaan->id_unit_usaha)->first();
+        $pengadaan = pettyCash::where("id", $index)->first();
 
-            $jabatan = DB::table('users')
+        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
+
+        $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->join("users", "users.id", "approval_doc_pettycash.approved_by")->select("approval_doc_pettycash.*", "positions.name", "users.*")->where("approval_doc_pettycash.id_surat", $index)->where("approval_doc_pettycash.status", 1)->get();
+
+        $data = [
+            'title' => 'Dokumen Petty Cash',
+            'date' => date('m/d/Y'),
+            'logoPath' => $_SERVER["DOCUMENT_ROOT"] . '/vendors/images/logo.png',
+            'data' => $approval_doc,
+            'jabatan' => $jabatan
+        ];
+
+        $pdf = PDF::loadView('pdf.suratPettyCash', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream('pettyCashes.pdf'); // Stream in the browser
+        // return $pdf->download('sample.pdf'); // Download directly
+    }
+
+    public function showPersetujuanPDF(Request $request, $index)
+    {
+        $persetujuan = Persetujuan::where("id", $index)->first();
+        $approval_doc = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+        //$user = User::where("id" , Auth::user()->id)->first();
+        $approval_docs = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+
+        $pengadaan = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+
+        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
+
+        $jabatan = DB::table('users')
             ->where(function ($query) use ($user) {
                 $query->where('id_positions',  0)
                     ->orWhere('id_positions',  $user->id_positions);
@@ -98,22 +129,22 @@ class ReportPdfController extends Controller
             ->orderBy('role_pengadaan', 'asc')
             ->get();
 
-            $data = [
-                'title' => 'Laravel Dompdf Example',
-                'date' => date('m/d/Y'),
-                'logoPath' => public_path('storage/vendors/images/logo.png'),
-                'data' => $persetujuan,
-                'approval' => $approval_docs,
-                'jabatan' => $jabatan
-            ];
-    
-            $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
-    
-            // Optionally, stream or download the PDF
-            return $pdf->stream('sample.pdf'); // Stream in the browser
-            // return $pdf->download('sample.pdf'); // Download directly
+        $data = [
+            'title' => 'Laravel Dompdf Example',
+            'date' => date('m/d/Y'),
+            'logoPath' => public_path('storage/vendors/images/logo.png'),
+            'data' => $persetujuan,
+            'approval' => $approval_docs,
+            'jabatan' => $jabatan
+        ];
+
+        $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream('sample.pdf'); // Stream in the browser
+        // return $pdf->download('sample.pdf'); // Download directly
     }
-    
+
     //
     public function saveSignature(Request $request)
     {
@@ -136,7 +167,7 @@ class ReportPdfController extends Controller
             // Save the file to the 'public' disk
             Storage::disk('public')->put($fileName, $decodedData);
 
-            \Session::put("imageSaved" , $fileName);
+            \Session::put("imageSaved", $fileName);
 
             return response()->json(['message' => 'Signature saved successfully New!', 'file' => $fileName], 200);
         }
@@ -165,13 +196,13 @@ class ReportPdfController extends Controller
             // Save the file to the 'public' disk
             Storage::disk('public')->put($fileName, $decodedData);
 
-            \Session::put("imageSaved" , $fileName);
+            \Session::put("imageSaved", $fileName);
 
-            User::where("id" , $request->input('sig_t_index'))->update(array(
+            User::where("id", $request->input('sig_t_index'))->update(array(
                 'signature_url' => $fileName
             ));
 
-            return response()->json(['message' => 'Signature saved successfully ! ', 'redirectUrl' => route('detailUsaha', [$request->sig_unit_usaha_edit."?tab=users"]), 'file' => $fileName], 200);
+            return response()->json(['message' => 'Signature saved successfully ! ', 'redirectUrl' => route('detailUsaha', [$request->sig_unit_usaha_edit . "?tab=users"]), 'file' => $fileName], 200);
         }
 
         return response()->json(['message' => 'Invalid image data.'], 400);

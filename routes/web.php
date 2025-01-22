@@ -33,17 +33,18 @@ use App\Http\Controllers\Api\ApiJabatanController;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::get('/pusher', [LoginController::class, 'pusher'])->name('pusher');
 Route::get('/', [LoginController::class, 'pageLogin'])->name('homePage');
 Route::get('/login', [LoginController::class, 'pageLogin'])->name('pagelogin');
 Route::get('/reset-pass', [LoginController::class, 'resetPass'])->name('resetPass');
 Route::get('/register', [LoginController::class, 'register'])->name('register');
 Route::get('/reset-success', [LoginController::class, 'successPage'])->name('successPage');
-Route::get('password-reset' , [RegistrationController::class, 'resetPassword'])->name('resetPassword');
+Route::get('password-reset', [RegistrationController::class, 'resetPassword'])->name('resetPassword');
 Route::get('/success-register', [LoginController::class, 'successRegister'])->name('successRegister');
-Route::post('new-registration' , [RegistrationController::class, 'registration'])->name('newRegistration');
-Route::post('forgot-pass' , [RegistrationController::class, 'forgotPass'])->name('forgotPass');
-Route::post('reset-password' , [RegistrationController::class, 'resetPasswordPost'])->name('resetPasswordPost');
+Route::post('new-registration', [RegistrationController::class, 'registration'])->name('newRegistration');
+Route::post('forgot-pass', [RegistrationController::class, 'forgotPass'])->name('forgotPass');
+Route::post('reset-password', [RegistrationController::class, 'resetPasswordPost'])->name('resetPasswordPost');
 
 Route::get('/send-notification', function () {
     $user = User::find(41); // Replace with a valid user ID
@@ -71,16 +72,17 @@ Route::post('/save-signature', [ReportPdfController::class, 'saveSignature']);
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/logout', [DashboardController::class, 'logout'])->name('logout');
-   
+
     Route::get('/jabatan', [UserController::class, 'index'])->name('list-jabatan');
     Route::get('/document', [DocumentController::class, 'index'])->name('document');
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     Route::get('/surat', [SuratController::class, 'index'])->name('surat');
-    
+
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
-    Route::post("/users/save" , [UserController::class, 'save'])->name('users-save');
-    Route::post("/users/edit" , [UserController::class, 'edit'])->name('users-edit');
+    Route::post("/users/save", [UserController::class, 'save'])->name('users-save');
+    Route::post("/users/edit", [UserController::class, 'edit'])->name('users-edit');
+    Route::post("/users/reset-password", [UserController::class, 'resetPassword'])->name('reset-password');
 
     Route::get('/unit-usaha', [UnitUsahaController::class, 'index'])->name('unit-usaha');
     Route::post('/usaha/add', [UnitUsahaController::class, 'usahaPost'])->name('addUsaha');
@@ -97,12 +99,12 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/pengadaan', [PengadaanController::class, 'index'])->name('pengadaan');
     Route::get('/pengadaan/add', [PengadaanController::class, 'add'])->name('addPengadaan');
     Route::get('/detail-pengadaan/{index}', [PengadaanController::class, 'detailPengadaan'])->name('detailPengadaan');
-    Route::post('postPengadaan/insert' , [PengadaanController::class, 'postPengadaan'])->name('postPengadaanNew');
-    Route::post('postPersetujuan/insert' , [PengadaanController::class, 'postPersetujuan'])->name('postPersetujuanNew');
+    Route::post('postPengadaan/insert', [PengadaanController::class, 'postPengadaan'])->name('postPengadaanNew');
+    Route::post('postPersetujuan/insert', [PengadaanController::class, 'postPersetujuan'])->name('postPersetujuanNew');
     Route::post('/approval-pengadaan', [PengadaanController::class, 'approvalDocument'])->name('approval-pengadaan');
 
-    Route::post('/editAccessMenu' , [MenuController::class, 'crud'])->name('editAccessMenu');
-    Route::get('/getAccessMenu' , [MenuController::class, 'get'])->name('getAccessMenu');
+    Route::post('/editAccessMenu', [MenuController::class, 'crud'])->name('editAccessMenu');
+    Route::get('/getAccessMenu', [MenuController::class, 'get'])->name('getAccessMenu');
 
     Route::post('/addHolding', [JabatanController::class, 'saveJabatan'])->name('addHolding');
     Route::get('/holding', [JabatanController::class, 'viewHolding'])->name('viewHolding');
@@ -116,19 +118,24 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
 
     Route::get('/petty_cash', [PettyCashController::class, 'index'])->name('petty_cash');
     Route::get('/petty_cash/add', [PettyCashController::class, 'add'])->name('addPettyCash');
-    Route::post('/petty_cash/insert' , [PettyCashController::class, 'postPettyCash'])->name('postPettyCashNew');
+    Route::post('/petty_cash/insert', [PettyCashController::class, 'postPettyCash'])->name('postPettyCashNew');
+    Route::post('/petty_cash/roles', [PettyCashController::class, 'postPettyCashRole'])->name('role_petycash_save');
     Route::get('/petty-cash/{index}', [PettyCashController::class, 'detailPettyCash'])->name('detailPettyCash');
+    Route::post('/petty-cash/pos-role-petycash', [PettyCashController::class, 'editPosPettyCash'])->name('editPosPettyCash');
+    Route::post('/approval-pettyCash', [PettyCashController::class, 'approvalPettyCash'])->name('approval-pettyCash');
+
 
     Route::get('/template_surat', [SettingController::class, 'index'])->name('template_surat');
 
-    Route::get('/show-pengadaan-pdf/{index}', [ReportPdfController::class, 'showPDF'])->name('show-pengadaan-pdf');
+    /* pengadaan */
+    Route::get('/show-pengadaan-new-pdf/{index}', [ReportPdfController::class, 'showPDF'])->name('show-pengadaan-new-pdf');
     Route::get('/show-persetujuan-pdf/{index}', [ReportPdfController::class, 'showPersetujuanPDF'])->name('show-persetujuan-pdf');
-
+    Route::get('/show-pettycash-pdf/{index}', [ReportPdfController::class, 'showPettyCash'])->name('show-pettycash-pdf');
 
     /* Api */
-    Route::get('/api/jabatan' , [ApiJabatanController::class, 'index'])->name('api-jabatan');
-    Route::get('/profile/edit' , [ProfileController::class, 'index'])->name('profile-edit');
-    Route::put('/edit/profiles' , [ProfileController::class, 'editProfiles'])->name('editProfiles');
+    Route::get('/api/jabatan', [ApiJabatanController::class, 'index'])->name('api-jabatan');
+    Route::get('/profile/edit', [ProfileController::class, 'index'])->name('profile-edit');
+    Route::put('/edit/profiles', [ProfileController::class, 'editProfiles'])->name('editProfiles');
     Route::post('/save-signature-profile', [ProfileController::class, 'saveSignatureProfile'])->name('saveSignatureProfile');
     /* Api */
 
@@ -136,4 +143,3 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
     Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalDocument'])->name('approval-pembayaran');
 });
-

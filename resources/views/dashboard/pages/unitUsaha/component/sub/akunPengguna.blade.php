@@ -21,7 +21,8 @@
                 </div>
 
                 <div class="col-md-6">
-                    <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+                    <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg"
+                        type="button">
                         <button class="btn btn-primary" style="float: right;">
                             <i class="fa fa-plus"></i>&nbsp; Tambah Pengguna
                         </button>
@@ -76,23 +77,33 @@
                         </td>
                         <td>
                             <div class="dropdown">
-                                <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
+                                    role="button" data-toggle="dropdown">
                                     <i class="dw dw-more"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addSignature-modal-lg" onclick="$('#sig_t_index').val({{ $row->id}});">
+                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                        data-target="#bd-addSignature-modal-lg"
+                                        onclick="$('#sig_t_index').val({{ $row->id}});">
                                         <i class="fa fa-paper-plane"></i> Add / Edit Signature
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-viewSignature-modal-lg" onclick="$('#sig_image_signature').attr('src','{{ url('storage/'.$row->signature_url) }}');">
-                                        <i class="fa fa-eye"></i> View Signature
+                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                        data-target="#bd-viewSignature-modal-lg"
+                                        onclick="$('#sig_image_signature').attr('src','{{ url('storage/app/public/'.$row->signature_url) }}');">
+                                        <i class="fa fa-eye"></i> View
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-password-modal-lg">
+                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                        onclick="showPasswordNew({{ $row->id}});" data-target="#bd-password-modal-lg">
                                         <i class="dw dw-lock"></i> Ganti Password
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addAccMenu-modal-lg" onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
+                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                        data-target="#bd-addAccMenu-modal-lg"
+                                        onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
                                         <i class="dw dw-eye"></i> Access Menu
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-edituser-modal-lg" onclick="showedit({{ $row }});"><i class="dw dw-edit2"></i> Edit</a>
+                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                        data-target="#bd-edituser-modal-lg" onclick="showedit({{ $row }});"><i
+                                            class="dw dw-edit2"></i> Edit</a>
                                     <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                 </div>
                             </div>
@@ -103,7 +114,8 @@
             </table>
         </div>
 
-        <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
+        <div
+            style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
             <div> @php echo $users->links('pagination::bootstrap-4'); @endphp </div>
         </div>
     </div>
@@ -120,15 +132,19 @@
         $("#chk_aktif_edit").prop('checked', rows.status);
     }
 
+    function showPasswordNew(id) {
+        $("#sig_rp_t_index").val(id);
+    }
+
     function showMenu(rows) {
         const urlGet = "{{ route('getAccessMenu') }}" + "?index=" + rows.id;
         $(".chk_menu").prop("checked", 0);
         $.ajax({
-            type: "GET"
-            , data: ""
-            , dataType: "json"
-            , url: urlGet
-            , success: function(response) {
+            type: "GET",
+            data: "",
+            dataType: "json",
+            url: urlGet,
+            success: function(response) {
                 const resData = response.data
 
                 for (let an = 0; an < resData.length; an++) {
@@ -137,6 +153,5 @@
             }
         });
     }
-
 </script>
 @endsection

@@ -16,8 +16,11 @@
     <!-- welcome modal end -->
     @yield("footer_scripts")
     @yield("footer_modals")
+    @yield("footer_modals_rs_password_ptc")
     @yield("footer_modals_pengguna")
     @yield("footer_modals_pembayaran")
+    @yield("footer_modals_pettyCash")
+    @yield('footer_modals_pettyCashEdit')
     @yield("footer_endMenu_section")
     @yield("footer_modals_holding")
     @yield("footer_modals_unit")
@@ -27,4 +30,5 @@
     @yield("footer_add_pengaturan")
     @yield("footer_add_profiles")
 </body>
+
 </html>

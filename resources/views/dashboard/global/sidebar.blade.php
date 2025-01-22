@@ -11,7 +11,7 @@ $segment = Request::segment(2);
         </a> --}}
             <div style="display: flex; flex-direction: center; align-items: center; height: 70px;">
                 <a href="{{ url('/') }}" style="margin: auto;">
-                    <img src="{{ url('vendors/images/logo.png') }}" height="50" />
+                    <img src="{{ asset('vendors/images/logo.png') }}" height="50" />
                 </a>
             </div>
             <div class="close-sidebar" data-toggle="left-sidebar-close">
@@ -29,7 +29,8 @@ $segment = Request::segment(2);
                     @endphp
                     @foreach($menu1 as $rows)
                     <li>
-                        <a href="{{ route($rows->url,['index'=> '1']) }}" class="dropdown-toggle no-arrow {{ $segment == $rows->url ? 'active' : '' }}">
+                        <a href="{{ route($rows->url,['index'=> '1']) }}"
+                            class="dropdown-toggle no-arrow {{ $segment == $rows->url ? 'active' : '' }}">
 
                             <span class="{{ $rows->icon }}"></span><span class="mtext">{{ $rows->nama }}</span>
                         </a>
@@ -44,7 +45,8 @@ $segment = Request::segment(2);
                     <li class="dropdown">
                         @foreach($menu2 as $rows)
                     <li>
-                        <a href="{{ route($rows->url,['index'=> '1']) }}" class="dropdown-toggle no-arrow {{ $segment == $rows->url ? 'active' : '' }}">
+                        <a href="{{ route($rows->url,['index'=> '1']) }}"
+                            class="dropdown-toggle no-arrow {{ $segment == $rows->url ? 'active' : '' }}">
                             <span class="{{ $rows->icon }}"></span><span class="mtext">{{ $rows->nama }}</span>
                         </a>
                     </li>
@@ -55,11 +57,13 @@ $segment = Request::segment(2);
 
         </div>
         <div style="position: absolute; z-index: 1; bottom: 30px; width: 80%; left: 0; right: 0; margin: auto;">
-            <div style="width: 100%; display: flex; box-shadow:0 0 1px 1px #EEEEEE; height: 60px; background: #FDFDFD; padding: 10px; border-radius: 10px;">
+            <div
+                style="width: 100%; display: flex; box-shadow:0 0 1px 1px #EEEEEE; height: 60px; background: #FDFDFD; padding: 10px; border-radius: 10px;">
                 <div class="col-12" style="margin:0; padding: 0;">
                     <div class="row">
                         <div class="col-2">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #DDDDDD; margin-right: 15px;">
+                            <div
+                                style="width: 35px; height: 35px; border-radius: 50%; background: #DDDDDD; margin-right: 15px;">
 
                             </div>
                         </div>
@@ -72,8 +76,10 @@ $segment = Request::segment(2);
                                 </div>
                             </div>
                         </div>
-                        <div class="col-1" style="text-align: left; display: flex; align-items:center; justify-content: center;">
-                            <a href="{{ route('profile-edit')}}"> <i class="fa fa-edit" style="font-size: 18px;"></i> </a>
+                        <div class="col-1"
+                            style="text-align: left; display: flex; align-items:center; justify-content: center;">
+                            <a href="{{ route('profile-edit')}}"> <i class="fa fa-edit" style="font-size: 18px;"></i>
+                            </a>
                         </div>
                     </div>
                 </div>

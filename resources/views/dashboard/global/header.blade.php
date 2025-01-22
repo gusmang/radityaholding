@@ -12,23 +12,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
     {{-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> --}}
     <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
 
     <!-- CSS -->
     <link rel="stylesheet" type="text/css" href={{ asset("vendors/styles/swal2.css") }} />
     <link rel="stylesheet" type="text/css" href={{ asset("vendors/styles/core.css") }} />
     <link rel="stylesheet" type="text/css" href={{ asset("vendors/styles/icon-font.min.css") }} />
-    <link rel="stylesheet" type="text/css" href={{ asset("src/plugins/datatables/css/dataTables.bootstrap4.min.css") }} />
-    <link rel="stylesheet" type="text/css" href={{ asset("src/plugins/datatables/css/responsive.bootstrap4.min.css") }} />
+    <link rel="stylesheet" type="text/css"
+        href={{ asset("src/plugins/datatables/css/dataTables.bootstrap4.min.css") }} />
+    <link rel="stylesheet" type="text/css"
+        href={{ asset("src/plugins/datatables/css/responsive.bootstrap4.min.css") }} />
     <link rel="stylesheet" type="text/css" href={{ asset("vendors/styles/style.css") }} />
+
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2973766580778258" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2973766580778258"
+        crossorigin="anonymous"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -38,24 +46,22 @@
         gtag("js", new Date());
 
         gtag("config", "G-GBZ3SGGX85");
-
     </script>
     <!-- Google Tag Manager -->
     <script>
         (function(w, d, s, l, i) {
             w[l] = w[l] || [];
             w[l].push({
-                "gtm.start": new Date().getTime()
-                , event: "gtm.js"
+                "gtm.start": new Date().getTime(),
+                event: "gtm.js"
             });
-            var f = d.getElementsByTagName(s)[0]
-                , j = d.createElement(s)
-                , dl = l != "dataLayer" ? "&l=" + l : "";
+            var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s),
+                dl = l != "dataLayer" ? "&l=" + l : "";
             j.async = true;
             j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
             f.parentNode.insertBefore(j, f);
         })(window, document, "script", "dataLayer", "GTM-NXZMQSS");
-
     </script>
 
     <style>
@@ -105,6 +111,56 @@
             padding-top: 3px !important;
         }
 
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        /* Hide the default checkbox */
+        .switch-input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        /* Style for the slider */
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        /* Circle inside the switch */
+        .switch-slider::before {
+            content: "";
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 15px;
+            height: 15px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
+
+        /* When the checkbox is checked (on state) */
+        .switch-input:checked+.switch-slider {
+            background-color: rgb(6, 158, 158);
+            /* Green color when toggled on */
+        }
+
+        /* Move the circle to the right when toggled on */
+        .switch-input:checked+.switch-slider::before {
+            transform: translateX(26px);
+        }
     </style>
     <!-- End Google Tag Manager -->
 </head>
