@@ -9,9 +9,12 @@
                     </div>
 
                     <div class="col-md-6">
-                        <input type="hidden" name="t_jumlah_role_pembayaran" id="t_jumlah_role_pembayaran" value="{{ count($users) }}" />
-                        <input type="hidden" name="t_index_pembayaran" id="t_index_pengadaan_pembayaran" value="{{ $unitUsaha->id }}" />
-                        <a href="#" onClick="showModals();" class="btn-block" data-toggle="modal" data-target="#bd-role-pembayaran-modal-lg" type="button">
+                        <input type="hidden" name="t_jumlah_role_pembayaran" id="t_jumlah_role_pembayaran"
+                            value="{{ count($users) }}" />
+                        <input type="hidden" name="t_index_pembayaran" id="t_index_pengadaan_pembayaran"
+                            value="{{ $unitUsaha->id }}" />
+                        <a href="#" onClick="showModals();" class="btn-block" data-toggle="modal"
+                            data-target="#bd-role-pembayaran-modal-lg" type="button">
                             <button class="btn btn-primary" style="float: right;" type="button">
                                 <i class="fa fa-plus"></i>&nbsp; Tambah Role
                             </button>
@@ -44,8 +47,12 @@
                         @endphp
                         <tr>
                             <td>
-                                <input type="hidden" id={{ "id_role_pembayaran_".$an }} name={{ "id_role_pembayaran_".$an }} class="form-control" value="{{ $row->id }}" style="width: 70px!important;" />
-                                <input type="number" id={{ "role_pembayaran_".$an }} name={{ "role_pembayaran_".$an }} class="form-control" value="{{ $row->role_pembayaran }}" style="width: 70px!important;" />
+                                <input type="hidden" id={{ "id_role_pembayaran_".$an }}
+                                    name={{ "id_role_pembayaran_".$an }} class="form-control" value="{{ $row->id }}"
+                                    style="width: 70px!important;" />
+                                <input type="number" id={{ "role_pembayaran_".$an }} name={{ "role_pembayaran_".$an }}
+                                    class="form-control" value="{{ $row->role_pembayaran }}"
+                                    style="width: 70px!important;" />
                             </td>
                             <td class="table-plus">
                                 @php
@@ -69,11 +76,13 @@
                             </td>
                             <td>
                                 <div class="dropdown">
-                                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
+                                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
+                                        role="button" data-toggle="dropdown">
                                         <i class="dw dw-more"></i>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-password-modal-lg">
+                                        <a class="dropdown-item" href="#" data-toggle="modal"
+                                            data-target="#bd-password-modal-lg">
                                             <i class="dw dw-lock"></i> Ganti Password
                                         </a>
                                         <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
@@ -92,7 +101,8 @@
                 </button>
             </div>
 
-            <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
+            <div
+                style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
                 <div> @php echo $users->links('pagination::bootstrap-4'); @endphp </div>
             </div>
         </div>
@@ -101,54 +111,53 @@
 
 @section("footer_modals_pembayaran")
 <script type="text/javascript">
-    function showModals() {
-        $.ajax({
-            type: "get"
-            , url: "{{ route('api-jabatan') }}"
-            , data: ""
-            , dataType: "json"
-            , success: function(data) {
-                $('.select-field').select2({
-                    theme: 'bootstrap-5'
-                    , data: data
-                });
+function showModals() {
+    $.ajax({
+        type: "get",
+        url: "{{ route('api-jabatan') }}",
+        data: "",
+        dataType: "json",
+        success: function(data) {
+            $('.select-field').select2({
+                theme: 'bootstrap-5',
+                data: data
+            });
 
+        }
+    });
+}
+
+$(document).ready(function() {
+    // Attach event listener for form submission
+
+    $('#formAlurPembayaran').on('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Serialize form data
+        const formData = $(this).serialize();
+        const urlEdit = "{{ route('editPosPembayaran') }}";
+
+        // Send AJAX request
+        $.ajax({
+            url: urlEdit, // URL to handle the form data
+            type: 'POST',
+            data: formData,
+            dataType: "json",
+            success: function(response) {
+                // Display server response
+                if (response.status === 200) {
+                    window.location = response.redirectUrl;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                $('#response').text('An error occurred: ' + error);
             }
         });
-    }
-
-    $(document).ready(function() {
-        // Attach event listener for form submission
-
-        $('#formAlurPembayaran').on('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Serialize form data
-            const formData = $(this).serialize();
-            const urlEdit = "{{ route('editPosPembayaran') }}";
-
-            // Send AJAX request
-            $.ajax({
-                url: urlEdit, // URL to handle the form data
-                type: 'POST'
-                , data: formData
-                , dataType: "json"
-                , success: function(response) {
-                    // Display server response
-                    if (response.status === 200) {
-                        window.location = response.redirectUrl;
-                    } else {
-                        alert(response.message);
-                    }
-                }
-                , error: function(xhr, status, error) {
-                    // Handle errors
-                    $('#response').text('An error occurred: ' + error);
-                }
-            });
-        });
-
     });
 
+});
 </script>
 @endsection

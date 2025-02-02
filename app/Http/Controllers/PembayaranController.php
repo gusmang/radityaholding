@@ -6,17 +6,13 @@ use App\Models\User;
 use App\Models\Dokumen;
 use App\Models\Position;
 use App\Models\Pengadaan;
-use App\Models\TipeSurat;
 use App\Models\UnitUsaha;
 use App\Models\Persetujuan;
 use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
-use App\Models\dokumenPersetujuan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use App\Models\ApprovalDocPembayaran;
-use Illuminate\Support\Facades\Session;
-use Kutia\Larafirebase\Facades\Larafirebase;
+use App\Models\rolePembayaran;
 
 class PembayaranController extends Controller
 {
@@ -68,6 +64,25 @@ class PembayaranController extends Controller
         }
 
         return view('dashboard.pages.pembayaran.detail.sub.index', compact('jabatan', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+    }
+
+    public function postPembayaranRole(Request $request)
+    {
+        $pettyCashes = new rolePembayaran();
+
+        $pettyCashes->id_user = 0;
+        $pettyCashes->id_unit_usaha = $request->pid_index_usaha;
+        $pettyCashes->id_role = $request->pt_id_role;
+        $pettyCashes->urutan = 0;
+        $pettyCashes->aktif = $request->pd_chk_aktif;
+
+        $pettyCashes->save();
+
+        return response()->json([
+            'message' => 'Role Pembayaran Berhasil Disimpan!',
+            'redirectUrl' => route('detailUsaha', ['index' => $request->pid_index_usaha]),
+            'status' => 200
+        ]);
     }
 
     public function approvalDocument(Request $request)

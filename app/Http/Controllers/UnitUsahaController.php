@@ -36,17 +36,12 @@ class UnitUsahaController extends Controller
         // $users_pengadaan = User::where("id_positions" , "!=" , "0")->where("id_positions" , $index)->where("status" , 1)->orderBy("role_pengadaan","asc")->get();
         // $users_holding = User::where("id_positions" , "!=" , "0")->where("status" , 1)->get();
 
-        $users_pengadaan = DB::table('users')
+        $users_pengadaan = DB::table('role_pengadaan')->select("role_pengadaan.*", "positions.name")
             ->where(function ($query) use ($index) {
-                $query->where('id_positions',  0)
-                    ->orWhere('id_positions', $index);
+                $query->where('role_pengadaan.id_unit_usaha', $index);
             })
-            ->where(function ($query) use ($index) {
-                $query->where('role_status',  1)
-                    ->orWhere('id_positions', 0);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
+            ->join("positions", "positions.id", "role_pengadaan.id_role")
+            ->orderBy('role_pengadaan.urutan', 'asc')
             ->get();
 
         $users_pembayaran = DB::table('users')

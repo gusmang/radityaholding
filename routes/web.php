@@ -102,6 +102,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('postPengadaan/insert', [PengadaanController::class, 'postPengadaan'])->name('postPengadaanNew');
     Route::post('postPersetujuan/insert', [PengadaanController::class, 'postPersetujuan'])->name('postPersetujuanNew');
     Route::post('/approval-pengadaan', [PengadaanController::class, 'approvalDocument'])->name('approval-pengadaan');
+    Route::post('/postPengadaanRole', [PengadaanController::class, 'postPengadaanRole'])->name('approval-postRole');
 
     Route::post('/editAccessMenu', [MenuController::class, 'crud'])->name('editAccessMenu');
     Route::get('/getAccessMenu', [MenuController::class, 'get'])->name('getAccessMenu');
@@ -142,4 +143,5 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
     Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalDocument'])->name('approval-pembayaran');
+    Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('approval-pembayaran');
 });

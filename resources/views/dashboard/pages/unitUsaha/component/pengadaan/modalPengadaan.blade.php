@@ -1,4 +1,5 @@
-<div class="modal fade bs-example-modal-lg" id="bd-role-pengadaan-modal-lg" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bs-example-modal-lg" id="bd-role-pengadaan-modal-lg" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <form method="post" id="formRolePengadaanNew" name="formRolePengadaanNew" class="formRolePengadaanNew">
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
@@ -19,10 +20,18 @@
                                 <label class="required-label"> Nama Role </label>
                                 <div>
                                     <input type="hidden" name="role_status" id="role_status" value="1" />
-                                    <input type="hidden" class="form-control" value={{ $unitUsaha->id }} name="pid_index_usaha" id="pid_index_usaha" placeholder="Input Index ..." required />
-                                    {{-- <input type="text" class="form-control" name="name" id="name" placeholder="Input Nama ..." required /> --}}
-                                    <select class="select-field2" style="width: 100%;" name="cmb_posisi2" id="cmb_posisi2">
-                                        <option value="">- Pilih Posisi -</option>
+                                    <input type="hidden" class="form-control" value={{ $unitUsaha->id }}
+                                        name="pid_index_usaha" id="pid_index_usaha" placeholder="Input Index ..."
+                                        required />
+                                    <select class="form-control" style="width: 100%;" name="pt_id_role" id="pt_id_role">
+                                        <?php
+                                        foreach ($roleList as $rows) {
+                                        ?>
+                                            <option value="<?php echo $rows->role_id; ?>"><?php echo $rows->role; ?>
+                                            </option>
+                                        <?php
+                                        }
+                                        ?>
                                     </select>
                                 </div>
                             </div>
@@ -30,7 +39,8 @@
                             <div class=" col-md-12 mt-4">
                                 <label class="required-label"> Organisasi </label>
                                 <div>
-                                    <select class="form-control" name="pid_role_unit_usaha" id="pid_role_unit_usaha" required>
+                                    <select class="form-control" name="pid_role_unit_usaha" id="pid_role_unit_usaha"
+                                        required>
                                         <option value="1">Unit Usaha</option>
                                         <option value="0">Holding</option>
                                     </select>
@@ -50,7 +60,8 @@
                             <div class="col-md-12 mt-4">
                                 <label class="required-label"> Tanda Tangan </label>
                                 <div>
-                                    <select class="form-control" name="pid_ttd_unit_usaha" id="pid_ttd_unit_usaha" required>
+                                    <select class="form-control" name="pid_ttd_unit_usaha" id="pid_ttd_unit_usaha"
+                                        required>
                                         <option value="1">Ya</option>
                                         <option value="0">Tidak</option>
                                     </select>
@@ -60,7 +71,8 @@
                             <div class="col-md-12 mt-4">
 
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" value="1" name="pd_chk_aktif" id="pd_chk_aktif">
+                                    <input class="form-check-input" type="checkbox" role="switch" value="1"
+                                        name="pd_chk_aktif" id="pd_chk_aktif">
                                     <label class="form-check-label" for="flexSwitchCheckDefault"> Aktif </label>
                                 </div>
 
