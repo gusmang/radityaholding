@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\approval_surat_pengadaan;
 use App\Models\User;
 use App\Models\Dokumen;
 use App\Models\Position;
@@ -139,28 +138,8 @@ class PengadaanController extends Controller
         ]);
     }
 
-    public function editPosPengadaan(Request $request)
-    {
-        $indexUsaha = $request->t_index_pembayaran;
-        $roleCount = $request->t_jumlah_role_pengadaan;
 
-        for ($an = 1; $an <= $roleCount; $an++) {
-            $idRole = $request->input("id_role_pettycash_" . $an);
-            $posRole = $request->input("role_pettycash_" . $an);
-
-            $valChecked = $request->input("checked_role_pettycash_" . $an);
-
-            rolePengadaan::where("id", $idRole)->update(array(
-                "urutan" => $posRole,
-                "aktif" => isset($valChecked) ? $valChecked : 0
-            ));
-        }
-
-        return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pettycash"]), 'status' => 200], 200);
-    }
-
-
-    public function postPengadaan2(Request $request)
+    public function postPengadaan(Request $request)
     {
         // Access the values
         $tanggal = $request->input('cmbTglPengajuan');
@@ -204,99 +183,6 @@ class PengadaanController extends Controller
                 \Log::info('File uploaded to:', ['path' => $path]);
 
                 $dokumen = new Dokumen();
-                $dokumen->id_surat = $lastInsertedId;
-                $dokumen->nama_dokumen = $fileName;
-
-                $dokumen->save();
-            }
-        }
-
-        // Return JSON response
-        return response()->json([
-            'message' => 'Input Pengadaan Berhasil Disimpan!',
-            'status' => 200
-        ]);
-    }
-
-    public function postPengadaan(Request $request)
-    {
-        // Access the values
-        $tanggal = $request->input('cmbTglPengajuan');
-        $tipeSurat = $request->input('cmbTipeSurat');
-        $perihal = $request->input('inp_perihal');
-        $nominal = $request->input('nominalPengajuan');
-        $detail = $request->input('detailIsiSurat');
-        $unitUsaha = $request->input('cmbUnitUsaha');
-        $unitUsahaName = $request->input('cmbUnitUsahaName');
-        $invoice = $request->input('inp_invoice');
-        $files = $request->file('docFile');
-
-        $tipe = TipeSurat::where("id", $tipeSurat)->first();
-
-        $unitUsahaQ = UnitUsaha::where("id", Auth::user()->id_positions)->first();
-
-        $pengadaan = new Pengadaan();
-        $pengadaan->no_surat = $invoice;
-        $pengadaan->title = $perihal;
-        $pengadaan->id_unit_usaha = $unitUsaha;
-        $pengadaan->unit_usaha = $unitUsahaQ->name;
-        $pengadaan->diajukan = Auth::user()->name;
-        $pengadaan->tipe_surat = $tipeSurat;
-        $pengadaan->perihal = $perihal;
-        $pengadaan->nominal_pengajuan = $nominal;
-        $pengadaan->tanggal = $tanggal;
-        $pengadaan->detail = $detail;
-
-        $lastInsertedId = "";
-
-        if ($pengadaan->save()) {
-            $lastInsertedId = $pengadaan->id;
-            $ptCashRole = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("aktif", 1)->get();
-            $pos = 1;
-            foreach ($ptCashRole as $rows) {
-                $approvalPettyCash = new approval_surat_pengadaan();
-
-                $userCurrent = User::where("id", $rows->id_role)->first();
-                $status = 0;
-                if ($pos === 1) {
-                    $status = 1;
-                    $titleSurat = "Surat Pengadaan Berhasil Dibuat";
-                } else {
-                    $titleSurat = "-";
-                }
-
-                $is_next = 0;
-
-                if ($pos === 2) {
-                    $is_next = 1;
-                }
-
-                $approvalPettyCash->nama = $titleSurat;
-                $approvalPettyCash->id_surat = $lastInsertedId;
-                $approvalPettyCash->id_jabatan = $rows->id_role;
-                $approvalPettyCash->status = $status;
-                $approvalPettyCash->note = "-";
-                $approvalPettyCash->title = $userCurrent->name;
-                $approvalPettyCash->is_next = $is_next;
-                if ($pos === 1) {
-                    $approvalPettyCash->approved_by = Auth::user()->id;
-                } else {
-                    $approvalPettyCash->approved_by = 0;
-                }
-
-                $approvalPettyCash->save();
-                $pos++;
-            }
-        }
-
-        if ($files) {
-            foreach ($files as $file) {
-                $fileName = $file->hashName();
-                // Save the file to the 'storage/app/public/uploads' directory with the random name
-                $path = $file->storeAs('uploads', $fileName, 'public');
-                \Log::info('File uploaded to:', ['path' => $path]);
-
-                $dokumen = new DocPettyCash();
                 $dokumen->id_surat = $lastInsertedId;
                 $dokumen->nama_dokumen = $fileName;
 

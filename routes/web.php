@@ -93,6 +93,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/unit-usaha/pos-role-pengadaan', [UnitUsahaController::class, 'editPosPengadaan'])->name('editPosPengadaan');
     Route::post('/jabatan/add', [JabatanController::class, 'add'])->name('role_pengadaan_save');
 
+    Route::post('/role/rolePembayaran', [JabatanController::class, 'roleSave'])->name('role_pembayaran_save');
+
     Route::post('/unit-usaha/pos-role-pembayaran', [UnitUsahaController::class, 'editPosPembayaran'])->name('editPosPembayaran');
     //Route::post("/users/save" , [UnitUsahaController::class, 'save'])->name('users-save');
 
@@ -143,5 +145,5 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
     Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalDocument'])->name('approval-pembayaran');
-    Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('approval-pembayaran');
+    Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('postPembayaranRole');
 });

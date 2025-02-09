@@ -124,34 +124,34 @@
 
 @section("footer_modals_pengguna")
 <script type="text/javascript">
-    function showedit(rows) {
-        $("#name_edit").val(rows.name);
-        $("#email_edit").val(rows.email);
-        $("#t_index_edit").val(rows.id);
-        $("#role_edit").val(rows.role_id);
-        $("#chk_aktif_edit").prop('checked', rows.status);
-    }
+function showedit(rows) {
+    $("#name_edit").val(rows.name);
+    $("#email_edit").val(rows.email);
+    $("#t_index_edit").val(rows.id);
+    $("#role_edit").val(rows.role_id);
+    $("#chk_aktif_edit").prop('checked', rows.status);
+}
 
-    function showPasswordNew(id) {
-        $("#sig_rp_t_index").val(id);
-    }
+function showPasswordNew(id) {
+    $("#sig_rp_t_index").val(id);
+}
 
-    function showMenu(rows) {
-        const urlGet = "{{ route('getAccessMenu') }}" + "?index=" + rows.id;
-        $(".chk_menu").prop("checked", 0);
-        $.ajax({
-            type: "GET",
-            data: "",
-            dataType: "json",
-            url: urlGet,
-            success: function(response) {
-                const resData = response.data
+function showMenu(rows) {
+    const urlGet = "{{ route('getAccessMenu') }}" + "?index=" + rows.id;
+    $(".chk_menu").prop("checked", 0);
+    $.ajax({
+        type: "GET",
+        data: "",
+        dataType: "json",
+        url: urlGet,
+        success: function(response) {
+            const resData = response.data
 
-                for (let an = 0; an < resData.length; an++) {
-                    $("#chk_menu_" + resData[an].id_menu).prop("checked", 1);
-                }
+            for (let an = 0; an < resData.length; an++) {
+                $("#chk_menu_" + resData[an].id_menu).prop("checked", 1);
             }
-        });
-    }
+        }
+    });
+}
 </script>
 @endsection

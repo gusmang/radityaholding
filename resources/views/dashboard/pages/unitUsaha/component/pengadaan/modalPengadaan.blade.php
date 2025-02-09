@@ -27,8 +27,8 @@
                                         <?php
                                         foreach ($roleList as $rows) {
                                         ?>
-                                            <option value="<?php echo $rows->role_id; ?>"><?php echo $rows->role; ?>
-                                            </option>
+                                        <option value="<?php echo $rows->role_id; ?>"><?php echo $rows->role; ?>
+                                        </option>
                                         <?php
                                         }
                                         ?>
@@ -39,6 +39,7 @@
                             <div class=" col-md-12 mt-4">
                                 <label class="required-label"> Organisasi </label>
                                 <div>
+                                    <input type="hidden" name="selected_surat_tipe" id="selected_surat_tipe" />
                                     <select class="form-control" name="pid_role_unit_usaha" id="pid_role_unit_usaha"
                                         required>
                                         <option value="1">Unit Usaha</option>

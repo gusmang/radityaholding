@@ -7,6 +7,7 @@ use App\Models\Menu;
 use App\Models\User;
 use App\Models\Position;
 use App\Models\roleHolding;
+use App\Models\rolePembayaran;
 use App\Models\rolePengadaan;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -21,34 +22,29 @@ class JabatanController extends Controller
         return view('dashboard.pages.jabatan.index', compact('position'));
     }
 
-    // public function add(Request $request){
-    //     $jabatan = Position::where("id" , $request->cmb_posisi)->first();
-
-    //     $users = new User();
-
-    //     $users->name = "-";
-    //     $users->email = date("YmdHis").rand(00000,99999)."@email.com";
-    //     $users->password = bcrypt($request->password);
-    //     $users->id_positions = $request->pid_index_usaha;
-    //     $users->role = $jabatan->name;
-    //     $users->role_id = $jabatan->id;
-    //     $users->role_status = $request->role_status;
-    //     $users->is_verified = true;
-    //     $users->reset_password_token = "-";
-    //     $users->status = $request->pd_chk_aktif === null ? 0 : $request->pd_chk_aktif;
-    //     $users->signature_url = "-";
-
-    //     if($users->save()){
-    //         return response()->json(['message' => 'Add Role Success' , 'redirectUrl' => route('detailUsaha', [$request->pid_index_usaha."?tab=pengadaan"]), 'status' => 200], 200);
-    //     }
-    //     else{
-    //         return response()->json(['message' => 'Add Role Failed' , 'status' => 500], 500);
-    //     }
-    // }
-
     public function add(Request $request)
     {
         $pettyCashes = new rolePengadaan();
+
+        $pettyCashes->id_user = 0;
+        $pettyCashes->id_unit_usaha = $request->pid_index_usaha;
+        $pettyCashes->id_role = $request->pt_id_role;
+        $pettyCashes->urutan = 0;
+        $pettyCashes->tipe_surat = ($request->selected_surat_tipe === null || $request->selected_surat_tipe === "") ? 0 : $request->selected_surat_tipe;
+        $pettyCashes->aktif = $request->pd_chk_aktif;
+
+        $pettyCashes->save();
+
+        return response()->json([
+            'message' => 'Role Pengadaan Berhasil Disimpan!',
+            'redirectUrl' => route('detailUsaha', ['index' => $request->pid_index_usaha]),
+            'status' => 200
+        ]);
+    }
+
+    public function roleSave(Request $request)
+    {
+        $pettyCashes = new rolePembayaran();
 
         $pettyCashes->id_user = 0;
         $pettyCashes->id_unit_usaha = $request->pid_index_usaha;

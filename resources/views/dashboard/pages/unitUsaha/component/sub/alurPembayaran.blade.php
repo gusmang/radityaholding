@@ -23,7 +23,6 @@
                 </div>
             </div>
 
-
             <div class="pb-20">
                 <div style="clear: both; height: 10px;"></div>
                 <table class="table stripe hover nowrap">
@@ -47,27 +46,38 @@
                         @endphp
                         <tr>
                             <td>
-                                <input type="hidden" id={{ "id_role_pembayaran_".$an }}
-                                    name={{ "id_role_pembayaran_".$an }} class="form-control" value="{{ $row->id }}"
+                                <input type="hidden" id={{ "id_role_pettycash_".$an }}
+                                    name={{ "id_role_pettycash_".$an }} class="form-control" value="{{ $row->id }}"
                                     style="width: 70px!important;" />
-                                <input type="number" id={{ "role_pembayaran_".$an }} name={{ "role_pembayaran_".$an }}
-                                    class="form-control" value="{{ $row->role_pembayaran }}"
-                                    style="width: 70px!important;" />
+                                <input type="number" id={{ "role_pettycash_".$an }} name={{ "role_pettycash_".$an }}
+                                    class="form-control" value="{{ $row->urutan }}" style="width: 70px!important;" />
                             </td>
                             <td class="table-plus">
                                 @php
-                                echo $row->role
+                                echo $row->name
                                 @endphp
                             </td>
                             <td>
-                                <select name="" class="form-control">
-                                    <option> Unit Usaha </option>
-                                </select>
+                                <?php echo $unitUsaha->name; ?>
                             </td>
                             <td>
-                                <select name="" class="form-control">
-                                    <option> Aktif </option>
-                                </select>
+                                <label class="switch">
+                                    <?php
+                                    if ($row->aktif == "1") {
+                                    ?>
+                                    <input type="checkbox" class="switch-input" value="1" checked
+                                        id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
+                                    <?php
+                                    } else {
+                                    ?>
+                                    <input type="checkbox" class="switch-input" value="1"
+                                        id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
+                                    <?php
+                                    }
+                                    ?>
+
+                                    <span class="switch-slider"></span>
+                                </label>
                             </td>
                             <td>
                                 <select name="" class="form-control">
@@ -136,6 +146,34 @@ $(document).ready(function() {
         // Serialize form data
         const formData = $(this).serialize();
         const urlEdit = "{{ route('editPosPembayaran') }}";
+
+        // Send AJAX request
+        $.ajax({
+            url: urlEdit, // URL to handle the form data
+            type: 'POST',
+            data: formData,
+            dataType: "json",
+            success: function(response) {
+                // Display server response
+                if (response.status === 200) {
+                    window.location = response.redirectUrl;
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                // Handle errors
+                $('#response').text('An error occurred: ' + error);
+            }
+        });
+    });
+
+    $('#formAlurPembayaranNew').on('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Serialize form data
+        const formData = $(this).serialize();
+        const urlEdit = "{{ route('role_pembayaran_save') }}";
 
         // Send AJAX request
         $.ajax({

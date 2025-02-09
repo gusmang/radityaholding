@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\Position;
+use App\Models\rolePengadaan;
 use App\Models\UnitUsaha;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,19 +41,26 @@ class UnitUsahaController extends Controller
             ->where(function ($query) use ($index) {
                 $query->where('role_pengadaan.id_unit_usaha', $index);
             })
+            ->where("role_pengadaan.tipe_surat", 0)
             ->join("positions", "positions.id", "role_pengadaan.id_role")
             ->orderBy('role_pengadaan.urutan', 'asc')
             ->get();
 
-        $users_pembayaran = DB::table('users')
+        $users_pengadaan_lainnya = DB::table('role_pengadaan')->select("role_pengadaan.*", "positions.name")
             ->where(function ($query) use ($index) {
-                $query->where('id_positions', $index);
+                $query->where('role_pengadaan.id_unit_usaha', $index);
             })
+            ->where("role_pengadaan.tipe_surat", 1)
+            ->join("positions", "positions.id", "role_pengadaan.id_role")
+            ->orderBy('role_pengadaan.urutan', 'asc')
+            ->get();
+
+        $users_pembayaran = DB::table('role_pembayaran')->select("role_pembayaran.*", "positions.name")
             ->where(function ($query) use ($index) {
-                $query->where('role_status',  2);
+                $query->where('role_pembayaran.id_unit_usaha', $index);
             })
-            ->where('status', 1)
-            ->orderBy('role_pembayaran', 'asc')
+            ->join("positions", "positions.id", "role_pembayaran.id_role")
+            ->orderBy('role_pembayaran.urutan', 'asc')
             ->get();
 
         $users_petty_cash = DB::table('role_petty_cash')->select("role_petty_cash.*", "positions.name")
@@ -65,7 +73,7 @@ class UnitUsahaController extends Controller
 
         $users_holding = User::where("id_positions", "!=", "0")->where("status", 1)->get();
 
-        return view('dashboard.pages.unitUsaha.component.detail', compact('roleList', 'unitUsaha', 'users', 'jabatan', 'users_pengadaan', 'users_pembayaran', 'menu', 'users_petty_cash'));
+        return view('dashboard.pages.unitUsaha.component.detail', compact('roleList', 'unitUsaha', 'users_pengadaan_lainnya', 'users', 'jabatan', 'users_pengadaan', 'users_pembayaran', 'menu', 'users_petty_cash'));
     }
 
     public function editPosPembayaran(Request $request)
@@ -102,17 +110,43 @@ class UnitUsahaController extends Controller
         }
     }
 
+    // public function editPosPengadaan(Request $request)
+    // {
+    //     $indexUsaha = $request->t_index_pengadaan;
+    //     $roleCount = $request->t_jumlah_role;
+
+    //     for ($an = 1; $an <= $roleCount; $an++) {
+    //         $idRole = $request->input("id_role_pengadaan_" . $an);
+    //         $posRole = $request->input("role_pengadaan_" . $an);
+
+    //         User::where("id", $idRole)->update(array(
+    //             "role_pengadaan" => $posRole
+    //         ));
+    //     }
+
+    //     return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pengadaan"]), 'status' => 200], 200);
+    // }
+
     public function editPosPengadaan(Request $request)
     {
         $indexUsaha = $request->t_index_pengadaan;
-        $roleCount = $request->t_jumlah_role;
+        $roleCount = $request->t_jumlah_role_pengadaan;
+
+        // echo $roleCount;
+        // die();
+        $dds = "";
 
         for ($an = 1; $an <= $roleCount; $an++) {
             $idRole = $request->input("id_role_pengadaan_" . $an);
             $posRole = $request->input("role_pengadaan_" . $an);
 
-            User::where("id", $idRole)->update(array(
-                "role_pengadaan" => $posRole
+            $dds .= $idRole . "/";
+
+            $valChecked = $request->input("checked_role_pengadaan_" . $an);
+
+            rolePengadaan::where("id", $idRole)->update(array(
+                "urutan" => $posRole,
+                "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }
 

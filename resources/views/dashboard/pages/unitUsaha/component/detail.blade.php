@@ -126,26 +126,42 @@ $display_pengguna = 'display: none;';
 </div>
 
 <script type="text/javascript">
-    function active_tab(id, page) {
-        $(".tab-list").removeClass("active-tab");
-        $("#" + id).addClass("active-tab");
+let selectedSurat = 1;
 
-        if (page === 1) {
-            $(".div_display_unit").hide();
-            $("#div_tab_detail").fadeIn("slow");
-        } else if (page === 2) {
-            $(".div_display_unit").hide();
-            $("#div_tab_pengadaan").fadeIn("slow");
-        } else if (page === 3) {
-            $(".div_display_unit").hide();
-            $("#div_tab_pembayaran").fadeIn("slow");
-        } else if (page === 4) {
-            $(".div_display_unit").hide();
-            $("#div_tab_user").fadeIn("slow");
-        } else if (page === 5) {
-            $(".div_display_unit").hide();
-            $("#div_tab_cash").fadeIn("slow");
-        }
+function active_tab(id, page) {
+    $(".tab-list").removeClass("active-tab");
+    $("#" + id).addClass("active-tab");
+
+    if (page === 1) {
+        $(".div_display_unit").hide();
+        $("#div_tab_detail").fadeIn("slow");
+    } else if (page === 2) {
+        $(".div_display_unit").hide();
+        $("#div_tab_pengadaan").fadeIn("slow");
+    } else if (page === 3) {
+        $(".div_display_unit").hide();
+        $("#div_tab_pembayaran").fadeIn("slow");
+    } else if (page === 4) {
+        $(".div_display_unit").hide();
+        $("#div_tab_user").fadeIn("slow");
+    } else if (page === 5) {
+        $(".div_display_unit").hide();
+        $("#div_tab_cash").fadeIn("slow");
     }
+}
+
+function active_tab_surat(id, page) {
+    $(".tab-list-sub").removeClass("active-tab");
+    $("#" + id).addClass("active-tab");
+
+    $("#selected_surat_tipe").val(page - 1);
+    if (page === 1) {
+        $(".div_display_unit_sub").hide();
+        $("#table_surat_reguler").fadeIn("slow");
+    } else if (page === 2) {
+        $(".div_display_unit_sub").hide();
+        $("#table_surat_lainnya").fadeIn("slow");
+    }
+}
 </script>
 @endsection

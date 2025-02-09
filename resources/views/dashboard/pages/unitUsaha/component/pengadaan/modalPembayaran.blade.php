@@ -1,6 +1,6 @@
 <div class="modal fade bs-example-modal-lg" id="bd-role-pembayaran-modal-lg" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <form method="post" id="formAlurPembayaran" name="formAlurPembayaran" class="formAlurPembayaran">
+    <form method="post" id="formAlurPembayaranNew" name="formAlurPembayaranNew" class="formAlurPembayaranNew">
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
             <div class="modal-content">
