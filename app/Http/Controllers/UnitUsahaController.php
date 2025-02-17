@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\User;
 use App\Models\Position;
+use App\Models\rolePembayaran;
 use App\Models\rolePengadaan;
 use App\Models\UnitUsaha;
 use Illuminate\Http\Request;
@@ -78,15 +79,37 @@ class UnitUsahaController extends Controller
 
     public function editPosPembayaran(Request $request)
     {
+        // $indexUsaha = $request->t_index_pembayaran;
+        // $roleCount = $request->t_jumlah_role_pembayaran;
+
+        // for ($an = 1; $an <= $roleCount; $an++) {
+        //     $idRole = $request->input("id_role_pembayaran_" . $an);
+        //     $posRole = $request->input("role_pembayaran_" . $an);
+
+        //     User::where("id", $idRole)->update(array(
+        //         "role_pembayaran" => $posRole
+        //     ));
+        // }
+
+        // return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pembayaran"]), 'status' => 200], 200);
         $indexUsaha = $request->t_index_pembayaran;
         $roleCount = $request->t_jumlah_role_pembayaran;
+
+        // echo $roleCount;
+        // die();
+        $dds = "";
 
         for ($an = 1; $an <= $roleCount; $an++) {
             $idRole = $request->input("id_role_pembayaran_" . $an);
             $posRole = $request->input("role_pembayaran_" . $an);
 
-            User::where("id", $idRole)->update(array(
-                "role_pembayaran" => $posRole
+            $dds .= $idRole . "/";
+
+            $valChecked = $request->input("checked_role_pembayaran_" . $an);
+
+            rolePembayaran::where("id", $idRole)->update(array(
+                "urutan" => $posRole,
+                "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }
 
