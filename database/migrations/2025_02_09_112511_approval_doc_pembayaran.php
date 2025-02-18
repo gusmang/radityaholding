@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('id_surat')->default(0);
             $table->integer('id_jabatan')->default(0);
             $table->integer('status')->default(0);
-            $table->integer('note')->text();
-            $table->integer('title')->string(255);
+            $table->text('note');
+            $table->string('title');
             $table->integer('is_next')->default(0);
             $table->integer('is_before')->default(0);
             $table->integer('approved_by')->default(0);

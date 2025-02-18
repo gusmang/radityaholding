@@ -10,28 +10,15 @@
                     <?php
                     $pos = -1;
                     $roles = "";
-                    $disetujui = "";
                     $person = "";
                     $role_id = "";
-                    foreach ($jabatan as $rowsJ) {
-
-                        if ($pos === $pengadaan->position) {
-                            $person = $rowsJ->name;
-                            $roles = $rowsJ->role;
-                            $role_id = $rowsJ->role_id;
-                            break;
-                        }
-                        $disetujui .= '<h3 class="sub-title-text">' . $rowsJ->name . ' ( ' . $rowsJ->role . ' )</h3>';
-
-                        $pos++;
-                    }
                     ?>
 
                     <h5 style="color: #555555; font-weight: normal;"> Informasi dasar </h5>
                     <div style="clear: both;"></div>
                 </div>
                 <div style="clear: both;"></div>
-                <div style="width: 100%;">
+                <div style="width: 100%; mt-4">
                     <?php
                     if (count($setuju) == 0) {
                     ?>
@@ -103,7 +90,10 @@
                                     </div>
                                     <div class="col-md-7" style="color: #444444;">
                                         <div>
-                                            Rp {{ app('App\Helpers\Str')->rupiah($setuju[0]->nominal_pengajuan); }}
+                                            Rp {{
+                                            app('App\Helpers\Str')->rupiah($setuju[0]->nominal_pengajuan);
+
+                                        }}
                                         </div>
                                     </div>
                                 </div>
@@ -117,6 +107,7 @@
                                     <div class="col-md-7" style="color: #444444;">
                                         <div>
                                             {{ strip_tags($setuju[0]->detail) }}
+
                                         </div>
                                     </div>
                                 </div>
@@ -170,7 +161,7 @@
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <button type="button" class="btn btn-danger form-control"
-                                                onClick="showApprove({{ $pengadaan->id }},'{{ $roles }}','{{ $person }}')"
+                                                onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}')"
                                                 style="color: white; font-size: 14px;">
                                                 <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
                                             </button>
@@ -204,43 +195,13 @@
                         </div>
                     </div>
 
-                    <?php
-                    if (count($setuju) > 0) {
-                    ?>
-                        <div
-                            style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
-                            <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
-                                <i class="micon bi bi-file-pdf"></i>
-                            </div>
-
-                            <div style="font-weight: 600; width: 90%;">
-                                Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
-                                <div style="font-size: 14px; font-weight: normal;">
-                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
-                                </div>
-                            </div>
-                            <div style="font-size: 18px; margin-right: 10px;">
-                                @php
-                                $urlPdf = 'show-persetujuan-pdf';
-                                @endphp
-                                <a href="{{ route($urlPdf,['index'=> $setuju[0]->id]) }}" target="_blank">
-                                    <i class="micon bi bi-download"></i>
-                                </a>
-                            </div>
-                        </div>
-                    <?php
-                    }
-                    ?>
-
-
-                    {{-- <h3 class="sub-title-text">{{ $pengadaan->no_surat }}</h3> --}}
                 </div>
 
                 <div style="width: 100%; margin-top: 30px;">
                     <h5 class="small-text">Status</h5>
                     <div style="display: flex; margin-top: 5px;">
                         <div class="label-waiting mr-2"> Waiting Approval </div>
-                        <div class="label-current"> {{ $roles}} </div>
+                        <div class="label-current"> {{ $approvalNext }} </div>
                     </div>
                 </div>
 

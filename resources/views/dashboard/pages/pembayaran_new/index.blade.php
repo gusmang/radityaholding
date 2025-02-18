@@ -124,7 +124,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-5 d-flex justify-content-end" style="margin:0; padding: 0;">
-                                            <a href="{{route('detailPettyCash',['index'=> $row->id])}}">
+                                            <a href="{{route('detailPembayaran',['index'=> $row->id])}}">
                                                 <button class="btn btn-primary-outlined">
                                                     Lihat Detail
                                                 </button>

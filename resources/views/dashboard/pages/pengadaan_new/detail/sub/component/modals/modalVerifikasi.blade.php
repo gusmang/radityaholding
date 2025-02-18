@@ -1,8 +1,7 @@
-<div class="modal fade bs-verifikasi-modal" id="bs-verifikasi-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <form method="post" id="form-verifikasi-pengadaan-add" name="form-verifikasi-pengadaan-add">
+<div class="modal fade bs-verifikasi-modal-pettyCash" id="bs-verifikasi-modal-pettyCash" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <form method="post" id="form-verifikasi-pettycash-add" name="form-verifikasi-pettycash-add">
         <input type="hidden" id="teks_dokumen_pengadaan" name="teks_dokumen_pengadaan" />
-
-
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
             <div class="modal-content">
@@ -18,17 +17,20 @@
                     <div class="col-md-12">
                         <div>
                             <input type="hidden" id="teks_branch_approval" name="teks_branch_approval" />
-                            <input type="hidden" id="teks_person_approval" name="teks_person_approval" />
-                            <input type="hidden" name="t_login" id="t_login" value="{{ Auth::user()->id }}" />
+                            <input type="hidden" id="teks_person_approval_new" name="teks_person_approval_new"
+                                value="{{ Auth::user()->role_id }}" />
+                            <input type="hidden" name="t_index" id="t_index" value="{{ $pengadaan->id }}" />
 
-                            Apakah anda yakin ingin melakukan verifikasi berkas ini ? Verifikasi akan diteruskan ke <b><span id="teruskan_person"></span></b>
+                            Apakah anda yakin ingin melakukan verifikasi berkas ini ? Verifikasi akan diteruskan ke
+                            <b><span id="teruskan_person"></span></b>
                             <b>
                                 <span id="span_pengadaan_diteruskan"></span>
                             </b>
                         </div>
                         <div>
                             <label class="mt-4" style="font-size: 14px;"> Catatan : </label>
-                            <textarea rows="4" class="form-control" name="verifikasi_berkas" id="verifikasi_berkas"></textarea>
+                            <textarea rows="4" class="form-control" name="verifikasi_berkas"
+                                id="verifikasi_berkas"></textarea>
                         </div>
                     </div>
                 </div>

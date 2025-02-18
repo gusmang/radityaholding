@@ -12,6 +12,7 @@ use App\Models\UnitUsaha;
 use App\Models\Persetujuan;
 use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
+use App\Models\DocPengadaan;
 use App\Models\dokumenPersetujuan;
 use App\Models\rolePengadaan;
 use Illuminate\Support\Facades\DB;
@@ -53,36 +54,26 @@ class PengadaanController extends Controller
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Persetujuan::where("id_permohonan", $index)->get();
 
-        $jabatan = DB::table('users')
-            ->where(function ($query) use ($user) {
-                $query->where('id_positions',  0)
-                    ->orWhere('id_positions',  $user->id_positions);
-            })
-            ->where(function ($query) use ($index) {
-                $query->where('role_status',  1)
-                    ->orWhere('id_positions', 0);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
-            ->get();
+        $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->get();
 
-        $dokumen = Dokumen::where("id_surat", $index)->get();
+        $currentApproval = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->where("id_surat", $index)->where("is_next", 1)->first();
+        $beforeApproval = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->where("id_surat", $index)->where("is_before", 1)->first();
 
-        $lastApprove = "";
-        $inc = 0;
-        foreach ($jabatan as $rows) {
-            if (($pengadaan->position + 1) == $inc) {
-                if ($rows->id_positions == "0") {
-                    $lastApprove = $rows->id;
-                } else {
-                    $lastApprove = $rows->role_id;
-                }
-                break;
-            }
-            $inc++;
-        }
+        $jabatanApproval = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->first();
 
-        return view('dashboard.pages.pengadaan.detail.sub.index', compact('jabatan', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+        $hasApproved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->where("status", 1)->get();
+        $notApproved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->where("status", 0)->get();
+
+        $dokumen = DocPengadaan::where("id_surat", $index)->get();
+
+        // echo $currentApproval->id_jabatan;
+        // die();
+
+        $lastApprove = !isset($currentApproval->id_jabatan) ? $jabatan[count($jabatan) - 1]->id_jabatan : $currentApproval->id_jabatan;
+        $approvalNext = !isset($currentApproval->name) ? $jabatan[count($jabatan) - 1]->name : $currentApproval->name;
+        $diajukan = $jabatan[0]->name;
+
+        return view('dashboard.pages.pengadaan_new.detail.sub.index', compact('jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
 
     public function approvalDocument(Request $request)
@@ -217,6 +208,99 @@ class PengadaanController extends Controller
             'status' => 200
         ]);
     }
+
+    // public function postPengadaan(Request $request)
+    // {
+    //     // Access the values
+    //     $tanggal = $request->input('cmbTglPengajuan');
+    //     $tipeSurat = $request->input('cmbTipeSurat');
+    //     $perihal = $request->input('inp_perihal');
+    //     $nominal = $request->input('nominalPengajuan');
+    //     $detail = $request->input('detailIsiSurat');
+    //     $unitUsaha = $request->input('cmbUnitUsaha');
+    //     $unitUsahaName = $request->input('cmbUnitUsahaName');
+    //     $invoice = $request->input('inp_invoice');
+    //     $files = $request->file('docFile');
+
+    //     $tipe = TipeSurat::where("id", $tipeSurat)->first();
+
+    //     $unitUsahaQ = UnitUsaha::where("id", Auth::user()->id_positions)->first();
+
+    //     $pengadaan = new Pengadaan();
+    //     $pengadaan->no_surat = $invoice;
+    //     $pengadaan->title = $perihal;
+    //     $pengadaan->id_unit_usaha = $unitUsaha;
+    //     $pengadaan->unit_usaha = $unitUsahaQ->name;
+    //     $pengadaan->diajukan = Auth::user()->name;
+    //     $pengadaan->tipe_surat = $tipeSurat;
+    //     $pengadaan->perihal = $perihal;
+    //     $pengadaan->nominal_pengajuan = $nominal;
+    //     $pengadaan->tanggal = $tanggal;
+    //     $pengadaan->detail = $detail;
+
+    //     $lastInsertedId = "";
+
+    //     if ($pengadaan->save()) {
+    //         $lastInsertedId = $pengadaan->id;
+    //         $ptCashRole = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("aktif", 1)->get();
+    //         $pos = 1;
+    //         foreach ($ptCashRole as $rows) {
+    //             $approvalPettyCash = new approval_surat_pengadaan();
+
+    //             $userCurrent = User::where("id", $rows->id_role)->first();
+    //             $status = 0;
+    //             if ($pos === 1) {
+    //                 $status = 1;
+    //                 $titleSurat = "Surat Pengadaan Berhasil Dibuat";
+    //             } else {
+    //                 $titleSurat = "-";
+    //             }
+
+    //             $is_next = 0;
+
+    //             if ($pos === 2) {
+    //                 $is_next = 1;
+    //             }
+
+    //             $approvalPettyCash->nama = $titleSurat;
+    //             $approvalPettyCash->id_surat = $lastInsertedId;
+    //             $approvalPettyCash->id_jabatan = $rows->id_role;
+    //             $approvalPettyCash->status = $status;
+    //             $approvalPettyCash->note = "-";
+    //             $approvalPettyCash->title = $userCurrent->name;
+    //             $approvalPettyCash->is_next = $is_next;
+    //             if ($pos === 1) {
+    //                 $approvalPettyCash->approved_by = Auth::user()->id;
+    //             } else {
+    //                 $approvalPettyCash->approved_by = 0;
+    //             }
+
+    //             $approvalPettyCash->save();
+    //             $pos++;
+    //         }
+    //     }
+
+    //     if ($files) {
+    //         foreach ($files as $file) {
+    //             $fileName = $file->hashName();
+    //             // Save the file to the 'storage/app/public/uploads' directory with the random name
+    //             $path = $file->storeAs('uploads', $fileName, 'public');
+    //             \Log::info('File uploaded to:', ['path' => $path]);
+
+    //             $dokumen = new DocPettyCash();
+    //             $dokumen->id_surat = $lastInsertedId;
+    //             $dokumen->nama_dokumen = $fileName;
+
+    //             $dokumen->save();
+    //         }
+    //     }
+
+    //     // Return JSON response
+    //     return response()->json([
+    //         'message' => 'Input Pengadaan Berhasil Disimpan!',
+    //         'status' => 200
+    //     ]);
+    // }
 
     public function postPengadaan(Request $request)
     {

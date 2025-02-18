@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\approval_surat_pety_cash;
 use App\Models\User;
 use App\Models\Dokumen;
 use App\Models\Position;
@@ -12,7 +13,10 @@ use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
 use Illuminate\Support\Facades\DB;
 use App\Models\ApprovalDocPembayaran;
+use App\Models\DocPettyCash;
+use App\Models\pettyCash;
 use App\Models\rolePembayaran;
+use Illuminate\Support\Facades\Auth;
 
 class PembayaranController extends Controller
 {
@@ -23,7 +27,7 @@ class PembayaranController extends Controller
         $jabatan = Position::where("deleted_at", null)->get();
         $pengadaan = Pengadaan::where("isPermohonan", 1)->orderBy("id", "desc")->paginate(10);
 
-        return view('dashboard.pages.pembayaran.index', compact('users', 'jabatan', 'pengadaan'));
+        return view('dashboard.pages.pembayaran_new.index', compact('users', 'jabatan', 'pengadaan'));
     }
 
     public function detailPembayaran(Request $request, $index)
@@ -36,34 +40,23 @@ class PembayaranController extends Controller
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Persetujuan::where("id_permohonan", $index)->get();
 
-        $jabatan = DB::table('users')
-            ->where(function ($query) use ($user) {
-                $query->where('id_positions',  $user->id_positions);
-            })
-            ->where(function ($query) use ($index) {
-                $query->where('role_status',  2);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
-            ->get();
+        $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->get();
 
-        $dokumen = Dokumen::where("id_surat", $index)->get();
+        $currentApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("is_next", 1)->first();
+        $beforeApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("is_before", 1)->first();
 
-        $lastApprove = "";
-        $inc = 0;
-        foreach ($jabatan as $rows) {
-            if (($pengadaan->approvedPermohonan) == $inc) {
-                if ($rows->id_positions == "0") {
-                    $lastApprove = $rows->id;
-                } else {
-                    $lastApprove = $rows->role_id;
-                }
-                break;
-            }
-            $inc++;
-        }
+        $jabatanApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->first();
 
-        return view('dashboard.pages.pembayaran.detail.sub.index', compact('jabatan', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+        $hasApproved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->where("status", 1)->get();
+        $notApproved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->where("status", 0)->get();
+
+        $dokumen = DocPettyCash::where("id_surat", $index)->get();
+
+        $lastApprove = !isset($currentApproval->id_jabatan) ? $jabatan[count($jabatan) - 1]->id_jabatan : $currentApproval->id_jabatan;
+        $approvalNext = !isset($currentApproval->name) ? $jabatan[count($jabatan) - 1]->name : $currentApproval->name;
+        $diajukan = $jabatan[0]->name;
+
+        return view('dashboard.pages.pembayaran_new.detail.sub.index', compact('jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
 
     public function postPembayaranRole(Request $request)
