@@ -37,6 +37,13 @@
                                         <div>
                                             <input type="text" class="form-control" name="teksNomorSurat"
                                                 id="teksNomorSurat" placeholder="Ketik Nomor Surat ..." required />
+
+                                            <input type="hidden" id="teks_branch_approval_sc"
+                                                name="teks_branch_approval" />
+                                            <input type="hidden" id="teks_person_approval_new_sc"
+                                                name="teks_person_approval_new" value="{{ Auth::user()->role_id }}" />
+                                            <input type="hidden" name="t_index" id="t_index_sc"
+                                                value="{{ $pengadaan->id }}" />
                                         </div>
                                     </div>
                                 </div>
@@ -333,47 +340,52 @@
                     <div style="clear: both;"></div>
                 </div>
                 <div style="float:left;">
-                    <h5 style="color: #555555; font-weight: normal;"> Informasi lainnya </h5>
+                    <h5 style="color: #555555; font-weight: normal;"> Informasi lainnya</h5>
                     <div style="clear: both;"></div>
                 </div>
                 <div style="clear: both;"></div>
                 <div style="width: 100%; margin-top: 10px;">
-                    <div style="margin-top: -20px;">
-                        <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
+                    <div style="margin-top: 10px;">
+                        <div style="margin: 0; padding: 0; width: 100%">
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
+                                if (strtolower(Auth::user()->role) == "sekretariat") {
                             ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <button type="button" class="btn btn-primary form-control"
-                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+                                    <button type="button" class="btn btn-primary"
+                                        onClick="showApprove2({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
+                                        style="color: white; font-size: 14px; float: left; margin-right: 10px;">
+                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                    </button>
+                                <?php
+                                } else {
+                                ?>
+                                    <button type="button" class="btn btn-primary"
+                                        onClick="showApprovePt({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
+                                        style="color: white; font-size: 14px;  float: left; margin-right: 10px;">
+                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                    </button>
                             <?php
+                                }
                             }
                             ?>
 
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                             ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
+                                <div style="float: left;">
+                                    <div>
                                         <div>
                                             <?php
                                             if (strtolower(Auth::user()->role) == "sekretariat") {
                                             ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
+                                                <button type="button" class="btn btn-danger" onClick="showApprove2()"
+                                                    style="color: white; font-size: 14px;">
                                                     <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
                                                 </button>
                                             <?php
                                             } else {
                                             ?>
-                                                <button type="button" class="btn btn-danger form-control"
+                                                <button type="button" class="btn btn-danger"
                                                     onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
                                                     style="color: white; font-size: 14px;">
                                                     <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
@@ -390,6 +402,8 @@
                         </div>
                     </div>
 
+                    <div style="clear: both;"></div>
+
                     <div
                         style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
                         <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
@@ -404,13 +418,41 @@
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
                             @php
-                            $urlPdf = 'show-pettycash-pdf';
+                            $urlPdf = 'show-pengadaan-new-pdf';
                             @endphp
-                            <a href="{{ route($urlPdf,['index'=> $pengadaan->id]) }}" target="_blank">
+                            <a href="{{ route($urlPdf,['index'=> Request::segment(3)]) }}" target="_blank">
                                 <i class="micon bi bi-download"></i>
                             </a>
                         </div>
                     </div>
+
+                    <?php
+                    if (count($setuju) > 0) {
+                    ?>
+                        <div
+                            style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
+                            <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
+                                <i class="micon bi bi-file-pdf"></i>
+                            </div>
+
+                            <div style="font-weight: 600; width: 90%;">
+                                Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
+                                <div style="font-size: 14px; font-weight: normal;">
+                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
+                                </div>
+                            </div>
+                            <div style="font-size: 18px; margin-right: 10px;">
+                                @php
+                                $urlPdf = 'show-persetujuan-pdf';
+                                @endphp
+                                <a href="{{ route($urlPdf,['index'=> $setuju[0]->id]) }}" target="_blank">
+                                    <i class="micon bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
                 </div>
 
                 <div style="width: 100%; margin-top: 30px;">

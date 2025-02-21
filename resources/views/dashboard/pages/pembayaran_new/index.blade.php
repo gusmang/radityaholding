@@ -24,7 +24,7 @@
                     </div>
                     <div class="col-md-6 col-sm-12 text-right">
                         <div style="padding:0; width: 100%; clear: both;">
-                            <a href="{{ route('addPettyCash') }}" class="btn-block" type="button">
+                            <a href="{{ route('addPembayaran') }}" class="btn-block" type="button">
                                 <button class="btn btn-primary" style="float: right;">
                                     <i class="fa fa-plus"></i>&nbsp; Tambah Pembayaran Baru
                                 </button>

@@ -106,4 +106,10 @@ class PembayaranController extends Controller
             }
         }
     }
+
+    public function add(Request $request)
+    {
+        $unitUsaha = UnitUsaha::orderBy("name", "asc")->get();
+        return view('dashboard.pages.pembayaran_new.detail.index', compact('unitUsaha'));
+    }
 }

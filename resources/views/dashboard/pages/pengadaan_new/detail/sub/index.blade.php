@@ -24,8 +24,8 @@ $display_pengguna = 'display: none;';
 @endphp
 @section("content")
 <div class="main-container">
-    @include("dashboard.pages.pettyCash.detail.sub.component.modals.modalVerifikasi")
-    @include("dashboard.pages.pettyCash.detail.sub.component.modals.modalPersetujuan")
+    @include("dashboard.pages.pengadaan_new.detail.sub.component.modals.modalVerifikasi")
+    @include("dashboard.pages.pengadaan_new.detail.sub.component.modals.modalPersetujuan")
 
     <div class="pd-ltr-20 xs-pd-20-10">
         <div class="min-height-200px">
@@ -165,6 +165,10 @@ $display_pengguna = 'display: none;';
                         Detail Surat
                     </div>
                     <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                        class="tab-list {{ $active_pengadaan }}" id="tab-two-detail" onclick="active_tab(this.id , 2)">
+                        Surat Persetujuan
+                    </div>
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;"
                         class="tab-list {{ $active_pembayaran }}" id="tab-three-detail"
                         onclick="active_tab(this.id , 3)">
                         Detail Riwayat Approval
@@ -196,11 +200,16 @@ $display_pengguna = 'display: none;';
             ?>
 
             <div style="margin-top: 120px; {{ $display_detail }}" id="div_tab_detail" class="div_display_unit">
-                @include("dashboard.pages.pettyCash.detail.sub.component.detail")
+                @include("dashboard.pages.pengadaan_new.detail.sub.component.detail")
+            </div>
+
+            <div style="margin-top: 120px; {{ $display_pengadaan }}" id="div_tab_pengadaan" class="div_display_unit">
+                @include("dashboard.pages.pengadaan_new.detail.sub.component.informasi")
+                {{-- @include("dashboard.pages.unitUsaha.component.sub.alurPengadaan") --}}
             </div>
 
             <div style="margin-top: 120px; {{ $display_pembayaran }}" id="div_tab_pembayaran" class="div_display_unit">
-                @include("dashboard.pages.pettyCash.detail.sub.component.history")
+                @include("dashboard.pages.pengadaan_new.detail.sub.component.history")
             </div>
 
         </div>
@@ -236,10 +245,10 @@ $display_pengguna = 'display: none;';
     });
 
 
-    $('#form-verifikasi-pettycash-add').on('submit', function(event) {
+    $('#form-verifikasi-pengadaan-add').on('submit', function(event) {
         event.preventDefault();
 
-        let urlDoc = "{{ route('approval-pettyCash') }}";
+        let urlDoc = "{{ route('approval-pengadaan') }}";
 
         $.ajax({
             type: "POST",
@@ -303,7 +312,29 @@ $display_pengguna = 'display: none;';
         $("#teks_branch_approval").val(role);
         $("#teks_person_approval").val(person);
 
-        $("#bs-verifikasi-modal-pettyCash").modal("show");
+        $("#bs-verifikasi-modal-pengadaan").modal("show");
+    }
+
+    function showApprove2(id, role, person) {
+        Swal.fire({
+            title: 'Approve Document ?',
+            text: "Apakah Anda Yakin Akan Verifikasi",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Setujui'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let urlDoc = "";
+                $("#div-informasi-persetujuan").show();
+                $("#div-informasi-dasar").hide();
+                $("#div-input-dokumen").show();
+                $("#div-pendukung-dokumen").hide();
+                $("#teks_branch_approval_sc").val(role);
+            } else {
+                //console.log('clicked cancel');
+            }
+        })
+        //$("#bs-persetujuan-modal").modal("show");
     }
 </script>
 @endsection

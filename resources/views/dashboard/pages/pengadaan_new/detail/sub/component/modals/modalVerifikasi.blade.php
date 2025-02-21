@@ -1,6 +1,6 @@
-<div class="modal fade bs-verifikasi-modal-pettyCash" id="bs-verifikasi-modal-pettyCash" tabindex="-1" role="dialog"
+<div class="modal fade bs-verifikasi-modal-pengadaan" id="bs-verifikasi-modal-pengadaan" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <form method="post" id="form-verifikasi-pettycash-add" name="form-verifikasi-pettycash-add">
+    <form method="post" id="form-verifikasi-pengadaan-add" name="form-verifikasi-pengadaan-add">
         <input type="hidden" id="teks_dokumen_pengadaan" name="teks_dokumen_pengadaan" />
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
@@ -17,11 +17,11 @@
                     <div class="col-md-12">
                         <div>
                             <input type="hidden" id="teks_branch_approval" name="teks_branch_approval" />
-                            <input type="hidden" id="teks_person_approval_new" name="teks_person_approval_new"
+                            <input type="hidden" id="teks_person_approval_new_sc" name="teks_person_approval_new"
                                 value="{{ Auth::user()->role_id }}" />
-                            <input type="hidden" name="t_index" id="t_index" value="{{ $pengadaan->id }}" />
+                            <input type="hidden" name="t_index" id="t_index_sc" value="{{ $pengadaan->id }}" />
 
-                            Apakah anda yakin ingin melakukan verifikasi berkas ini ? Verifikasi akan diteruskan ke
+                            Apakah anda yakin ingin melakukan verifikasiss berkas ini ? Verifikasi akan diteruskan ke
                             <b><span id="teruskan_person"></span></b>
                             <b>
                                 <span id="span_pengadaan_diteruskan"></span>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\approval_surat_pengadaan;
 use App\Models\approval_surat_pety_cash;
 use App\Models\User;
 use App\Models\Pengadaan;
@@ -50,25 +51,29 @@ class ReportPdfController extends Controller
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
 
-        $jabatan = DB::table('users')
-            ->where(function ($query) use ($user) {
-                $query->where('id_positions',  0)
-                    ->orWhere('id_positions',  $user->id_positions);
-            })
-            ->where(function ($query) use ($index) {
-                $query->where('role_status',  1)
-                    ->orWhere('id_positions', 0);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
-            ->get();
+        // $jabatan = DB::table('users')
+        //     ->where(function ($query) use ($user) {
+        //         $query->where('id_positions',  0)
+        //             ->orWhere('id_positions',  $user->id_positions);
+        //     })
+        //     ->where(function ($query) use ($index) {
+        //         $query->where('role_status',  1)
+        //             ->orWhere('id_positions', 0);
+        //     })
+        //     ->where('status', 1)
+        //     ->orderBy('role_pengadaan', 'asc')
+        //     ->get();
+
+        $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->distinct('approval_doc_pengadaan.id_jabatan')->get();
+        $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 1)->distinct('approval_doc_pengadaan.id_jabatan')->get();
 
         $data = [
             'title' => 'Laravel Dompdf Example',
             'date' => date('m/d/Y'),
             'logoPath' => public_path('storage/vendors/images/logo.png'),
             'data' => $approval_doc,
-            'jabatan' => $jabatan
+            'jabatan' => $jabatan,
+            'menyetujui' => $menyetujui
         ];
 
         $pdf = PDF::loadView('pdf.suratPengadaan', $data);
@@ -88,14 +93,16 @@ class ReportPdfController extends Controller
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
 
-        $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->join("users", "users.id", "approval_doc_pettycash.approved_by")->select("approval_doc_pettycash.*", "positions.name", "users.*")->where("approval_doc_pettycash.id_surat", $index)->where("approval_doc_pettycash.status", 1)->get();
+        $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->join("users", "users.id", "approval_doc_pettycash.approved_by")->join("role_pettycash", "role_pettycash.id_role", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name", "users.*")->where("approval_doc_pettycash.id_surat", $index)->where("approval_doc_pettycash.status", 1)->where("role_pettycash.menyetujui", 0)->get();
+        $menyetujui = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->join("users", "users.id", "approval_doc_pettycash.approved_by")->join("role_pettycash", "role_pettycash.id_role", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name", "users.*")->where("approval_doc_pettycash.id_surat", $index)->where("approval_doc_pettycash.status", 1)->where("role_pettycash.menyetujui", 1)->get();
 
         $data = [
             'title' => 'Dokumen Petty Cash',
             'date' => date('m/d/Y'),
             'logoPath' => $_SERVER["DOCUMENT_ROOT"] . '/vendors/images/logo.png',
             'data' => $approval_doc,
-            'jabatan' => $jabatan
+            'jabatan' => $jabatan,
+            'menyetujui' => $menyetujui
         ];
 
         $pdf = PDF::loadView('pdf.suratPettyCash', $data);
@@ -107,43 +114,70 @@ class ReportPdfController extends Controller
 
     public function showPersetujuanPDF(Request $request, $index)
     {
-        $persetujuan = Persetujuan::where("id", $index)->first();
-        $approval_doc = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
-        //$user = User::where("id" , Auth::user()->id)->first();
-        $approval_docs = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+        $approval_doc = Pengadaan::where("id", $index)->first();
 
-        $pengadaan = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+        //$user = User::where("id" , Auth::user()->id)->first();
+
+        $pengadaan = Pengadaan::where("id", $index)->first();
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
 
-        $jabatan = DB::table('users')
-            ->where(function ($query) use ($user) {
-                $query->where('id_positions',  0)
-                    ->orWhere('id_positions',  $user->id_positions);
-            })
-            ->where(function ($query) use ($user) {
-                $query->where('role_status',  1)
-                    ->orWhere('id_positions', 0);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
-            ->get();
+        $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->get();
 
         $data = [
-            'title' => 'Laravel Dompdf Example',
+            'title' => 'Dokumen Persetujuan',
             'date' => date('m/d/Y'),
-            'logoPath' => public_path('storage/vendors/images/logo.png'),
-            'data' => $persetujuan,
-            'approval' => $approval_docs,
+            'logoPath' => $_SERVER["DOCUMENT_ROOT"] . '/vendors/images/logo.png',
+            'data' => $approval_doc,
             'jabatan' => $jabatan
         ];
 
         $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
 
         // Optionally, stream or download the PDF
-        return $pdf->stream('sample.pdf'); // Stream in the browser
+        return $pdf->stream('persetujuan.pdf'); // Stream in the browser
         // return $pdf->download('sample.pdf'); // Download directly
     }
+
+    // public function showPersetujuanPDF(Request $request, $index)
+    // {
+    //     $persetujuan = Persetujuan::where("id", $index)->first();
+    //     $approval_doc = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+    //     //$user = User::where("id" , Auth::user()->id)->first();
+    //     $approval_docs = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+
+    //     $pengadaan = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
+
+    //     $user = User::where("id", $pengadaan->id_unit_usaha)->first();
+
+    //     $jabatan = DB::table('users')
+    //         ->where(function ($query) use ($user) {
+    //             $query->where('id_positions',  0)
+    //                 ->orWhere('id_positions',  $user->id_positions);
+    //         })
+    //         ->where(function ($query) use ($user) {
+    //             $query->where('role_status',  1)
+    //                 ->orWhere('id_positions', 0);
+    //         })
+    //         ->where('status', 1)
+    //         ->orderBy('role_pengadaan', 'asc')
+    //         ->get();
+
+    //     $data = [
+    //         'title' => 'Laravel Dompdf Example',
+    //         'date' => date('m/d/Y'),
+    //         'logoPath' => public_path('storage/vendors/images/logo.png'),
+    //         'data' => $persetujuan,
+    //         'approval' => $approval_docs,
+    //         'jabatan' => $jabatan
+    //     ];
+
+    //     $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
+
+    //     // Optionally, stream or download the PDF
+    //     return $pdf->stream('sample.pdf'); // Stream in the browser
+    //     // return $pdf->download('sample.pdf'); // Download directly
+    // }
 
     //
     public function saveSignature(Request $request)

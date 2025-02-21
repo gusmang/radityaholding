@@ -76,35 +76,6 @@ class PengadaanController extends Controller
         return view('dashboard.pages.pengadaan_new.detail.sub.index', compact('jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
 
-    public function approvalDocument(Request $request)
-    {
-        $id = $request->teks_dokumen_pengadaan;
-        $note = $request->verifikasi_berkas;
-
-        $lastPos = Pengadaan::where("id", $id)->first();
-
-        $update = Pengadaan::where("id", $id)->update(array(
-            "position" => ($lastPos->position) + 1
-        ));
-
-        $user = User::where("id", $request->t_login)->first();
-
-        if ($update) {
-            $approval = new ApprovalDocument();
-            $approval->nama = "Surat disetujui oleh " . $request->teks_branch_approval . " ( " . $request->teks_person_approval . " ) ";
-            $approval->note = $note;
-            $approval->title = $request->teks_person_approval;
-            $approval->id_jabatan = $user->role_id;
-            $approval->id_surat = $id;
-            $approval->next_id = $lastPos->position + 1;
-            $approval->status = 1;
-
-            if ($approval->save()) {
-                return response()->json(['message' => 'Update Approval Success', 'redirectUrl' => route('detailPengadaan', ['index' => $id]), 'status' => 200], 200);
-            }
-        }
-    }
-
     public function add(Request $request)
     {
         $unitUsaha = UnitUsaha::orderBy("name", "asc")->get();
@@ -140,14 +111,16 @@ class PengadaanController extends Controller
             $posRole = $request->input("role_pettycash_" . $an);
 
             $valChecked = $request->input("checked_role_pettycash_" . $an);
+            $stss = $request->input("scBiasa_role_pengadaan_" . $an);
 
             rolePengadaan::where("id", $idRole)->update(array(
                 "urutan" => $posRole,
+                "menyetujui" => 1,
                 "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }
 
-        return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pettycash"]), 'status' => 200], 200);
+        return response()->json(['message' => 'Update Role Success 23234234234234343', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pettycash"]), 'status' => 200], 200);
     }
 
 
@@ -335,7 +308,7 @@ class PengadaanController extends Controller
 
         if ($pengadaan->save()) {
             $lastInsertedId = $pengadaan->id;
-            $ptCashRole = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("aktif", 1)->get();
+            $ptCashRole = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("tipe_surat", 0)->where("aktif", 1)->orderBy("urutan", "asc")->get();
             $pos = 1;
             foreach ($ptCashRole as $rows) {
                 $approvalPettyCash = new approval_surat_pengadaan();
@@ -380,7 +353,7 @@ class PengadaanController extends Controller
                 $path = $file->storeAs('uploads', $fileName, 'public');
                 \Log::info('File uploaded to:', ['path' => $path]);
 
-                $dokumen = new DocPettyCash();
+                $dokumen = new DocPengadaan();
                 $dokumen->id_surat = $lastInsertedId;
                 $dokumen->nama_dokumen = $fileName;
 
@@ -393,6 +366,105 @@ class PengadaanController extends Controller
             'message' => 'Input Pengadaan Berhasil Disimpan!',
             'status' => 200
         ]);
+    }
+
+    public function approvalPengadaan(Request $request)
+    {
+        $approved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $request->t_index)->get();
+
+        $is_current = false;
+        $jml = 0;
+
+        $lastRole = $approved[count($approved) - 1]->id_jabatan;
+
+        //$last = approval_surat_pety_cash::where("id", $rows->id)->orderBy("id", "desc")->first();
+        foreach ($approved as $rows) {
+            $jml++;
+            if ($is_current ===  true) {
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0,
+                    "is_next" => 1,
+                    'note' => $request->verifikasi_berkas
+                ));
+
+                $is_current = false;
+                break;
+            }
+            if ($request->teks_person_approval_new == $rows->id_jabatan) {
+                $is_current = true;
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0
+                ));
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 1,
+                    "status" => 1,
+                    "is_next" => 0,
+                    "nama" => "Surat telah disetujui oleh " . $rows->name,
+                    "approved_by" => Auth::user()->id
+                ));
+            }
+        }
+
+        if ($lastRole === Auth::user()->role_id) {
+            Pengadaan::where("id", $request->t_index)->update(array(
+                "position" => 1
+            ));
+        }
+
+        return response()->json([
+            'message' => 'Approval Berhasil Disimpan! ' . $lastRole . "===" . Auth::user()->role_id,
+            'redirectUrl' => route('detailPengadaan', ['index' => $request->t_index]),
+            'status' => 200
+        ]);
+    }
+
+    public function approvalPengadaanSekretariat($index, $person)
+    {
+        $approved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->get();
+
+        $is_current = false;
+        $jml = 0;
+
+        $lastRole = $approved[count($approved) - 1]->id_jabatan;
+
+        foreach ($approved as $rows) {
+            $jml++;
+            if ($is_current ===  true) {
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0,
+                    "is_next" => 1,
+                    'note' => "-"
+                ));
+
+                $is_current = false;
+                break;
+            }
+            if ($person == $rows->id_jabatan) {
+                $is_current = true;
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0
+                ));
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 1,
+                    "status" => 1,
+                    "is_next" => 0,
+                    "nama" => "Surat telah disetujui oleh " . $rows->name,
+                    "approved_by" => Auth::user()->id
+                ));
+            }
+        }
+
+        if ($lastRole === Auth::user()->role_id) {
+            Pengadaan::where("id", $index)->update(array(
+                "position" => 1
+            ));
+        }
+
+        return 1;
     }
 
     public function postPersetujuan(Request $request)
@@ -411,7 +483,9 @@ class PengadaanController extends Controller
 
         $tipe = TipeSurat::where("id", $tipeSurat)->first();
 
-        $unitUsahaQ = UnitUsaha::where("id", Auth::user()->id_positions)->first();
+        $idPoss = Auth::user()->id_positions === "0" ? Auth::user()->role_id : Auth::user()->id_positions;
+
+        $unitUsahaQ = Position::where("id", $idPoss)->first();
         //$users = User::where("id_positions" , $unitUsaha)->orderBy($tipe->alias , "asc")->first();
 
         $pengadaan = new Persetujuan();
@@ -427,35 +501,40 @@ class PengadaanController extends Controller
         $pengadaan->tanggal = $tanggal;
         $pengadaan->detail = $detail;
 
-        $pengadaan->save();
+        $saved = "0";
+
+        if ($pengadaan->save()) {
+            $saved = "1";
+        }
 
         $id = $idPermohonan;
         $note = $request->verifikasi_berkas;
 
         $lastPos = Pengadaan::where("id", $id)->first();
 
-        $update = Pengadaan::where("id", $id)->update(array(
-            "position" => ($lastPos->position)
-        ));
+        // $update = Pengadaan::where("id", $id)->update(array(
+        //     "position" => ($lastPos->position)
+        // ));
 
-        if ($update) {
-            $approval = new ApprovalDocument();
-            $approval->nama = "Surat disetujui oleh " . $request->teks_branch_approval . " ( " . $request->teks_person_approval . " ) ";
-            $approval->note = "Surat Permohonan Disetujui";
-            $approval->title = $request->teks_person_approval;
-            $approval->id_jabatan = Auth::user()->role_id;
-            $approval->next_id = $lastPos->position;
-            $approval->id_surat = $id;
-            $approval->status = 1;
+        // if ($update) {
+        //     $approval = new ApprovalDocument();
+        //     $approval->nama = "Surat disetujui oleh " . Auth::user()->name . " ( " . Auth::user()->role . " ) ";
+        //     $approval->note = "Surat Permohonan Disetujui";
+        //     $approval->title = Auth::user()->name;
+        //     $approval->id_jabatan = Auth::user()->role_id;
+        //     $approval->next_id = $lastPos->position;
+        //     $approval->id_surat = $id;
+        //     $approval->status = 1;
 
-            if ($approval->save()) {
-                return response()->json(['message' => 'Update Approval Success', 'redirectUrl' => route('detailPengadaan', ['index' => $id]), 'status' => 200], 200);
-            }
-        }
+        //     if ($approval->save()) {
+        //         return response()->json(['message' => 'Update Approval Success', 'redirectUrl' => route('detailPengadaan', ['index' => $id]), 'status' => 200], 200);
+        //     }
+        // }
 
         // Get the last inserted ID
         $lastInsertedId = $pengadaan->id;
         // Process files (example: save to storage)
+
         if ($files) {
             foreach ($files as $file) {
                 $fileName = $file->hashName();
@@ -471,10 +550,16 @@ class PengadaanController extends Controller
             }
         }
 
-        // Return JSON response
-        return response()->json([
-            'message' => 'Input Persetujuan Berhasil Disimpan!',
-            'status' => 200
-        ]);
+        if ($saved === "1") {
+            // Return JSON response
+            $approved = $this->approvalPengadaanSekretariat($request->t_index, $request->teks_person_approval_new);
+
+            if ($approved === 1) {
+                return response()->json([
+                    'message' => 'Input Persetujuan Berhasil Disimpan!',
+                    'status' => 200
+                ]);
+            }
+        }
     }
 }

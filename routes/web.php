@@ -78,6 +78,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
     Route::get('/surat', [SuratController::class, 'index'])->name('surat');
 
+    Route::get('/role_lists', [JabatanController::class, 'list'])->name('get_role_list');
+
 
     Route::get('/users', [UserController::class, 'index'])->name('users');
     Route::post("/users/save", [UserController::class, 'save'])->name('users-save');
@@ -91,6 +93,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/save-signature-new', [ReportPdfController::class, 'saveSignatureNew'])->name('saveSignatureNew');
 
     Route::post('/unit-usaha/pos-role-pengadaan', [UnitUsahaController::class, 'editPosPengadaan'])->name('editPosPengadaan');
+    Route::post('/unit-usaha/pos-role-pengadaan-lainnya', [UnitUsahaController::class, 'editPosPengadaanLainnya'])->name('editPosPengadaanLainnya');
     Route::post('/jabatan/add', [JabatanController::class, 'add'])->name('role_pengadaan_save');
 
     Route::post('/role/rolePembayaran', [JabatanController::class, 'roleSave'])->name('role_pembayaran_save');
@@ -103,8 +106,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/detail-pengadaan/{index}', [PengadaanController::class, 'detailPengadaan'])->name('detailPengadaan');
     Route::post('postPengadaan/insert', [PengadaanController::class, 'postPengadaan'])->name('postPengadaanNew');
     Route::post('postPersetujuan/insert', [PengadaanController::class, 'postPersetujuan'])->name('postPersetujuanNew');
-    Route::post('/approval-pengadaan', [PengadaanController::class, 'approvalDocument'])->name('approval-pengadaan');
     Route::post('/postPengadaanRole', [PengadaanController::class, 'postPengadaanRole'])->name('approval-postRole');
+    Route::post('/approval-pengadaan', [PengadaanController::class, 'approvalPengadaan'])->name('approval-pengadaan');
 
     Route::post('/editAccessMenu', [MenuController::class, 'crud'])->name('editAccessMenu');
     Route::get('/getAccessMenu', [MenuController::class, 'get'])->name('getAccessMenu');
@@ -143,6 +146,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     /* Api */
 
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
+    Route::get('/pembayaran/add', [PembayaranController::class, 'add'])->name('addPembayaran');
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
     Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalDocument'])->name('approval-pembayaran');
     Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('postPembayaranRole');

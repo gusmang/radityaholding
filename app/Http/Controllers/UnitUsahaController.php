@@ -106,9 +106,11 @@ class UnitUsahaController extends Controller
             $dds .= $idRole . "/";
 
             $valChecked = $request->input("checked_role_pembayaran_" . $an);
+            $stss = $request->input("scBiasa_role_pengadaan_" . $an);
 
             rolePembayaran::where("id", $idRole)->update(array(
                 "urutan" => $posRole,
+                "menyetujui" => $stss,
                 "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }
@@ -166,9 +168,39 @@ class UnitUsahaController extends Controller
             $dds .= $idRole . "/";
 
             $valChecked = $request->input("checked_role_pengadaan_" . $an);
+            $stss = $request->input("scBiasa_role_pengadaan_" . $an);
 
             rolePengadaan::where("id", $idRole)->update(array(
                 "urutan" => $posRole,
+                "menyetujui" => $stss,
+                "aktif" => isset($valChecked) ? $valChecked : 0
+            ));
+        }
+
+        return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('detailUsaha', [$indexUsaha . "?tab=pengadaan"]), 'status' => 200], 200);
+    }
+
+    public function editPosPengadaanLainnya(Request $request)
+    {
+        $indexUsaha = $request->t_index_pengadaanLainnya;
+        $roleCount = $request->t_jumlah_role_pengadaanLainnya;
+
+        // echo $roleCount;
+        // die();
+        $dds = "";
+
+        for ($an = 1; $an <= $roleCount; $an++) {
+            $idRole = $request->input("id_role_pengadaan_lainnya_" . $an);
+            $posRole = $request->input("role_pengadaan_lainnya_" . $an);
+
+            $dds .= $idRole . "/";
+
+            $valChecked = $request->input("checked_role_pengadaan_lainnya_" . $an);
+            $stss = $request->input("scLainnya_role_pengadaan_lainnya_" . $an);
+
+            rolePengadaan::where("id", $idRole)->update(array(
+                "urutan" => $posRole,
+                "menyetujui" => $stss,
                 "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }

@@ -21,7 +21,7 @@
                             <div style="margin-left: 20px;">
                                 <h4 class="font-20 weight-500 text-capitalize">
                                     <div class="weight-600 font-24">
-                                        <div> Pengajuan Permohonan Petty Cash </div>
+                                        <div> Pengajuan Permohonan Pembayaran </div>
                                         <div> <small> Lengkapi formulir dibawah untuk mengajukan dokumen </small> </div>
                                     </div>
                                 </h4>
@@ -179,7 +179,7 @@
                         </div>
 
                         <div style="width: 100%; margin-top: 30px;">
-                            <h5 class="small-text">Nomor Invoice</h5>
+                            <h5 class="small-text">Nomor Surat</h5>
                             <div>
                                 <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
                                     placeholder="Input Invoice ..." required />

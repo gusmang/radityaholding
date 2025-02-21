@@ -9,5 +9,5 @@ class DocPengadaan extends Model
 {
     use HasFactory;
 
-    protected $table = "approval_doc_pengadaan";
+    protected $table = "doc_pengadaan";
 }

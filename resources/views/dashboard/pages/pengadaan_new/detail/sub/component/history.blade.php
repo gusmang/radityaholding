@@ -138,7 +138,7 @@
                             <i class="micon bi bi-file-pdf"></i>
                         </div>
 
-                        <div style="font-weight: 600;">
+                        <div style="font-weight: 600; width: 90%;">
                             Surat Permohonan {{ $pengadaan->no_surat }}.pdf <br />
                             <div style="font-size: 14px; font-weight: normal;">
                                 Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at) }}
@@ -146,13 +146,41 @@
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
                             @php
-                            $urlPdf = 'show-pettycash-pdf';
+                            $urlPdf = 'show-pengadaan-new-pdf';
                             @endphp
                             <a href="{{ route($urlPdf,['index'=> $pengadaan->id]) }}" target="_blank">
                                 <i class="micon bi bi-download"></i>
                             </a>
                         </div>
                     </div>
+
+                    <?php
+                    if (count($setuju) > 0) {
+                    ?>
+                        <div
+                            style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
+                            <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
+                                <i class="micon bi bi-file-pdf"></i>
+                            </div>
+
+                            <div style="font-weight: 600; width: 90%;">
+                                Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
+                                <div style="font-size: 14px; font-weight: normal;">
+                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
+                                </div>
+                            </div>
+                            <div style="font-size: 18px; margin-right: 10px;">
+                                @php
+                                $urlPdf = 'show-persetujuan-pdf';
+                                @endphp
+                                <a href="{{ route($urlPdf,['index'=> $setuju[0]->id]) }}" target="_blank">
+                                    <i class="micon bi bi-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
                 </div>
 
                 <div style="width: 100%; margin-top: 30px;">

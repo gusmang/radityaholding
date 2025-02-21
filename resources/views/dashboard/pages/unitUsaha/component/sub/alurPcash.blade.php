@@ -33,8 +33,8 @@
                             <th class="table-plus datatable-nosort">Role</th>
                             <th>Organisasi</th>
                             <th>Aktif</th>
-                            <th>Tanda Tangan</th>
-                            <th class="datatable-nosort"></th>
+                            <th>Tugas</th>
+                            <!-- <th class="datatable-nosort"></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -66,13 +66,13 @@
                                     <?php
                                     if ($row->aktif == "1") {
                                     ?>
-                                        <input type="checkbox" class="switch-input" value="1" checked
-                                            id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
+                                    <input type="checkbox" class="switch-input" value="1" checked
+                                        id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
                                     <?php
                                     } else {
                                     ?>
-                                        <input type="checkbox" class="switch-input" value="1"
-                                            id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
+                                    <input type="checkbox" class="switch-input" value="1"
+                                        id={{ "checked_role_pettycash_".$an }} name={{ "checked_role_pettycash_".$an }}>
                                     <?php
                                     }
                                     ?>
@@ -81,11 +81,14 @@
                                 </label>
                             </td>
                             <td>
-                                <select name="" class="form-control">
-                                    <option> Ya </option>
+                                <select id={{ "select_role_pettycash_".$an }} name={{ "select_role_pettycash_".$an }}
+                                    class="form-control">
+                                    <option value="0"> Mengajukan </option>
+                                    <option value="1" {{ $row->menyetujui === 1 ? "selected" : "" }}> Menyetujui
+                                    </option>
                                 </select>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <div class="dropdown">
                                     <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
                                         role="button" data-toggle="dropdown">
@@ -101,7 +104,7 @@
                                         <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                     </div>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                         @endforeach
                     </tbody>
@@ -117,28 +120,58 @@
 
 @section("footer_modals_pettyCash")
 <script type="text/javascript">
-    function showModals() {
-        $.ajax({
-            type: "get",
-            url: "{{ route('api-jabatan') }}",
-            data: "",
-            dataType: "json",
-            success: function(data) {
-                $('.select-field').select2({
-                    theme: 'bootstrap-4',
-                    data: data
-                });
+function showModals() {
+    $.ajax({
+        type: "get",
+        url: "{{ route('api-jabatan') }}",
+        data: "",
+        dataType: "json",
+        success: function(data) {
+            $('.select-field').select2({
+                theme: 'bootstrap-4',
+                data: data
+            });
+        }
+    });
+}
+
+
+$('.formRolePettyCashNew').on('submit', function(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    // Serialize form data
+    const formData = $(this).serialize();
+    const urlEdit = "{{ route('role_petycash_save') }}";
+
+    // Send AJAX request
+    $.ajax({
+        url: urlEdit, // URL to handle the form data
+        type: 'POST',
+        data: formData,
+        dataType: "json",
+        success: function(response) {
+            // Display server response
+            if (response.status === 200) {
+                window.location = response.redirectUrl;
+            } else {
+                alert(response.message);
             }
-        });
-    }
+        },
+        error: function(xhr, status, error) {
+            // Handle errors
+            $('#response').text('An error occurred: ' + error);
+        }
+    });
+});
 
-
-    $('.formRolePettyCashNew').on('submit', function(event) {
+$(document).ready(function() {
+    // Attach event listener for form submission
+    $('#formAlurPettyCash').on('submit', function(event) {
         event.preventDefault(); // Prevent default form submission
 
         // Serialize form data
         const formData = $(this).serialize();
-        const urlEdit = "{{ route('role_petycash_save') }}";
+        const urlEdit = "{{ route('editPosPettyCash') }}";
 
         // Send AJAX request
         $.ajax({
@@ -161,36 +194,6 @@
         });
     });
 
-    $(document).ready(function() {
-        // Attach event listener for form submission
-        $('#formAlurPettyCash').on('submit', function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            // Serialize form data
-            const formData = $(this).serialize();
-            const urlEdit = "{{ route('editPosPettyCash') }}";
-
-            // Send AJAX request
-            $.ajax({
-                url: urlEdit, // URL to handle the form data
-                type: 'POST',
-                data: formData,
-                dataType: "json",
-                success: function(response) {
-                    // Display server response
-                    if (response.status === 200) {
-                        window.location = response.redirectUrl;
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    // Handle errors
-                    $('#response').text('An error occurred: ' + error);
-                }
-            });
-        });
-
-    });
+});
 </script>
 @endsection

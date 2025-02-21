@@ -434,7 +434,7 @@
                         </div>
 
                         <div style="font-weight: 600; width: 90%;">
-                            Surat Permohonan {{ $pengadaan->no_surat }}.pdf <br />
+                            Surat Permohonan tes {{ $pengadaan->no_surat }}.pdf <br />
                             <div style="font-size: 14px; font-weight: normal;">
                                 Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at) }}
                             </div>

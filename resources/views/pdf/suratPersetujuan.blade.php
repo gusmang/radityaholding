@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <title> Surat Pengadaan </title>
     <style>
@@ -16,7 +17,6 @@
         #tbl_detail tbody {
             border: 1px solid #333333;
         }
-
     </style>
 </head>
 
@@ -63,38 +63,83 @@
         <?php
         $incr = 0;
         $incs = 0;
-        $positions = $approval->position;
+        $positions = $data->position;
 
-        foreach($jabatan as $rows){
-        $incr++;
+        foreach ($jabatan as $rows) {
+            $incr++;
         ?>
-        <?php
-        if($incr === 3){
-        ?>
-        <div style="clear: both; height: 30px;"></div>
-        <?php
-        $incr = 1;
-        }
-        ?>
-        <div style="float: left; width: 50%; text-align: center;">
-            <div style="text-decoration: underline; font-weight; bold;">
-                <b><?php echo $rows->name ?></b>
-            </div>
-            <div style="height: 100px; padding: 10px 0;">
-                <?php
-            if($rows->signature_url !== "-" && $incs <= $positions){
-                ?>
-                <img src={{ public_path('storage/'.$rows->signature_url)}} style="height: 90px;" />
-                <?php
+            <?php
+            if ($incr === 3) {
+            ?>
+                <div style="clear: both; height: 30px;"></div>
+            <?php
+                $incr = 1;
             }
             ?>
+            <div style="float: left; width: 50%; text-align: center;">
+                <div style="text-decoration: underline; font-weight; bold;">
+                    <b><?php echo $rows->name ?></b>
+                </div>
+                <div style="height: 100px; padding: 10px 0;">
+                    <?php
+                    if ($rows->signature_url !== "-") {
+                    ?>
+                        <img src={{ str_replace("public","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                            style="height: 90px;" />
+                    <?php
+                    }
+                    ?>
+                </div>
+                <div>
+                    <?php echo $rows->role; ?>
+                </div>
             </div>
-            <div><?php echo $rows->role; ?></div>
-        </div>
         <?php
-        $incs++;
+            $incs++;
+        }
+        ?>
+
+        <center> Menyetujui </center>
+
+        <?php
+        $incr = 0;
+        $incs = 0;
+        $positions = $data->position;
+
+        foreach ($menyetujui as $rows) {
+            $incr++;
+        ?>
+            <?php
+            if ($incr === 3) {
+            ?>
+                <div style="clear: both; height: 30px;"></div>
+            <?php
+                $incr = 1;
+            }
+            ?>
+            <div style="float: left; width: 50%; text-align: center;">
+                <div style="text-decoration: underline; font-weight; bold;">
+                    <b><?php echo $rows->name ?></b>
+                </div>
+                <div style="height: 100px; padding: 10px 0;">
+                    <?php
+                    if ($rows->signature_url !== "-") {
+                    ?>
+                        <img src={{ str_replace("public","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                            style="height: 90px;" />
+                    <?php
+                    }
+                    ?>
+                </div>
+                <div>
+                    <?php echo $rows->role; ?>
+                </div>
+            </div>
+        <?php
+            $incs++;
         }
         ?>
     </div>
 </body>
+
 </html>

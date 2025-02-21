@@ -22,6 +22,36 @@ class JabatanController extends Controller
         return view('dashboard.pages.jabatan.index', compact('position'));
     }
 
+    public function list(Request $request)
+    {
+        $values = $request->value === "1" ? "0" : "1";
+        $jabatan = Position::where("deleted_at", null)->where("is_unit_usaha", $values)->get();
+
+        $option = "";
+        foreach ($jabatan as $rows) {
+            $option .= '<option value="' . $rows->id . '">' . $rows->name . '</option>';
+        }
+
+        return $option;
+    }
+
+    // public function editUserHolding(Request $request)
+    // {
+    //     $update = Position::where("id", $request->t_index_edit)->update(array(
+    //         "name" => $request->name_edit,
+    //         "note" => $request->email_edit,
+    //         'aktif' => $request->chk_aktif_edit === null ? 0 : $request->chk_aktif_edit
+    //     ));
+
+    //     if ($update) {
+    //         return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+    //         // return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State saved correctly!!!');
+    //     } else {
+    //         return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+    //         //return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State error !!!');
+    //     }
+    // }
+
     public function add(Request $request)
     {
         $pettyCashes = new rolePengadaan();

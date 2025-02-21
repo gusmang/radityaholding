@@ -32,8 +32,8 @@
                             <th class="table-plus datatable-nosort">Role</th>
                             <th>Organisasi</th>
                             <th>Status</th>
-                            <th>Tanda Tangan</th>
-                            <th class="datatable-nosort"></th>
+                            <th>Tugas</th>
+                            <!-- <th class="datatable-nosort"></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -83,10 +83,11 @@
                             </td>
                             <td>
                                 <select name="" class="form-control">
-                                    <option> Ya </option>
+                                    <option value="0"> Mengajukan </option>
+                                    <option value="1"> Menyetujui </option>
                                 </select>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <div class="dropdown">
                                     <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
                                         role="button" data-toggle="dropdown">
@@ -102,7 +103,7 @@
                                         <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                     </div>
                                 </div>
-                            </td>
+                            </td> -->
                         </tr>
                         @endforeach
                     </tbody>
@@ -158,7 +159,7 @@
                 success: function(response) {
                     // Display server response
                     if (response.status === 200) {
-                        window.location = response.redirectUrl;
+                        // window.location = response.redirectUrl;
                     } else {
                         alert(response.message);
                     }

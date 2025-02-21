@@ -74,64 +74,64 @@ $display_pengguna = 'display: none;';
                                 <?php
                                 if ($pos < 0) {
                                 ?>
-                                <div style="width: 17%; position: relative;">
-                                    <div
-                                        style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;">
-                                    </div>
-                                    <div
-                                        style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
+                                    <div style="width: 17%; position: relative;">
                                         <div
-                                            style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
+                                            style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;">
+                                        </div>
+                                        <div
+                                            style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
+                                            <div
+                                                style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                <?php
+                                    <?php
                                 } else {
                                     if ($pos === $pengadaan->position) {
                                     ?>
-                                <div style="width: 17%; position: relative;">
-                                    <div
-                                        style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;">
-                                    </div>
-                                    <div
-                                        style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: brown; position: absolute; z-index: 50; top: -20px;">
-                                        <div
-                                            style="width: 26px; height: 26px; border-radius: 50%; background: brown; color: white; display: flex; align-items: center; justify-content: center;">
-                                            {{ $inc }}
+                                        <div style="width: 17%; position: relative;">
+                                            <div
+                                                style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;">
+                                            </div>
+                                            <div
+                                                style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: brown; position: absolute; z-index: 50; top: -20px;">
+                                                <div
+                                                    style="width: 26px; height: 26px; border-radius: 50%; background: brown; color: white; display: flex; align-items: center; justify-content: center;">
+                                                    {{ $inc }}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <?php
+                                    <?php
                                     } else if ($pos < $pengadaan->position) {
                                     ?>
-                                <div style="width: 17%; position: relative;">
-                                    <div
-                                        style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;">
-                                    </div>
-                                    <div
-                                        style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
-                                        <div
-                                            style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
+                                        <div style="width: 17%; position: relative;">
+                                            <div
+                                                style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;">
+                                            </div>
+                                            <div
+                                                style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
+                                                <div
+                                                    style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
+                                                    <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <?php
+                                    <?php
                                     } else {
                                     ?>
-                                <div style="width: 17%; position: relative;">
-                                    <div
-                                        style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;">
-                                    </div>
-                                    <div
-                                        style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #DDDDDD; position: absolute; z-index: 50; top: -20px;">
-                                        <div
-                                            style="width: 26px; height: 26px; border-radius: 50%; background: #DDDDDD; color: white; display: flex; align-items: center; justify-content: center;">
-                                            {{ $inc }}
+                                        <div style="width: 17%; position: relative;">
+                                            <div
+                                                style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;">
+                                            </div>
+                                            <div
+                                                style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #DDDDDD; position: absolute; z-index: 50; top: -20px;">
+                                                <div
+                                                    style="width: 26px; height: 26px; border-radius: 50%; background: #DDDDDD; color: white; display: flex; align-items: center; justify-content: center;">
+                                                    {{ $inc }}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
                                 <?php
                                     }
                                 }
@@ -275,160 +275,159 @@ $display_pengguna = 'display: none;';
 </div>
 
 <script type="text/javascript">
-function active_tab(id, page) {
-    $(".tab-list").removeClass("active-tab");
-    $("#" + id).addClass("active-tab");
+    function active_tab(id, page) {
+        $(".tab-list").removeClass("active-tab");
+        $("#" + id).addClass("active-tab");
 
-    if (page === 1) {
-        $(".div_display_unit").hide();
-        $("#div_tab_detail").fadeIn("slow");
-    } else if (page === 2) {
-        $(".div_display_unit").hide();
-        $("#div_tab_pengadaan").fadeIn("slow");
-    } else if (page === 3) {
-        $(".div_display_unit").hide();
-        $("#div_tab_pembayaran").fadeIn("slow");
-    } else if (page === 4) {
-        $(".div_display_unit").hide();
-        $("#div_tab_user").fadeIn("slow");
+        if (page === 1) {
+            $(".div_display_unit").hide();
+            $("#div_tab_detail").fadeIn("slow");
+        } else if (page === 2) {
+            $(".div_display_unit").hide();
+            $("#div_tab_pengadaan").fadeIn("slow");
+        } else if (page === 3) {
+            $(".div_display_unit").hide();
+            $("#div_tab_pembayaran").fadeIn("slow");
+        } else if (page === 4) {
+            $(".div_display_unit").hide();
+            $("#div_tab_user").fadeIn("slow");
+        }
     }
-}
 </script>
 @endsection
 
 @section("footer_modals_pengguna")
 <script type="text/javascript">
-const quill = new Quill('#detailIsiSurat', {
-    theme: 'snow'
-});
-
-$('#formAddPengadaan').on('submit', function(event) {
-    event.preventDefault();
-
-    /* const formData = new FormData();
-    formData.append('tanggal', $("#cmbTglPengajuan").val());
-    formData.append('tipeSurat', $("#cmbTipeSurat").val());
-    formData.append('perihal', $("#inp_perihal").val());
-    formData.append('nominal', $("#nominalPengajuan").val());
-    formData.append('detail', $("#nominalDetail").val());
-    formData.append('unitUsaha', $("#cmbUnitUsaha").val());
-    formData.append('invoice', $("#inp_invoice").val());
-    formData.getAll('docFile');
-    */
-    const formData = new FormData(this);
-    formData.append("detailIsiSurat", quill.root.innerHTML);
-
-    const urlPengadaan = "{{ route('postPersetujuanNew') }}";
-
-    // Send AJAX request
-    $.ajax({
-        url: urlPengadaan, // Laravel route
-        method: 'POST',
-        data: formData,
-        processData: false, // Important for FormData
-        contentType: false, // Important for FormData
-        success: function(response) {
-            //console.log('Success:', response);
-            Swal.fire({
-                icon: "success",
-                title: "Success !",
-                text: response.message
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location = "{{ route('pengadaan') }}";
-                }
-            });
-
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', xhr.responseText);
-        },
-
-    })
-})
-
-
-function showApprove(id, role, person, next) {
-    /* Swal.fire({
-         title: 'Approve Document ?'
-         , text: "Apakah Anda Yakin Akan Verifikasi"
-         , icon: 'question'
-         , showCancelButton: true
-         , confirmButtonText: 'Yes, Approve'
-     }).then((result) => {
-         if (result.isConfirmed) {
-             let urlDoc = "";
-             $.ajax({
-                 type: "POST"
-                 , data: "id=" + id
-                 , dataType: "json"
-                 , success: function(data) {
-                     Swal.fire(
-                         'Confirmed!'
-                         , 'You agreed to pay extra amount.'
-                         , 'success'
-                     );
-                 }
-             })
-         } else {
-             console.log('clicked cancel');
-         }
-     })
-     */
-    $("#teruskan_person").html(next);
-    $("#teks_dokumen_pengadaan").val(id);
-    $("#teks_branch_approval").val(role);
-    $("#teks_person_approval").val(person);
-
-    $("#bs-verifikasi-modal").modal("show");
-}
-
-
-function showApprove2(id, role, person) {
-    Swal.fire({
-        title: 'Approve Document ?',
-        text: "Apakah Anda Yakin Akan Verifikasi",
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, Setujui'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            let urlDoc = "";
-            $("#div-informasi-persetujuan").show();
-            $("#div-informasi-dasar").hide();
-            $("#div-input-dokumen").show();
-            $("#div-pendukung-dokumen").hide();
-        } else {
-            //console.log('clicked cancel');
-        }
-    })
-    //$("#bs-persetujuan-modal").modal("show");
-}
-
-
-$('#form-verifikasi-pengadaan-add').on('submit', function(event) {
-    event.preventDefault();
-
-    let urlDoc = "{{ route('approval-pengadaan') }}";
-
-    $.ajax({
-        type: "POST",
-        url: urlDoc,
-        data: $(this).serialize(),
-        dataType: "json",
-        success: function(data) {
-            if (data.status === 200) {
-                Swal.fire(
-                    'Confirmed!', 'Document Approved Successfull', 'success'
-                ).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location = data.redirectUrl;
-                    }
-                });
-            }
-        }
+    const quill = new Quill('#detailIsiSurat', {
+        theme: 'snow'
     });
 
-});
+    $('#formAddPengadaan').on('submit', function(event) {
+        event.preventDefault();
+
+        /* const formData = new FormData();
+        formData.append('tanggal', $("#cmbTglPengajuan").val());
+        formData.append('tipeSurat', $("#cmbTipeSurat").val());
+        formData.append('perihal', $("#inp_perihal").val());
+        formData.append('nominal', $("#nominalPengajuan").val());
+        formData.append('detail', $("#nominalDetail").val());
+        formData.append('unitUsaha', $("#cmbUnitUsaha").val());
+        formData.append('invoice', $("#inp_invoice").val());
+        formData.getAll('docFile');
+        */
+        const formData = new FormData(this);
+        formData.append("detailIsiSurat", quill.root.innerHTML);
+
+        const urlPengadaan = "{{ route('postPersetujuanNew') }}";
+
+        // Send AJAX request
+        $.ajax({
+            url: urlPengadaan, // Laravel route
+            method: 'POST',
+            data: formData,
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            success: function(response) {
+                //console.log('Success:', response);
+                Swal.fire({
+                    icon: "success",
+                    title: "Success !",
+                    text: response.message
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = "{{ route('pengadaan') }}";
+                    }
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+            },
+
+        })
+    })
+
+
+    function showApprove(id, role, person, next) {
+        /* Swal.fire({
+             title: 'Approve Document ?'
+             , text: "Apakah Anda Yakin Akan Verifikasi"
+             , icon: 'question'
+             , showCancelButton: true
+             , confirmButtonText: 'Yes, Approve'
+         }).then((result) => {
+             if (result.isConfirmed) {
+                 let urlDoc = "";
+                 $.ajax({
+                     type: "POST"
+                     , data: "id=" + id
+                     , dataType: "json"
+                     , success: function(data) {
+                         Swal.fire(
+                             'Confirmed!'
+                             , 'You agreed to pay extra amount.'
+                             , 'success'
+                         );
+                     }
+                 })
+             } else {
+                 console.log('clicked cancel');
+             }
+         })
+         */
+        $("#teruskan_person").html(next);
+        $("#teks_dokumen_pengadaan").val(id);
+        $("#teks_branch_approval").val(role);
+        $("#teks_person_approval").val(person);
+
+        $("#bs-verifikasi-modal").modal("show");
+    }
+
+
+    function showApprove2(id, role, person) {
+        Swal.fire({
+            title: 'Approve Document ?',
+            text: "Apakah Anda Yakin Akan Verifikasi",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Setujui'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let urlDoc = "";
+                $("#div-informasi-persetujuan").show();
+                $("#div-informasi-dasar").hide();
+                $("#div-input-dokumen").show();
+                $("#div-pendukung-dokumen").hide();
+            } else {
+                //console.log('clicked cancel');
+            }
+        })
+        //$("#bs-persetujuan-modal").modal("show");
+    }
+
+    $('#form-verifikasi-pengadaan-add').on('submit', function(event) {
+        event.preventDefault();
+
+        let urlDoc = "{{ route('approval-pengadaan') }}";
+
+        $.ajax({
+            type: "POST",
+            url: urlDoc,
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(data) {
+                if (data.status === 200) {
+                    Swal.fire(
+                        'Confirmed!', 'Document Approved Successfull', 'success'
+                    ).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = data.redirectUrl;
+                        }
+                    });
+                }
+            }
+        });
+
+    });
 </script>
 @endsection

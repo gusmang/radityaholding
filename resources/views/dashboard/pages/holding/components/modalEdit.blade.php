@@ -1,4 +1,5 @@
-<div class="modal fade bs-example-modal-lg" id="bd-example-edit-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div class="modal fade bs-example-modal-lg" id="bd-example-edit-modal-lg" tabindex="-1" role="dialog"
+    aria-labelledby="myLargeModalLabel" aria-hidden="true">
     <form method="put" id="editHoldingForm" name="editHoldingForm">
         {{-- @csrf --}}
         <div class="modal-dialog modal modal-dialog-centered">
@@ -18,15 +19,18 @@
                             <div class="col-md-12">
                                 <label class="required-label"> Nama </label>
                                 <div>
-                                    <input type="hidden" class="form-control" name="t_index_edit" id="t_index_edit" placeholder="Input Index ..." required />
-                                    <input type="text" class="form-control" name="name_edit" id="name_edit" placeholder="Input Nama ..." required />
+                                    <input type="hidden" class="form-control" name="t_index_edit" id="t_index_edit"
+                                        placeholder="Input Index ..." required />
+                                    <input type="text" class="form-control" name="name_edit" id="name_edit"
+                                        placeholder="Input Nama ..." required />
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-4">
                                 <label class="required-label"> Email </label>
                                 <div>
-                                    <input type="email" class="form-control" name="email_edit" id="email_edit" placeholder="Input Email ..." required />
+                                    <input type="email" class="form-control" name="email_edit" id="email_edit"
+                                        placeholder="Input Email ..." required />
 
 
                                 </div>
@@ -47,7 +51,8 @@
                             <div class="col-md-12 mt-4">
 
                                 <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" role="switch" value="1" name="chk_aktif_edit" id="chk_aktif">
+                                    <input class="form-check-input" type="checkbox" role="switch" value="1"
+                                        name="chk_aktif_edit" id="chk_aktif">
                                     <label class="form-check-label" for="flexSwitchCheckDefault">&nbsp;Aktif </label>
                                 </div>
 

@@ -83,9 +83,11 @@ class PettyCashController extends Controller
             $posRole = $request->input("role_pettycash_" . $an);
 
             $valChecked = $request->input("checked_role_pettycash_" . $an);
+            $stss = $request->input("select_role_pettycash_" . $an);
 
             rolePettyCash::where("id", $idRole)->update(array(
                 "urutan" => $posRole,
+                "menyetujui" => $stss,
                 "aktif" => isset($valChecked) ? $valChecked : 0
             ));
         }
