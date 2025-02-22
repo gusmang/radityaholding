@@ -25,7 +25,7 @@ class PembayaranController extends Controller
     {
         $users = User::orderBy("id", "desc")->paginate(10);
         $jabatan = Position::where("deleted_at", null)->get();
-        $pengadaan = Pengadaan::where("isPermohonan", 1)->orderBy("id", "desc")->paginate(10);
+        $pengadaan = Persetujuan::where("deleted_at", null)->orderBy("id", "desc")->paginate(10);
 
         return view('dashboard.pages.pembayaran_new.index', compact('users', 'jabatan', 'pengadaan'));
     }
@@ -57,6 +57,58 @@ class PembayaranController extends Controller
         $diajukan = $jabatan[0]->name;
 
         return view('dashboard.pages.pembayaran_new.detail.sub.index', compact('jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+    }
+
+    public function approvePembayaran(Request $request)
+    {
+        $approved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $request->t_index)->get();
+
+        $is_current = false;
+        $jml = 0;
+
+        $lastRole = $approved[count($approved) - 1]->id_jabatan;
+
+        //$last = approval_surat_pety_cash::where("id", $rows->id)->orderBy("id", "desc")->first();
+        foreach ($approved as $rows) {
+            $jml++;
+            if ($is_current ===  true) {
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0,
+                    "is_next" => 1,
+                    'note' => $request->verifikasi_berkas
+                ));
+
+                $is_current = false;
+                break;
+            }
+            if ($request->teks_person_approval_new == $rows->id_jabatan) {
+                $is_current = true;
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 0
+                ));
+
+                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                    "is_before" => 1,
+                    "status" => 1,
+                    "is_next" => 0,
+                    "nama" => "Surat telah disetujui oleh " . $rows->name,
+                    "approved_by" => Auth::user()->id
+                ));
+            }
+        }
+
+        if ($lastRole === Auth::user()->role_id) {
+            Pengadaan::where("id", $request->t_index)->update(array(
+                "position" => 1
+            ));
+        }
+
+        return response()->json([
+            'message' => 'Approval Berhasil Disimpan! ' . $lastRole . "===" . Auth::user()->role_id,
+            'redirectUrl' => route('detailPengadaan', ['index' => $request->t_index]),
+            'status' => 200
+        ]);
     }
 
     public function postPembayaranRole(Request $request)

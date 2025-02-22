@@ -14,6 +14,9 @@ return new class extends Migration
     public function up()
     {
         //
+        Schema::table('persetujuan', function (Blueprint $table) {
+            $table->integer('position')->default(0);
+        });
     }
 
     /**
@@ -24,5 +27,6 @@ return new class extends Migration
     public function down()
     {
         //
+        Schema::dropIfExists('position');
     }
 };
