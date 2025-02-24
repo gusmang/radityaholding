@@ -148,6 +148,6 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::get('/pembayaran/add', [PembayaranController::class, 'add'])->name('addPembayaran');
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
-    Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalDocument'])->name('approval-pembayaran');
+    Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalPembayaranRoles'])->name('approval-pembayaran');
     Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('postPembayaranRole');
 });

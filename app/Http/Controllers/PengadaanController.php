@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\approval_surat_pembayaran;
 use App\Models\approval_surat_pengadaan;
 use App\Models\User;
 use App\Models\Dokumen;
@@ -14,10 +15,9 @@ use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
 use App\Models\DocPengadaan;
 use App\Models\dokumenPersetujuan;
+use App\Models\rolePembayaran;
 use App\Models\rolePengadaan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Kutia\Larafirebase\Facades\Larafirebase;
 
 class PengadaanController extends Controller
 {
@@ -53,6 +53,7 @@ class PengadaanController extends Controller
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Persetujuan::where("id_permohonan", $index)->get();
+        
 
         $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->get();
 
@@ -295,7 +296,7 @@ class PengadaanController extends Controller
         $pengadaan = new Pengadaan();
         $pengadaan->no_surat = $invoice;
         $pengadaan->title = $perihal;
-        $pengadaan->id_unit_usaha = $unitUsaha;
+        $pengadaan->id_unit_usaha = Auth::user()->id_positions;
         $pengadaan->unit_usaha = $unitUsahaQ->name;
         $pengadaan->diajukan = Auth::user()->name;
         $pengadaan->tipe_surat = $tipeSurat;
@@ -420,8 +421,48 @@ class PengadaanController extends Controller
         ]);
     }
 
-    public function approvalPengadaanSekretariat($index, $person)
+    public function approvalPengadaanSekretariat($index, $person, $idx , $idUsaha)
     {
+        $lastInsertedId = $idx;
+        $ptCashRole = rolePembayaran::where("id_unit_usaha", $idUsaha)->where("aktif", 1)->orderBy("urutan", "asc")->get();
+        $pos = 1;
+
+        foreach ($ptCashRole as $rows) {
+            $approvalPettyCash = new approval_surat_pembayaran();
+
+            $userCurrent = User::where("id", $rows->id_role)->first();
+            $status = 0;
+            if ($pos === 1) {
+                $status = 1;
+                $titleSurat = "Surat Pembayaran Berhasil Dibuat";
+            } else {
+                $titleSurat = "-";
+            }
+
+            $is_next = 0;
+
+            if ($pos === 2) {
+                $is_next = 1;
+            }
+
+            $approvalPettyCash->nama = $titleSurat;
+            $approvalPettyCash->id_surat = $lastInsertedId;
+            $approvalPettyCash->id_jabatan = $rows->id_role;
+            $approvalPettyCash->status = $status;
+            $approvalPettyCash->note = "-";
+            $approvalPettyCash->title = $userCurrent->name;
+            $approvalPettyCash->is_next = $is_next;
+            $approvalPettyCash->next_id = 0;
+            if ($pos === 1) {
+                $approvalPettyCash->approved_by = Auth::user()->id;
+            } else {
+                $approvalPettyCash->approved_by = 0;
+            }
+
+            $approvalPettyCash->save();
+            $pos++;
+        }
+
         $approved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $index)->get();
 
         $is_current = false;
@@ -552,7 +593,7 @@ class PengadaanController extends Controller
 
         if ($saved === "1") {
             // Return JSON response
-            $approved = $this->approvalPengadaanSekretariat($request->t_index, $request->teks_person_approval_new);
+            $approved = $this->approvalPengadaanSekretariat($request->t_index, $request->teks_person_approval_new ,  $lastInsertedId , $lastPos->id_unit_usaha);
 
             if ($approved === 1) {
                 return response()->json([

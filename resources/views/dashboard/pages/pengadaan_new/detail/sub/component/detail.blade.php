@@ -354,7 +354,7 @@
                                     <button type="button" class="btn btn-primary"
                                         onClick="showApprove2({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
                                         style="color: white; font-size: 14px; float: left; margin-right: 10px;">
-                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
                                     </button>
                                 <?php
                                 } else {
@@ -362,7 +362,7 @@
                                     <button type="button" class="btn btn-primary"
                                         onClick="showApprovePt({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
                                         style="color: white; font-size: 14px;  float: left; margin-right: 10px;">
-                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
                                     </button>
                             <?php
                                 }
@@ -380,7 +380,7 @@
                                             ?>
                                                 <button type="button" class="btn btn-danger" onClick="showApprove2()"
                                                     style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             } else {
@@ -388,7 +388,7 @@
                                                 <button type="button" class="btn btn-danger"
                                                     onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
                                                     style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             }

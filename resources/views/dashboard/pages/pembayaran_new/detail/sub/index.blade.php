@@ -196,11 +196,11 @@ $display_pengguna = 'display: none;';
             ?>
 
             <div style="margin-top: 120px; {{ $display_detail }}" id="div_tab_detail" class="div_display_unit">
-                @include("dashboard.pages.pettyCash.detail.sub.component.detail")
+                @include("dashboard.pages.pembayaran_new.detail.sub.component.detail")
             </div>
 
             <div style="margin-top: 120px; {{ $display_pembayaran }}" id="div_tab_pembayaran" class="div_display_unit">
-                @include("dashboard.pages.pettyCash.detail.sub.component.history")
+                @include("dashboard.pages.pembayaran_new.detail.sub.component.history")
             </div>
 
         </div>
@@ -239,7 +239,7 @@ $display_pengguna = 'display: none;';
     $('#form-verifikasi-pettycash-add').on('submit', function(event) {
         event.preventDefault();
 
-        let urlDoc = "{{ route('approval-pettyCash') }}";
+        let urlDoc = "{{ route('approval-pembayaran') }}";
 
         $.ajax({
             type: "POST",

@@ -348,7 +348,7 @@
                                         <div>
                                             <button type="button" class="btn btn-primary form-control"
                                                 onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
                                             </button>
                                         </div>
                                     </div>
@@ -368,7 +368,7 @@
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
                                                     onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             } else {
@@ -376,7 +376,7 @@
                                                 <button type="button" class="btn btn-danger form-control"
                                                     onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
                                                     style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             }

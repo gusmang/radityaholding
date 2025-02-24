@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\approval_surat_pety_cash;
+use App\Models\approval_surat_pembayaran;
 use App\Models\User;
-use App\Models\Dokumen;
 use App\Models\Position;
 use App\Models\Pengadaan;
 use App\Models\UnitUsaha;
 use App\Models\Persetujuan;
 use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
-use Illuminate\Support\Facades\DB;
 use App\Models\ApprovalDocPembayaran;
-use App\Models\DocPettyCash;
-use App\Models\pettyCash;
+use App\Models\DocPengadaan;
 use App\Models\rolePembayaran;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,22 +32,22 @@ class PembayaranController extends Controller
         $unitUsaha = UnitUsaha::orderBy("name", "asc")->get();
 
         $approvalDoc = approvalDocument::where("id_surat", $index)->orderBy("id", "asc")->get();
-        $pengadaan = Pengadaan::where("id", $index)->first();
+        $pengadaan = Persetujuan::where("id", $index)->first();
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Persetujuan::where("id_permohonan", $index)->get();
 
-        $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->get();
+        $jabatan = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $index)->get();
 
-        $currentApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("is_next", 1)->first();
-        $beforeApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("is_before", 1)->first();
+        $currentApproval = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->where("id_surat", $index)->where("is_next", 1)->first();
+        $beforeApproval = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->where("id_surat", $index)->where("is_before", 1)->first();
 
-        $jabatanApproval = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->first();
+        $jabatanApproval = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->first();
 
-        $hasApproved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->where("status", 1)->get();
-        $notApproved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $index)->where("status", 0)->get();
+        $hasApproved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $index)->where("status", 1)->get();
+        $notApproved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $index)->where("status", 0)->get();
 
-        $dokumen = DocPettyCash::where("id_surat", $index)->get();
+        $dokumen = DocPengadaan::where("id_surat", $index)->get();
 
         $lastApprove = !isset($currentApproval->id_jabatan) ? $jabatan[count($jabatan) - 1]->id_jabatan : $currentApproval->id_jabatan;
         $approvalNext = !isset($currentApproval->name) ? $jabatan[count($jabatan) - 1]->name : $currentApproval->name;
@@ -61,7 +58,7 @@ class PembayaranController extends Controller
 
     public function approvePembayaran(Request $request)
     {
-        $approved = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $request->t_index)->get();
+        $approved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name")->where("id_surat", $request->t_index)->get();
 
         $is_current = false;
         $jml = 0;
@@ -72,7 +69,7 @@ class PembayaranController extends Controller
         foreach ($approved as $rows) {
             $jml++;
             if ($is_current ===  true) {
-                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
                     "is_before" => 0,
                     "is_next" => 1,
                     'note' => $request->verifikasi_berkas
@@ -84,11 +81,11 @@ class PembayaranController extends Controller
             if ($request->teks_person_approval_new == $rows->id_jabatan) {
                 $is_current = true;
 
-                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
                     "is_before" => 0
                 ));
 
-                approval_surat_pengadaan::where("id", $rows->id)->update(array(
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
                     "is_before" => 1,
                     "status" => 1,
                     "is_next" => 0,
@@ -107,6 +104,58 @@ class PembayaranController extends Controller
         return response()->json([
             'message' => 'Approval Berhasil Disimpan! ' . $lastRole . "===" . Auth::user()->role_id,
             'redirectUrl' => route('detailPengadaan', ['index' => $request->t_index]),
+            'status' => 200
+        ]);
+    }
+
+    public function approvalPembayaranRoles(Request $request)
+    {
+        $approved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $request->t_index)->get();
+
+        $is_current = false;
+        $jml = 0;
+
+        $lastRole = $approved[count($approved) - 1]->id_jabatan;
+
+        //$last = approval_surat_pety_cash::where("id", $rows->id)->orderBy("id", "desc")->first();
+        foreach ($approved as $rows) {
+            $jml++;
+            if ($is_current ===  true) {
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
+                    "is_before" => 0,
+                    "is_next" => 1,
+                    'note' => $request->verifikasi_berkas
+                ));
+
+                $is_current = false;
+                break;
+            }
+            if ($request->teks_person_approval_new == $rows->id_jabatan) {
+                $is_current = true;
+
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
+                    "is_before" => 0
+                ));
+
+                approval_surat_pembayaran::where("id", $rows->id)->update(array(
+                    "is_before" => 1,
+                    "status" => 1,
+                    "is_next" => 0,
+                    "nama" => "Surat telah disetujui oleh " . $rows->name,
+                    "approved_by" => Auth::user()->id
+                ));
+            }
+        }
+
+        if ($lastRole === Auth::user()->role_id) {
+            Persetujuan::where("id", $request->t_index)->update(array(
+                "position" => 1
+            ));
+        }
+
+        return response()->json([
+            'message' => 'Approval Berhasil Disimpan! ' . $lastRole . "===" . Auth::user()->role_id,
+            'redirectUrl' => route('detailPembayaran', ['index' => $request->t_index]),
             'status' => 200
         ]);
     }
