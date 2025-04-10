@@ -22,15 +22,23 @@
                             </ol>
                         </nav> --}}
                     </div>
-                    <div class="col-md-6 col-sm-12 text-right">
-                        <div style="padding:0; width: 100%; clear: both;">
-                            <a href="{{ route('addPettyCash') }}" class="btn-block" type="button">
-                                <button class="btn btn-primary" style="float: right;">
-                                    <i class="fa fa-plus"></i>&nbsp; Tambah Permohonan Baru
-                                </button>
-                            </a>
-                        </div>
-                    </div>
+                    <?php
+                        if(isset($roles->urutan)){
+                            if($roles->urutan === 1){
+                            ?>
+                                <div class="col-md-6 col-sm-12 text-right">
+                                    <div style="padding:0; width: 100%; clear: both;">
+                                        <a href="{{ route('addPettyCash') }}" class="btn-block" type="button">
+                                            <button class="btn btn-primary" style="float: right;">
+                                                <i class="fa fa-plus"></i>&nbsp; Tambah Permohonan Baru
+                                            </button>
+                                        </a>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                        }
+                    ?>
                 </div>
             </div>
 
@@ -141,8 +149,9 @@
                                     style="height: 50px; display: flex; border-radius: 0 0 15px 15px; font-size: 14px; justify-content: center; align-items: center; color: #ffffff; width: 100%; border-top: 1px solid #DDDDDD; background: brown;">
                                     <div style="margin-right: 10px;"> <i class="fa fa-clock-o" style="font-size: 18px;"></i>
                                     </div>
-                                    <div>
-                                        Menunggu persetujuan
+                                    <div style="text-align: center;">
+                                        Menunggu persetujuan <br />
+                                        <b style="font-size: 16px;"> ~ {{ $row->next_verifikator }} ~ </b>
                                     </div>
                                 </div>
                             <?php
@@ -162,6 +171,12 @@
                         </div>
                     </div>
                     @endforeach
+                </div>
+            </div>
+
+            <div>
+                <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
+                    <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div>
                 </div>
             </div>
 

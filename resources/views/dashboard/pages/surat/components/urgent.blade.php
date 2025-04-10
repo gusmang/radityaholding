@@ -8,7 +8,7 @@
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
                 <th>Status Surat</th>
-                <th>Status Pembelian</th>
+                <th>Detail</th>
             </tr>
         </thead>
         <tbody>
@@ -42,7 +42,7 @@
                     -
                 </td>
                 <td>
-                    -
+                    <i class="fa fa-eye"></i>
                 </td>
                 <!-- <td>
                 <div class="dropdown">

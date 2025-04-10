@@ -135,14 +135,14 @@
                             </div>
 
                             <?php
-                            if ($row->position == "0") {
+                            if ($row->position === "0") {
                             ?>
                                 <div
                                     style="height: 50px; display: flex; border-radius: 0 0 15px 15px; font-size: 14px; justify-content: center; align-items: center; color: #ffffff; width: 100%; border-top: 1px solid #DDDDDD; background: brown;">
                                     <div style="margin-right: 10px;"> <i class="fa fa-clock-o" style="font-size: 18px;"></i>
                                     </div>
                                     <div>
-                                        Menunggu persetujuan
+                                        Menunggu persetujuan {{ $row->position }}
                                     </div>
                                 </div>
                             <?php

@@ -5,8 +5,10 @@
                 <th>Prioritas</th>
                 <th class="table-plus datatable-nosort">Role</th>
                 <th>Unit Bisnis</th>
-                <th>Nama Unit Bisnis</th>
+                <th>Aktif</th>
                 <th>Tugas</th>
+                <th>Tolak</th>
+                <th>Menyetujui</th>
                 <!-- <th>Tanda Tangan</th> -->
                 <th class="datatable-nosort"></th>
             </tr>
@@ -60,28 +62,59 @@
                         <option value="1" {{ $row->menyetujui === 1 ? "selected" : "" }}> Menyetujui </option>
                     </select>
                 </td>
-                <!-- <td>
-                <div class="dropdown">
-                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button"
-                        data-toggle="dropdown">
-                        <i class="dw dw-more"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-password-modal-lg">
-                            <i class="dw dw-lock"></i> Ganti Password
-                        </a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                    </div>
-                </div>
-            </td> -->
+                <td>
+                    <label class="switch">
+                        <?php
+                        if ($row->rj == "1") {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" checked
+                                id={{ "checked_role_rj_pengadaan_".$an }} name={{ "checked_role_rj_pengadaan_".$an }}>
+                        <?php
+                        } else {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_rj_pengadaan_".$an }}
+                                name={{ "checked_role_rj_pengadaan_".$an }}>
+                        <?php
+                        }
+                        ?>
+
+                        <span class="switch-slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <label class="switch">
+                        <?php
+                        if ($row->is_menyetujui == "1") {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" checked
+                                id={{ "checked_role_is_mt_pengadaan_".$an }} name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                        <?php
+                        } else {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_is_mt_pengadaan_".$an }}
+                                name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                        <?php
+                        }
+                        ?>
+
+                        <span class="switch-slider"></span>
+                    </label>
+                </td>
             </tr>
             @endforeach
         </tbody>
     </table>
 
-    <button class="btn btn-primary" type="submit" style="margin-left: 20px; margin-top: 20px;">
-        <i class="fa fa-refresh"></i>&nbsp; Update Role
-    </button>
+    <div class="disabled-button">
+        <button class="btn btn-primary disabled-btn" type="submit" style="margin-left: 20px; margin-top: 20px;">
+            <i class="fas fa-spinner fa-spin"></i>&nbsp; Please Wait ...
+        </button>
+    </div>
+
+    <div class="shows-button">
+        <button class="btn btn-primary" type="submit" style="margin-left: 20px; margin-top: 20px;">
+            <i class="fa fa-edit"></i>&nbsp; Update Role
+        </button>
+    </div>
+    
 </div>

@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class dokumenPersetujuan extends Model
 {
     use HasFactory;
+
+    protected $table = "doc_persetujuan";
 }

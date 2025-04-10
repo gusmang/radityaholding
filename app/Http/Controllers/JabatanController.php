@@ -22,14 +22,59 @@ class JabatanController extends Controller
         return view('dashboard.pages.jabatan.index', compact('position'));
     }
 
+    public function deleteposition(Request $request)
+    {
+        $position = Position::find($request->id);
+
+        if ($position->delete()) {
+            return response()->json([
+                'message' => 'Role Posisi Berhasil DiHapus!',
+                'status' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Role Posisi Gagal Dihapus!',
+                'status' => 500
+            ]);
+        }
+    }
+
+    public function delete_user(Request $request)
+    {
+        $position = User::find($request->id);
+
+        if ($position->delete()) {
+            return response()->json([
+                'message' => 'Role Posisi Berhasil DiHapus!',
+                'status' => 200
+            ]);
+        } else {
+            return response()->json([
+                'message' => 'Role Posisi Gagal Dihapus!',
+                'status' => 500
+            ]);
+        }
+    }
+
     public function list(Request $request)
     {
         $values = $request->value === "1" ? "0" : "1";
-        $jabatan = Position::where("deleted_at", null)->where("is_unit_usaha", $values)->get();
+        $jabatan = null;
+
+        if ($values === "1") {
+            $jabatan = Position::where("deleted_at", null)->where("is_unit_usaha", $values)->get();
+        } else {
+            $index = $request->index;
+            $jabatan = User::where("id_positions", "!=", "0")->where("id_positions", $index)->distinct('role_id')->get();
+        }
 
         $option = "";
         foreach ($jabatan as $rows) {
-            $option .= '<option value="' . $rows->id . '">' . $rows->name . '</option>';
+            if ($values === "1") {
+                $option .= '<option value="' . $rows->id . '">' . $rows->name . '</option>';
+            } else {
+                $option .= '<option value="' . $rows->role_id . '">' . $rows->role . '</option>';
+            }
         }
 
         return $option;
@@ -118,6 +163,26 @@ class JabatanController extends Controller
     }
 
     public function saveJabatan(Request $request)
+    {
+        $jabatan = Position::where("id", $request->role)->first();
+        $users = new User();
+
+        $users->name = $request->name;
+        $users->email = $request->email;
+        $users->password = bcrypt($request->password);
+        $users->id_positions = 0;
+        $users->role = $jabatan->name;
+        $users->role_id = $jabatan->id;
+        $users->is_verified = true;
+        $users->reset_password_token = "-";
+        $users->status = $request->chk_aktif === null ? 0 : $request->chk_aktif;
+        $users->signature_url = "-";
+
+        $users->save();
+        return \Redirect::route('viewHolding')->with('message', 'State saved correctly!!!');
+    }
+
+    public function saveJabatanHolding(Request $request)
     {
         $jabatan = Position::where("id", $request->role)->first();
         $users = new User();

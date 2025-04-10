@@ -13,7 +13,7 @@ class RegistrationController extends Controller
     public function registration(Request $request)
     {
         $name = $request->input('inp_name');
-        $email = $request->input('inp_email');
+        $email = strtolower($request->input('inp_email'));
         $unit_usaha = $request->input('cmb_unit_usaha');
         $password = bcrypt($request->input('inp_kata_sandi'));
 

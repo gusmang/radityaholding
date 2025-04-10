@@ -6,6 +6,7 @@ use App\Models\Menu;
 use App\Models\User;
 use App\Models\UnitUsaha;
 use App\Models\AccessMenu;
+use App\Models\rolePengadaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -55,7 +56,11 @@ class LoginController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        //$credentials = $request->only('email', 'password');
+        $credentials = [
+            'email' => strtolower($request->email),
+            'password' => $request->password
+        ];
 
         if (Auth::attempt($credentials)) {
             $auth = User::where("id", Auth::user()->id)->first();
@@ -67,6 +72,7 @@ class LoginController extends Controller
             $access2 = AccessMenu::join("menus", "menus.id", "access_menus.id_menu")->where("menus.section", 2)->where("access_menus.id_jabatan", $idpos)->orderBy("menus.status", "asc")->get();
             $accessAll1 = Menu::where("section", 1)->orderBy("menus.status", "asc")->get();
             $accessAll2 = Menu::where("section", 2)->orderBy("menus.status", "asc")->get();
+            
             $request->session()->regenerate();
             Session::put('userLog', $auth);
             Session::put('access1', $access1);
@@ -80,7 +86,7 @@ class LoginController extends Controller
 
         // Login failed
         return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
+            'email' => 'Username atau Password salah , silakan coba kembali',
         ]);
     }
 }

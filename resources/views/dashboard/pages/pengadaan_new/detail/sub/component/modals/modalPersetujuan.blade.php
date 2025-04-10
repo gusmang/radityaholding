@@ -19,15 +19,12 @@
                         <input type="hidden" id="teks_person_approval" name="teks_person_approval" />
                         <input type="hidden" name="t_login" id="t_login" value="{{ Auth::user()->id }}" />
 
-                        Apakah anda yakin ingin melakukan verifikasi berkas ini ? Verifikasi akan dilanjutkan ke tahap pembuatan surat persetujuan ?
+                        Apakah anda yakin ingin melakukan verifikasi berkas ini ? 
+                        Verifikasi akan dilanjutkan ke tahap pembuatan surat persetujuan ?
                         <b>
                             <span id="span_pengadaan_diteruskan"></span>
                         </b>
                     </div>
-                    {{-- <div>
-                            <label class="mt-4" style="font-size: 14px;"> Catatan : </label>
-                            <textarea rows="4" class="form-control" name="verifikasi_berkas" id="verifikasi_berkas"></textarea>
-                        </div> --}}
                 </div>
             </div>
             <div class="modal-footer">

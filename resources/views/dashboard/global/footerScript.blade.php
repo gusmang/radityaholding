@@ -2,6 +2,7 @@
 <script src={{ asset("vendors/scripts/script.min.js") }}></script>
 {{-- <script src={{ asset("vendors/scripts/process.js") }}></script> --}}
 <script src={{ asset("vendors/scripts/layout-settings.js") }}></script>
+<script src={{ asset("src/scripts/dialog.js") }}></script>
 <?php
 $segmentUrl = Request::segment(2);
 
@@ -20,6 +21,7 @@ if ($segmentUrl === "dashboard") {
 <script src={{ asset("src/plugins/datatables/js/dataTables.bootstrap4.min.js") }}></script>
 <script src={{ asset("src/plugins/datatables/js/dataTables.responsive.min.js") }}></script>
 <script src={{ asset("src/plugins/datatables/js/responsive.bootstrap4.min.js") }}></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.1.2/highcharts.js" integrity="sha512-eIPFJBK9Ncm6VV4QbelONNYxu+ZqScX5soG+972/XdjfwYiDlOzw4Sf08XidqScjlBOnm3PDUY8aBm/dOxyiMA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> --}}
@@ -29,6 +31,108 @@ if ($segmentUrl === "dashboard") {
         style="display: none; visibility: hidden"></iframe></noscript>
 
 <script type="text/javascript">
+const rupiahInput = document.querySelector('.rupiahInput');
+
+function loadStates(){
+    $(".disabled-button").show();
+    $(".shows-button").hide();
+    $(".disabled-btn").show();
+}
+
+function showStates(){
+    $(".disabled-button").show();
+    $(".shows-button").hide();
+}
+
+$("#frm-pencarian-laporan").submit(function(e){
+    e.preventDefault();
+
+    let urlPost = "{{ route('post-pencarian-laporan') }}";
+
+    $.ajax({
+        type: "POST",
+        data: "val="+$("#cmb-laporan-periode").val(),
+        url: urlPost,
+        dataType: "json",
+        success:function(data){
+            console.log("consoled" , data);
+        }
+    })
+});
+
+function getNotif(){
+    $("#dis-notif-button").show();
+    $("#shows-notif-button").hide();
+
+
+    $("#ul-notifications-new").html("");
+    $.ajax({
+        type: "GET",
+        url: "{{ route('getNotif') }}",
+        data: "",
+        dataType: "json",
+        success:function(response){
+            $("#ul-notifications-new").html(response.data);
+
+            $("#dis-notif-button").hide();
+            $("#shows-notif-button").show();
+        }
+    })
+}
+
+function getNotifNew(event){
+    $("#dis-notif-button").show();
+    $("#shows-notif-button").hide();
+
+    event.stopPropagation();
+
+    $("#ul-notifications-new").html("");
+    $.ajax({
+        type: "GET",
+        url: "{{ route('getNotif') }}",
+        data: "",
+        dataType: "json",
+        success:function(response){
+            $("#ul-notifications-new").html(response.data);
+
+            $("#dis-notif-button").hide();
+            $("#shows-notif-button").show();
+        }
+    })
+}
+
+getNotif();
+
+rupiahInput.addEventListener('input', function (e) {
+    // Hapus semua karakter selain angka
+    let value = e.target.value.replace(/[^0-9]/g, '');
+
+    // Format nilai ke dalam format Rupiah
+    if (value.length > 0) {
+        value = parseInt(value, 10).toLocaleString('id-ID');
+    } else {
+        value = '';
+    }
+
+    // Set nilai input dengan format Rupiah
+    e.target.value = value ? `Rp ${value}` : '';
+});
+
+rupiahInput.addEventListener('blur', function (e) {
+    // Jika input kosong, set ke Rp 0
+    if (e.target.value === '') {
+        e.target.value = 'Rp 0';
+    }
+});
+
+rupiahInput.addEventListener('focus', function (e) {
+    // Hapus "Rp" saat input difokuskan
+    if (e.target.value === 'Rp 0') {
+        e.target.value = '';
+    }
+});
+
+
 var sampleArray = [{
     id: 0,
     text: 'enhancement'
@@ -47,6 +151,35 @@ var sampleArray = [{
 }];
 
 $(document).ready(function() {
+
+    function loadStates(){
+        $("#disabled-button").show();
+        $("#shows-button").hide();
+    }
+
+    function showStates(){
+        $("#disabled-button").show();
+        $("#shows-button").hide();
+    }
+
+    function hideStates(){
+        $("#disabled-button").hide();
+        $("#shows-button").show();
+    }
+
+    function loadNotif(){
+        $("#dis-notif-button").show();
+        $("#shows-notif-button").hide();
+    }
+
+    function showStates(){
+        $("#dis-notif-button").show();
+        $("#shows-notif-button").hide();
+    }
+
+    getNotif();
+
+    loadStates();
 
 });
 </script>
@@ -135,4 +268,5 @@ onMessage(messaging, (payload) => {
         icon: payload.notification.icon,
     });
 });
+
 </script>

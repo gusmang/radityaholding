@@ -10,15 +10,15 @@ $display_pengadaan = (!isset($_GET['index'])) ? "display: none;" : "";
 $display_pembayaran = (!isset($_GET['index'])) ? "display: none;" : "";
 
 if(isset($_GET['tab'])){
-if($_GET['tab'] !== '1'){
-$display_pengadaan = 'display: none;';
-}
-if($_GET['tab'] !== '2'){
-$display_pembayaran = 'display: none;';
-}
-if($_GET['tab'] !== '3'){
-$display_pengguna = 'display: none;';
-}
+    if($_GET['tab'] !== '1'){
+        $display_pengadaan = 'display: none;';
+    }
+    if($_GET['tab'] !== '2'){
+        $display_pembayaran = 'display: none;';
+    }
+    if($_GET['tab'] !== '3'){
+        $display_pengguna = 'display: none;';
+    }
 }
 @endphp
 
@@ -97,7 +97,7 @@ $display_pengguna = 'display: none;';
                             </div>
                             <div style="padding:0 20px; color: #666666; cursor: pointer;"
                                 class="tab-list {{ $active_pengadaan }} " id="tab-two-detail"
-                                onclick="active_tab(this.id , 2)">
+                                onclick="active_tab(this.id , 2);">
                                 Pembayaran
                             </div>
                             <div style="padding:0 20px; color: #666666; cursor: pointer;"
@@ -130,13 +130,12 @@ $display_pengguna = 'display: none;';
 
                 <div
                     style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
-                    <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div>
+                    {{-- <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div> --}}
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 <script type="text/javascript">
 function active_tab(id, page) {
     $(".tab-list").removeClass("active-tab");
@@ -157,5 +156,105 @@ function active_tab(id, page) {
     }
 }
 </script>
+@endsection
 
+@section("footers_suratList")
+    <script type="text/javascript">
+
+    function getDataLaporan(){
+            let urlPost = "{{ route('get-pencarian-laporan') }}";
+
+
+            $.ajax({
+                type: "GET",
+                data: "val="+$("#cmb-laporan-periode").val(),
+                url: urlPost,
+                dataType: "json",
+                success:function(data){
+                    //console.log("consoled" , data);
+                }
+            })
+        }
+
+        getDataLaporan();
+        
+        function fetchDataPermohonan(index , submit){
+            let urlNew = "{{ route('getDataAll') }}"
+            let searchUrl = "";
+            if(submit === true){
+                searchUrl = "&search_surat="+$("#search_surat").val()+
+                "&status_surat="+$("#status_surat").val()+
+                "&tanggal_surat="+$("#tanggal_surat").val()
+                +"&btn-submit-new=submit"
+            }
+            $.ajax({
+                type: "GET",
+                url: urlNew+ "?page="+index+searchUrl,
+                data: "",
+                dataType: "json",
+                success:function(response){
+                    $("#paginglink1").addClass("active");
+                    $("#tb-surat-permohonan").html(response?.data);
+                }
+            })
+        }
+
+        function fetchPaginator(url){
+            let urlNew = "{{ route('getDataAll') }}";
+
+            const urlx = new URL(url);
+            const page = urlx.searchParams.get('page');
+
+            $(".page-item").removeClass("active");
+
+            $.ajax({
+                type: "GET",
+                url: urlNew+ "?page="+page,
+                data: "",
+                dataType: "json",
+                success:function(response){
+                    $("#paginglink"+page).addClass("active");
+                    $("#tb-surat-permohonan").html(response?.data);
+                }
+            })
+        }
+
+        function fetchDataPembayaran(index){
+            let urlNew = "{{ route('getDataAllPmb') }}"
+            $.ajax({
+                type: "GET",
+                url: urlNew+ "?page="+index,
+                data: "",
+                dataType: "json",
+                success:function(response){
+                    $("#paginglinkpmb1").addClass("active");
+                    $("#tb-surat-pembayaran").html(response?.data);
+                }
+            })
+        }
+
+        function fetchPaginatorPmb(url){
+            let urlNew = "{{ route('getDataAllPmb') }}";
+
+            const urlx = new URL(url);
+            const page = urlx.searchParams.get('page');
+
+            $(".page-item").removeClass("active");
+
+            $.ajax({
+                type: "GET",
+                url: urlNew+ "?page="+page,
+                data: "",
+                dataType: "json",
+                success:function(response){
+                    $("#paginglinkpmb"+page).addClass("active");
+                    $("#tb-surat-permohonan").html(response?.data);
+                }
+            })
+        }
+
+        $(document).ready(function(){
+          //  fetchDataPermohonan(1 , false);
+        });
+    </script>
 @endsection

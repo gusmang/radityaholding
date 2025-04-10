@@ -71,7 +71,7 @@
                 </div>
                 <div style="clear: both;"></div>
                 <div style="width: 100%; margin-top: 10px;">
-                    <img src="{{ url('storage/'.Auth::user()->signature_url); }}" height="250" />
+                    <img src="{{ asset('storage/'.Auth::user()->signature_url); }}" height="250" />
                 </div>
 
                 <div style="width: 100%; margin-top: 30px; border-bottom: 1px solid #DDDDDD;"></div>

@@ -106,7 +106,7 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan" id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
+                                            <input type="text" class="form-control" name="nominalPengajuan" id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
                                         </div>
                                     </div>
                                 </div>

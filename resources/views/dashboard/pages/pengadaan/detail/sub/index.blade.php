@@ -68,7 +68,7 @@ $display_pengguna = 'display: none;';
                                 </div>
                             </div>
                             <div
-                                style="height: 60px; display: flex; align-items: center; justify-content: flex-start; margin-top: 40px; padding:0 0 0 120px;">
+                                style="height: 60px; display: flex; align-items: center; justify-content: flex-start; margin-top: 40px; padding:0 0 0 30px;">
                                 @php $pos = -1; $inc = 1; @endphp
                                 @foreach($jabatan as $rowsJ)
                                 <?php
@@ -90,7 +90,7 @@ $display_pengguna = 'display: none;';
                                 } else {
                                     if ($pos === $pengadaan->position) {
                                     ?>
-                                        <div style="width: 17%; position: relative;">
+                                        <div style="width: 15%; position: relative;">
                                             <div
                                                 style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;">
                                             </div>
@@ -139,59 +139,11 @@ $display_pengguna = 'display: none;';
                                 $pos++;
                                 ?>
                                 @endforeach
-
-                                {{-- <div style="width: 17%; position: relative;">
-                                    <div style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;"></div>
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 17%; position: relative;">
-                                    <div style="width: 100%; z-index: 20px; top: 20px; background: #416351; height: 4px;"></div>
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #416351; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fa fa-check" style="font-size: 16px; color: #416351;"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 17%; position: relative;">
-                                    <div style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;"></div>
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: brown; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: brown; color: white; display: flex; align-items: center; justify-content: center;">
-                                            4
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 17%; position: relative;">
-                                    <div style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;"></div>
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #DDDDDD; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #DDDDDD; color: white; display: flex; align-items: center; justify-content: center;">
-                                            5
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 17%; position: relative;">
-                                    <div style="width: 100%; z-index: 20px; top: 20px; background: #DDDDDD; height: 4px;"></div>
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #DDDDDD; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #DDDDDD; color: white; display: flex; align-items: center; justify-content: center;">
-                                            6
-                                        </div>
-                                    </div>
-                                </div>
-                                <div style="width: 17%; position: relative;">
-                                    <div style="width: 40px; height: 40px; padding: 7px; border-radius: 50%; background: #DDDDDD; position: absolute; z-index: 50; top: -20px;">
-                                        <div style="width: 26px; height: 26px; border-radius: 50%; background: #DDDDDD; color: white; display: flex; align-items: center; justify-content: center;">
-                                            7
-                                        </div>
-                                    </div>
-                                </div> --}}
                             </div>
 
-                            <div class="col-md-12 col-12 d-flex" style="padding: 20px 0 0 80px;">
+                            <div class="col-md-12 col-12 d-flex" style="padding: 20px 0 0 30px;">
                                 @foreach($jabatan as $rows)
-                                <div style="width: 14.5%; text-align: left; background: #FFFFFF;">
+                                <div style="width: 12.5%; text-align: left; background: #FFFFFF;">
                                     <h5 style="font-size: 16px; font-weight: 500; width: 150px; "> {{ $rows->role }}
                                     </h5>
                                     <div style="padding:2px;">
@@ -199,30 +151,6 @@ $display_pengguna = 'display: none;';
                                     </div>
                                 </div>
                                 @endforeach
-                                {{-- <div style="width: 14.5%; text-align: left; background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: 500; width: 150px;"> General Manager </h5>
-                                    <div style="padding:2px;">
-                                        <small style="font-size: 12px; color: #666666;"> 24 Aug 2024 , 04:00</small>
-                                    </div>
-                                </div>
-                                <div style="width: 14.5%; text-align: left; background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: 500; width: 150px;"> PIC Unit ( One of the BOD ) </h5>
-                                    <div style="padding:2px;">
-                                        <small style="font-size: 12px; color: #666666;"> 24 Aug 2024 , 04:00</small>
-                                    </div>
-                                </div>
-                                <div style="width: 14.5%; text-align: left;  background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: normal; width: 150px;"> Sekretariat </h5>
-                                </div>
-                                <div style="width: 14.5%; text-align: left;  background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: normal; width: 150px;"> VD of GA </h5>
-                                </div>
-                                <div style="width: 14.5%; text-align: left; background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: normal; width: 150px;"> BOD ( Board of Director ) </h5>
-                                </div>
-                                <div style="width: 14.5%; text-align: left; background: #FFFFFF;">
-                                    <h5 style="font-size: 16px; font-weight: normal; width: 150px;"> Assets </h5>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -305,22 +233,11 @@ $display_pengguna = 'display: none;';
     $('#formAddPengadaan').on('submit', function(event) {
         event.preventDefault();
 
-        /* const formData = new FormData();
-        formData.append('tanggal', $("#cmbTglPengajuan").val());
-        formData.append('tipeSurat', $("#cmbTipeSurat").val());
-        formData.append('perihal', $("#inp_perihal").val());
-        formData.append('nominal', $("#nominalPengajuan").val());
-        formData.append('detail', $("#nominalDetail").val());
-        formData.append('unitUsaha', $("#cmbUnitUsaha").val());
-        formData.append('invoice', $("#inp_invoice").val());
-        formData.getAll('docFile');
-        */
         const formData = new FormData(this);
         formData.append("detailIsiSurat", quill.root.innerHTML);
 
         const urlPengadaan = "{{ route('postPersetujuanNew') }}";
 
-        // Send AJAX request
         $.ajax({
             url: urlPengadaan, // Laravel route
             method: 'POST',
@@ -347,34 +264,11 @@ $display_pengguna = 'display: none;';
         })
     })
 
+    function showTolakBerkas(){
+        $("#bs-tolak-modal").modal("show");
+    }
 
     function showApprove(id, role, person, next) {
-        /* Swal.fire({
-             title: 'Approve Document ?'
-             , text: "Apakah Anda Yakin Akan Verifikasi"
-             , icon: 'question'
-             , showCancelButton: true
-             , confirmButtonText: 'Yes, Approve'
-         }).then((result) => {
-             if (result.isConfirmed) {
-                 let urlDoc = "";
-                 $.ajax({
-                     type: "POST"
-                     , data: "id=" + id
-                     , dataType: "json"
-                     , success: function(data) {
-                         Swal.fire(
-                             'Confirmed!'
-                             , 'You agreed to pay extra amount.'
-                             , 'success'
-                         );
-                     }
-                 })
-             } else {
-                 console.log('clicked cancel');
-             }
-         })
-         */
         $("#teruskan_person").html(next);
         $("#teks_dokumen_pengadaan").val(id);
         $("#teks_branch_approval").val(role);

@@ -235,17 +235,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 200kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
                                 </div>
 
                             </div>
@@ -303,7 +292,7 @@
                                             </div>
                                             <div class="col-md-2 font-500">
                                                 <div style="color: #666666; font-size: 21px;">
-                                                    <a href="#" target="_blank">
+                                                    <a href="{{ asset('storage/uploads/'.$rowDoc->nama_dokumen) }}" target="_blank">
                                                         <i class="fa fa-download"></i>
                                                     </a>
                                                 </div>

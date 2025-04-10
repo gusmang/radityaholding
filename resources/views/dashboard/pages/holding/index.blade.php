@@ -92,9 +92,15 @@
                                     @endphp
                                 </td>
                                 <td>
+                                    @if ($row->status === 1)
                                     <div class="label-aktif">
                                         Aktif
                                     </div>
+                                    @else
+                                    <div class="label-nonaktif">
+                                        Tidak Aktif
+                                    </div>
+                                    @endif
                                 </td>
                                 <td>
                                     <div class="dropdown">
@@ -126,7 +132,7 @@
                                             <a class="dropdown-item" data-toggle="modal"
                                                 data-target="#bd-example-edit-modal-lg"
                                                 onClick="showEdit({{ $row }})"><i class="dw dw-edit2"></i> Edit</a>
-                                            <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
+                                            <a class="dropdown-item" href="#" onclick="confirmDelete('{{ $row->id }}')"><i class="dw dw-delete-3"></i> Delete</a>
                                         </div>
                                     </div>
                                 </td>
@@ -154,6 +160,32 @@
         document.getElementById("t_index_edit").value = row.id;
         document.getElementById("email_edit").value = row.email;
         document.getElementById("role_edit").value = row.role_id;
+    }
+
+    function confirmDelete(index){
+        Swal.fire({
+            icon: "info",
+            title: "Hapus Data?",
+            showDenyButton: true,
+            confirmButtonText: "Hapus",
+            denyButtonText: `Batal`
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+               // Swal.fire("Saved!", "", "success");
+               let urlDel = "{{ route('delete_user') }}";
+               $.ajax({
+                type:"delete",
+                url: urlDel+"?id="+index+"&_token="+"{{ csrf_token() }}",
+                data: "",
+                success:function(data){
+                    window.location = "{{ route('viewHolding',['index'=> '1']);  }}";
+                }
+               })
+            } else if (result.isDenied) {
+               // Swal.fire("Changes are not saved", "", "info");
+            }
+            });
     }
 
     function showMenu(rows) {

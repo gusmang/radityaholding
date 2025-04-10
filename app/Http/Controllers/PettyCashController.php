@@ -14,6 +14,7 @@ use App\Models\Persetujuan;
 use App\Models\DocPettyCash;
 use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
+use App\Models\historyPettyCash;
 use App\Models\rolePettyCash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,12 @@ class PettyCashController extends Controller
     {
         $users = User::orderBy("id", "desc")->paginate(10);
         $jabatan = Position::where("deleted_at", null)->get();
-        $pengadaan = pettyCash::orderBy("id", "desc")->paginate(10);
+        $pengadaan = pettyCash::orderBy("id", "desc")->paginate(12);
 
-        return view('dashboard.pages.pettyCash.index', compact('users', 'jabatan', 'pengadaan'));
+        $roles = rolePettyCash::where("id_role", Auth::user()->role_id)->where("aktif", 1)->first();
+        //echo "tes " . $roles->urutan;
+        //die();
+        return view('dashboard.pages.pettyCash.index', compact('roles', 'users', 'jabatan', 'pengadaan'));
     }
 
     public function detailPengadaan(Request $request, $index)
@@ -71,7 +75,6 @@ class PettyCashController extends Controller
 
         return view('dashboard.pages.pettyCash.detail.sub.index', compact('jabatan', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
-
 
     public function editPosPettyCash(Request $request)
     {
@@ -130,73 +133,94 @@ class PettyCashController extends Controller
         $nominal = $request->input('nominalPengajuan');
         $detail = $request->input('detailIsiSurat');
         $unitUsaha = $request->input('cmbUnitUsaha');
-        $unitUsahaName = $request->input('cmbUnitUsahaName');
+        //$unitUsahaName = $request->input('cmbUnitUsahaName');
         $invoice = $request->input('inp_invoice');
-        $files = $request->file('docFile');
 
-        $tipe = TipeSurat::where("id", $tipeSurat)->first();
+        $pengadaanCount = pettyCash::where("no_surat", $invoice)->count();
 
-        $unitUsahaQ = UnitUsaha::where("id", Auth::user()->id_positions)->first();
+        if ($pengadaanCount > 0) {
+            return response()->json([
+                'message' => 'Duplikat No. Surat',
+                'isDuplicate' => 1,
+                'status' => 200
+            ], 200);
+        } else {
+            $nominal = str_replace("Rp ", "", $nominal);
+            $nominal = str_replace(".", "", $nominal);
 
-        $pengadaan = new pettyCash();
-        $pengadaan->no_surat = $invoice;
-        $pengadaan->title = $perihal;
-        $pengadaan->id_unit_usaha = $unitUsaha;
-        $pengadaan->unit_usaha = $unitUsahaQ->name;
-        $pengadaan->diajukan = Auth::user()->name;
-        $pengadaan->tipe_surat = $tipeSurat;
-        $pengadaan->perihal = $perihal;
-        $pengadaan->nominal_pengajuan = $nominal;
-        $pengadaan->tanggal = $tanggal;
-        $pengadaan->detail = $detail;
+            $pengadaan = new pettyCash();
+            $pengadaan->no_surat = $invoice;
+            $pengadaan->title = $perihal;
+            $pengadaan->id_unit_usaha = $unitUsaha;
+            $pengadaan->unit_usaha = $request->cmbUnitUsahaName;
+            $pengadaan->diajukan = Auth::user()->name;
+            $pengadaan->tipe_surat = $tipeSurat;
+            $pengadaan->perihal = $perihal;
+            $pengadaan->nominal_pengajuan = $nominal;
+            $pengadaan->tanggal = $tanggal;
+            $pengadaan->detail = $detail;
 
-        $lastInsertedId = "";
+            $lastInsertedId = "";
 
-        if ($pengadaan->save()) {
-            $lastInsertedId = $pengadaan->id;
-            $ptCashRole = rolePettyCash::where("id_unit_usaha", Auth::user()->id_positions)->where("aktif", 1)->get();
-            $pos = 1;
-            foreach ($ptCashRole as $rows) {
-                $approvalPettyCash = new approval_surat_pety_cash();
+            if ($pengadaan->save()) {
+                $lastInsertedId = $pengadaan->id;
+                $ptCashRole = rolePettyCash::orderBy("urutan", "asc")->where("aktif", 1)->get();
+                $pos = 1;
 
-                $userCurrent = User::where("id", $rows->id_role)->first();
-                $status = 0;
-                if ($pos === 1) {
-                    $status = 1;
-                    $titleSurat = "Surat Pengadaan Berhasil Dibuat";
-                } else {
-                    $titleSurat = "-";
+                $posi = Position::where("id", $ptCashRole[1]->id_role)->first();
+                pettyCash::where("id", $lastInsertedId)->update(["next_verifikator" => $posi->name]);
+
+                $historyPengadaan = new historyPettyCash();
+                $historyPengadaan->title = "Surat telah disetujui oleh " . Auth::user()->role;
+                $historyPengadaan->note = "-";
+                $historyPengadaan->tanggal = date("Y-m-d");
+                $historyPengadaan->id_surat_pettycash =  $lastInsertedId;
+                $historyPengadaan->id_user = Auth::user()->id;
+
+                $historyPengadaan->save();
+
+                foreach ($ptCashRole as $rows) {
+                    $approvalPettyCash = new approval_surat_pety_cash();
+
+                    $userCurrent = Auth::user()->name;
+                    $status = 0;
+                    if ($pos === 1) {
+                        $status = 1;
+                        $titleSurat = "Surat Pengadaan Berhasil Dibuat";
+                    } else {
+                        $titleSurat = "-";
+                    }
+
+                    $is_next = 0;
+
+                    if ($pos === 2) {
+                        $is_next = 1;
+                    }
+
+                    $approvalPettyCash->nama = $titleSurat;
+                    $approvalPettyCash->id_surat = $lastInsertedId;
+                    $approvalPettyCash->id_jabatan = $rows->id_role;
+                    $approvalPettyCash->status = $status;
+                    $approvalPettyCash->note = "-";
+                    $approvalPettyCash->title = $userCurrent;
+                    $approvalPettyCash->is_next = $is_next;
+                    if ($pos === 1) {
+                        $approvalPettyCash->approved_by = Auth::user()->id;
+                    } else {
+                        $approvalPettyCash->approved_by = 0;
+                    }
+
+                    $approvalPettyCash->save();
+                    $pos++;
                 }
-
-                $is_next = 0;
-
-                if ($pos === 2) {
-                    $is_next = 1;
-                }
-
-                $approvalPettyCash->nama = $titleSurat;
-                $approvalPettyCash->id_surat = $lastInsertedId;
-                $approvalPettyCash->id_jabatan = $rows->id_role;
-                $approvalPettyCash->status = $status;
-                $approvalPettyCash->note = "-";
-                $approvalPettyCash->title = $userCurrent->name;
-                $approvalPettyCash->is_next = $is_next;
-                if ($pos === 1) {
-                    $approvalPettyCash->approved_by = Auth::user()->id;
-                } else {
-                    $approvalPettyCash->approved_by = 0;
-                }
-
-                $approvalPettyCash->save();
-                $pos++;
             }
-        }
 
-        if ($files) {
-            foreach ($files as $file) {
-                $fileName = $file->hashName();
+            $lenFiles = $request->fileLength;
+
+            for ($ins = 0; $ins < $lenFiles; $ins++) {
+                $fileName = $request->file("files" . $ins)->hashName();
                 // Save the file to the 'storage/app/public/uploads' directory with the random name
-                $path = $file->storeAs('uploads', $fileName, 'public');
+                $path = $request->file("files" . $ins)->storeAs('uploads', $fileName, 'public');
                 \Log::info('File uploaded to:', ['path' => $path]);
 
                 $dokumen = new DocPettyCash();
@@ -205,18 +229,18 @@ class PettyCashController extends Controller
 
                 $dokumen->save();
             }
-        }
 
-        // Return JSON response
-        return response()->json([
-            'message' => 'Input Pengadaan Berhasil Disimpan!',
-            'status' => 200
-        ]);
+            // Return JSON response
+            return response()->json([
+                'message' => 'Input PettyCash Berhasil Disimpan!',
+                'status' => 200
+            ]);
+        }
     }
 
     public function approvalPettyCash(Request $request)
     {
-        $approved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $request->t_index)->get();
+        $approved = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name")->where("id_surat", $request->t_index)->where("positions.aktif", "1")->get();
 
         $is_current = false;
         $jml = 0;
@@ -230,10 +254,22 @@ class PettyCashController extends Controller
                 approval_surat_pety_cash::where("id", $rows->id)->update(array(
                     "is_before" => 0,
                     "is_next" => 1,
-                    'note' => $request->verifikasi_berkas
+                    'note' => trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas)
                 ));
 
                 $is_current = false;
+
+                $historyPengadaan = new historyPettyCash();
+                $historyPengadaan->title = "Surat telah disetujui oleh " . $rows->name;
+                $historyPengadaan->note = trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas);
+                $historyPengadaan->tanggal = date("Y-m-d");
+                $historyPengadaan->id_surat_pettycash =  $request->t_index;
+                $historyPengadaan->id_user = $rows->id_jabatan;
+
+                $historyPengadaan->save();
+
+                $posi = Position::where("id", $rows->id_jabatan)->first();
+                pettyCash::where("id", $request->t_index)->update(["next_verifikator" => $posi->name]);
                 break;
             }
             if ($request->teks_person_approval_new == $rows->id_jabatan) {

@@ -5,7 +5,7 @@
                 <th>Prioritas</th>
                 <th class="table-plus datatable-nosort">Role</th>
                 <th>Unit Bisnis</th>
-                <th>Nama Unit Bisnis</th>
+                <th>Aktif</th>
                 <th>Tugas</th>
                 <th class="datatable-nosort"></th>
             </tr>
@@ -20,9 +20,9 @@
             @endphp
             <tr>
                 <td>
-                    <input type="hidden" id={{ "id_role_pengadaan_lainnya_".$an }} name={{ "id_role_lainnya__".$an }}
+                    <input type="hidden" id={{ "id_role_pengadaan_lainnya_".$an }} name={{ "id_role_pengadaan_lainnya_".$an }}
                         class="form-control" value="{{ $row->id }}" style="width: 70px!important;" />
-                    <input type="number" id={{ "role_pengadaan_lainnya_".$an }} name={{ "role_lainnya__".$an }}
+                    <input type="number" id={{ "role_pengadaan_lainnya_".$an }} name={{ "role_pengadaan_lainnya_".$an }}
                         class="form-control" value="{{ $row->urutan }}" style="width: 70px!important;" />
                 </td>
                 <td class="table-plus">
@@ -80,7 +80,15 @@
         </tbody>
     </table>
 
-    <button class="btn btn-primary" type="submit" style="margin-left: 20px; margin-top: 20px;">
-        <i class="fa fa-refresh"></i>&nbsp; Update Role
-    </button>
+    <div class="disabled-button">
+        <button class="btn btn-primary disabled-btn" type="submit" style="margin-left: 20px; margin-top: 20px;">
+            <i class="fas fa-spinner fa-spin"></i>&nbsp; Please Wait ...
+        </button>
+    </div>
+
+    <div class="shows-button">
+        <button class="btn btn-primary" type="submit" style="margin-left: 20px; margin-top: 20px;">
+            <i class="fa fa-edit"></i>&nbsp; Update Role
+        </button>
+    </div>
 </div>

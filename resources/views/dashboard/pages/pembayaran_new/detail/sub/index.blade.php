@@ -34,7 +34,7 @@ $display_pengguna = 'display: none;';
                     <div class="col-md-12"
                         style="padding:0!important; margin:0!important; display: flex; align-items: center;">
                         <div>
-                            <a href="{{ route('petty_cash') }}">
+                            <a href="{{ route('pembayaran') }}">
                                 <div
                                     style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
                                     <i class="fa fa-arrow-left" style="font-size: 18px;"></i>
@@ -44,7 +44,7 @@ $display_pengguna = 'display: none;';
                         <div style="margin-left: 20px;">
                             <h4 class="font-20 weight-500 text-capitalize">
                                 <div class="weight-600 font-24">
-                                    Detail Permohonan PettyCash
+                                    Detail Permohonan Pembayaran
                                     <div> <small>{{$pengadaan->no_surat}}</small> </div>
                                 </div>
                             </h4>
@@ -270,15 +270,13 @@ $display_pengguna = 'display: none;';
 
         const urlPengadaan = "{{ route('postPersetujuanNew') }}";
 
-        // Send AJAX request
         $.ajax({
-            url: urlPengadaan, // Laravel route
+            url: urlPengadaan,
             method: 'POST',
             data: formData,
-            processData: false, // Important for FormData
-            contentType: false, // Important for FormData
+            processData: false,
+            contentType: false,
             success: function(response) {
-                //console.log('Success:', response);
                 Swal.fire({
                     icon: "success",
                     title: "Success !",

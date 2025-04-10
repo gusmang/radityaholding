@@ -30,6 +30,16 @@
                         Masuk menggunakan akun yang sudah didaftarkan sebelumnya
                     </h5>
 
+                    @if ($errors->any())
+                        <div class="alert alert-danger mt-4">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div style="margin-top: 30px;">
                         <form method="post" action={{ url('/login') }}>
                             @csrf

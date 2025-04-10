@@ -82,7 +82,7 @@
                                 </label>
                             </td>
                             <td>
-                                <select name="" class="form-control">
+                                <select id={{ "select_role_pembayaran_".$an }} name={{ "select_role_pembayaran_".$an }} class="form-control">
                                     <option value="0"> Mengajukan </option>
                                     <option value="1"> Menyetujui </option>
                                 </select>
@@ -114,10 +114,10 @@
                 </button>
             </div>
 
-            <div
+            {{-- <div
                 style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
                 <div> @php echo $users->links('pagination::bootstrap-4'); @endphp </div>
-            </div>
+            </div> --}}
         </div>
     </form>
 </div>
@@ -140,6 +140,22 @@
         });
     }
 
+    $("#pid_role_unit_usaha_pmb").on('change', function(event) {
+        
+        const urlRole = "{{ route('get_role_list') }}";
+        let index = "{{ Request::segment(3) }}";
+        
+        $.ajax({
+            url: urlRole, // URL to handle the form data
+            type: 'GET',
+            data: "value=" + this.value+"&index="+index,
+            success: function(response) {
+                $("#pt_id_role_pembayaran").html(response);
+            }
+        });
+
+    });
+
     $(document).ready(function() {
         // Attach event listener for form submission
 
@@ -159,7 +175,7 @@
                 success: function(response) {
                     // Display server response
                     if (response.status === 200) {
-                        // window.location = response.redirectUrl;
+                         window.location = response.redirectUrl;
                     } else {
                         alert(response.message);
                     }

@@ -1,6 +1,6 @@
 <div class="modal fade bs-verifikasi-modal-pengadaan" id="bs-verifikasi-modal-pengadaan" tabindex="-1" role="dialog"
     aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <form method="post" id="form-verifikasi-pengadaan-add" name="form-verifikasi-pengadaan-add">
+    <form method="post" id="form-verifikasi-pengadaan-add-new" name="form-verifikasi-pengadaan-add-new">
         <input type="hidden" id="teks_dokumen_pengadaan" name="teks_dokumen_pengadaan" />
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
@@ -21,7 +21,7 @@
                                 value="{{ Auth::user()->role_id }}" />
                             <input type="hidden" name="t_index" id="t_index_sc" value="{{ $pengadaan->id }}" />
 
-                            Apakah anda yakin ingin melakukan verifikasiss berkas ini ? Verifikasi akan diteruskan ke
+                            Apakah anda yakin ingin melakukan verifikasi berkas ini ? Verifikasi akan diteruskan ke
                             <b><span id="teruskan_person"></span></b>
                             <b>
                                 <span id="span_pengadaan_diteruskan"></span>
@@ -33,6 +33,14 @@
                                 id="verifikasi_berkas"></textarea>
                         </div>
                     </div>
+
+                    <div class="col-md-12">
+                        <div class="col-md-12" style="margin: 10px 0 10px 0; padding: 0;">
+                            File Pendukung :
+                        </div>
+                        <input type="file" name="file_upload_ver" id="file_upload_ver" class="form-control" />
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary-outlined" data-dismiss="modal">

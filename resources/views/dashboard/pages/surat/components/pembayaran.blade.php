@@ -7,11 +7,11 @@
                 <th class="table-plus datatable-nosort">No. Surat</th>
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
-                <th>Status Surat</th>
-                <th>Status Pembelian</th>
+                <th>Unit Usaha</th>
+                <th>Detail</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tb-surat-pembayaran">
             @php
             $an = 0;
             @endphp
@@ -39,10 +39,14 @@
                     @endphp
                 </td>
                 <td>
-                    -
+                    @php
+                    echo $row->unit_usaha
+                    @endphp
                 </td>
                 <td>
-                    -
+                    <a href="{{route('detailPembayaran',['index'=> $row->id])}}">
+                        <i class="fa fa-eye"></i>
+                    </a>
                 </td>
                 <!-- <td>
                 <div class="dropdown">

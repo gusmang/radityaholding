@@ -404,7 +404,7 @@
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
                             @php
-                            $urlPdf = 'show-pettycash-pdf';
+                            $urlPdf = 'show-pembayaran-pdf';
                             @endphp
                             <a href="{{ route($urlPdf,['index'=> $pengadaan->id]) }}" target="_blank">
                                 <i class="micon bi bi-download"></i>

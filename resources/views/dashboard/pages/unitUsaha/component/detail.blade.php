@@ -156,10 +156,17 @@ $display_pengguna = 'display: none;';
 
         $("#selected_surat_tipe").val(page - 1);
         if (page === 1) {
+            $(".div_display_unit_sub").hide();
             $("#table_surat_reguler").fadeIn("slow");
             $("#table_surat_lainnya").hide();
         } else if (page === 2) {
+            $(".div_display_unit_sub").hide();
             $("#table_surat_lainnya").fadeIn("slow");
+            $("#table_surat_reguler").hide();
+        }
+        else if (page === 3) {
+            $(".div_display_unit_sub").hide();
+            $("#table_surat_penghapusan").fadeIn("slow");
             $("#table_surat_reguler").hide();
         }
     }

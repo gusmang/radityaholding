@@ -31,7 +31,6 @@ $segment = Request::segment(2);
                     <li>
                         <a href="{{ route($rows->url,['index'=> '1']) }}"
                             class="dropdown-toggle no-arrow {{ $segment == $rows->url ? 'active' : '' }}">
-
                             <span class="{{ $rows->icon }}"></span><span class="mtext">{{ $rows->nama }}</span>
                         </a>
                     </li>
@@ -64,14 +63,13 @@ $segment = Request::segment(2);
                         <div class="col-2">
                             <div
                                 style="width: 35px; height: 35px; border-radius: 50%; background: #DDDDDD; margin-right: 15px;">
-
                             </div>
                         </div>
                         <div class="col-8">
                             <div style="padding:0 5px;">
                                 <div style="margin-top: -5px;">
-                                    <b style="font-size: 13px;"> {{ substr(Auth::user()->name, 0 , 15).".." }} </b>
-                                    <div style="font-size: 12px;"> {{ substr(Auth::user()->role, 0 , 15).".." }} </div>
+                                    <b style="font-size: 12px;"> {{ substr(Auth::user()->name, 0 , 10).".." }} </b>
+                                    <div style="font-size: 11px;"> {{ substr(Auth::user()->role, 0 , 10).".." }} </div>
 
                                 </div>
                             </div>

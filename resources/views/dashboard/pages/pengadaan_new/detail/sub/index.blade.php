@@ -26,6 +26,7 @@ $display_pengguna = 'display: none;';
 <div class="main-container">
     @include("dashboard.pages.pengadaan_new.detail.sub.component.modals.modalVerifikasi")
     @include("dashboard.pages.pengadaan_new.detail.sub.component.modals.modalPersetujuan")
+    @include("dashboard.pages.pengadaan_new.detail.sub.component.modals.modalTolak")
 
     <div class="pd-ltr-20 xs-pd-20-10">
         <div class="min-height-200px">
@@ -34,7 +35,7 @@ $display_pengguna = 'display: none;';
                     <div class="col-md-12"
                         style="padding:0!important; margin:0!important; display: flex; align-items: center;">
                         <div>
-                            <a href="{{ route('petty_cash') }}">
+                            <a href="{{ route('pengadaan') }}">
                                 <div
                                     style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
                                     <i class="fa fa-arrow-left" style="font-size: 18px;"></i>
@@ -44,7 +45,7 @@ $display_pengguna = 'display: none;';
                         <div style="margin-left: 20px;">
                             <h4 class="font-20 weight-500 text-capitalize">
                                 <div class="weight-600 font-24">
-                                    Detail Permohonan PettyCash
+                                    Detail Permohonan Pengadaan
                                     <div> <small>{{$pengadaan->no_surat}}</small> </div>
                                 </div>
                             </h4>
@@ -63,12 +64,12 @@ $display_pengguna = 'display: none;';
                                     <div style="clear: both;"></div>
                                 </div>
                                 <div style="float:left;">
-                                    <h5 style="color: #555555; font-weight: normal;"> Riwayat Persetujuan </h5>
+                                    <h5 style="color: #555555; font-weight: normal;"> Riwayat Persetujuan</h5>
                                     <div style="clear: both;"></div>
                                 </div>
                             </div>
                             <div
-                                style="height: 60px; display: flex; align-items: center; justify-content: flex-start; margin-top: 40px; padding:0 0 0 120px;">
+                                style="height: 60px; display: flex; align-items: center; justify-content: flex-start; margin-top: 40px; padding:0 0 0 30px; overflow: auto;">
                                 @php $pos = -1; $inc = 1; @endphp
                                 @foreach($jabatan as $rowsJ)
                                 <?php
@@ -141,7 +142,7 @@ $display_pengguna = 'display: none;';
                                 @endforeach
                             </div>
 
-                            <div class="col-md-12 col-12 d-flex" style="padding: 20px 0 0 80px;">
+                            <div class="col-md-12 col-12 d-flex" style="padding: 20px 0 0 30px;">
                                 @foreach($jabatan as $rows)
                                 <div style="width: 25%; text-align: 'left'; background: #FFFFFF;">
                                     <h5 style="font-size: 16px; font-weight: 500; width: 150px; "> {{ $rows->name }}
@@ -240,46 +241,64 @@ $display_pengguna = 'display: none;';
 
 @section("footer_modals_pettyCashEdit")
 <script type="text/javascript">
-    const quill = new Quill('#detailIsiSurat', {
-        theme: 'snow'
-    });
-
-
-    $('#form-verifikasi-pengadaan-add').on('submit', function(event) {
-        event.preventDefault();
-
-        let urlDoc = "{{ route('approval-pengadaan') }}";
-
-        $.ajax({
-            type: "POST",
-            url: urlDoc,
-            data: $(this).serialize(),
-            dataType: "json",
-            success: function(data) {
-                if (data.status === 200) {
-                    Swal.fire(
-                        'Confirmed!', 'Document Approved Successfull', 'success'
-                    ).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location = data.redirectUrl;
-                        }
-                    });
-                }
-            }
+    let quill = null;
+    $(document).ready(function(){
+        quill = new Quill('#detailIsiSuratNew', {
+            theme: 'snow'
         });
-
     });
+    
+    
+    let tempFiles = [];
 
+    function addTemplate(){
+        const file = document.getElementById("docFile").files[0];
 
-    $('#formAddPengadaan').on('submit', function(event) {
+        if (file) {
+            // Get the file size in bytes
+            const fileSizeInBytes = file.size;
+
+            // Convert the file size to a readable format (e.g., KB, MB)
+            let fileSizeReadable = fileSizeInBytes;
+            let unit = 'bytes';
+
+            if (fileSizeInBytes >= 1024) {
+                fileSizeReadable = (fileSizeInBytes / 1024).toFixed(2);
+                unit = 'KB';
+            }
+
+            if (fileSizeInBytes >= 1024 * 1024) {
+                fileSizeReadable = (fileSizeInBytes / (1024 * 1024)).toFixed(2);
+                unit = 'MB';
+            }
+
+            let templateAdded = '<div class="col-md-6" style="margin: 10px 0 0 0;">'+
+            '<div class="col-md-12 card" style="padding: 15px;">'+'<div class="row">'+
+            '<div><div class="col-md-12 font-500">'+
+            '<label> '+file.name+' </label>'+
+            '<div style="margin-top: -10px; color: #666666;"> '+fileSizeReadable + ' ' + unit+' </div>'+
+            '</div></div></div></div>';
+
+            document.getElementById("docFile").value = "";
+            tempFiles.push(file);
+
+            $("#uploaded-div").append(templateAdded);
+            document.getElementById("docFile").value = "";
+        } else {
+            alert("Tidak ada file dipilih.");
+        }
+    }
+
+    $('#form-tolak-pengadaan-add').on('submit', function(event) {
         event.preventDefault();
-
         const formData = new FormData(this);
-        formData.append("detailIsiSurat", quill.root.innerHTML);
 
-        const urlPengadaan = "{{ route('postPersetujuanNew') }}";
+        if(document.getElementById('file_upload_tolak').files[0] !== null){
+            formData.append("files", document.getElementById('file_upload_tolak').files[0]);
+        }
 
-        // Send AJAX request
+        const urlPengadaan = "{{ route('tolakPengadaan') }}";
+
         $.ajax({
             url: urlPengadaan, // Laravel route
             method: 'POST',
@@ -287,7 +306,131 @@ $display_pengguna = 'display: none;';
             processData: false, // Important for FormData
             contentType: false, // Important for FormData
             success: function(response) {
-                //console.log('Success:', response);
+                Swal.fire({
+                    icon: "success",
+                    title: "Success !",
+                    text: response.message
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = "{{ route('pengadaan') }}";
+                    }
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+            },
+
+        })
+    });
+
+    $('#form-verifikasi-pengadaan-add-new').on('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+
+        if(document.getElementById('file_upload_ver').files[0] !== null){
+            formData.append("files", document.getElementById('file_upload_ver').files[0]);
+        }
+
+        const urlPengadaan = "{{ route('approval-pengadaan') }}";
+
+        $.ajax({
+            url: urlPengadaan, // Laravel route
+            method: 'POST',
+            data: formData,
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            success: function(response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success !",
+                    text: response.message
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = "{{ route('pengadaan') }}";
+                    }
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+            },
+
+        })
+    });
+
+    function tolakBerkas(id){
+        Swal.fire({
+            title: "Tolak Berkas",
+            text: "Apakah anda yakin tolak berkas ini ?",
+            icon: "question",
+            confirmButtonText: "Tolak Berkas",
+            cancelButtonText: "Batal",
+            showCancelButton: true,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                //Swal.fire("Saved!", "", "success");
+            } else if (result.isDenied) {
+               // Swal.fire("Changes are not saved", "", "info");
+            }
+        });
+    }
+    
+    function addPengadaan(form){
+        event.preventDefault();
+
+        const formData = new FormData(form);
+        formData.append("_token" , "<?php echo csrf_token(); ?>")
+        formData.append("detailIsiSurat", quill.root.innerHTML);
+        for(var ans = 0; ans < tempFiles.length; ans++){
+            formData.append("files"+ans, tempFiles[ans]);
+        }
+        formData.append("fileLength" , tempFiles.length);
+
+        const urlPengadaan = "{{ route('postPersetujuanNew') }}";
+
+        $.ajax({
+            url: urlPengadaan, // Laravel route
+            method: 'POST',
+            data: formData,
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            success: function(response) {
+                Swal.fire({
+                    icon: "success",
+                    title: "Success !",
+                    text: response.message
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = "{{ route('pengadaan') }}";
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', xhr.responseText);
+            },
+        })
+    }
+
+    $('#formAddPengadaan').on('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        formData.append("detailIsiSurat", quill.root.innerHTML);
+        for(var ans = 0; ans < tempFiles.length; ans++){
+            formData.append("files"+ans, tempFiles[ans]);
+        }
+        formData.append("fileLength" , tempFiles.length);
+
+        const urlPengadaan = "{{ route('postPersetujuanNew') }}";
+
+        $.ajax({
+            url: urlPengadaan, // Laravel route
+            method: 'POST',
+            data: formData,
+            processData: false, // Important for FormData
+            contentType: false, // Important for FormData
+            success: function(response) {
                 Swal.fire({
                     icon: "success",
                     title: "Success !",
@@ -307,6 +450,7 @@ $display_pengguna = 'display: none;';
     })
 
     function showApprovePt(id, role, person, next) {
+        $(".formInputNew").hide();
         $("#teruskan_person").html(next);
         $("#teks_dokumen_pengadaan").val(id);
         $("#teks_branch_approval").val(role);
@@ -331,10 +475,33 @@ $display_pengguna = 'display: none;';
                 $("#div-pendukung-dokumen").hide();
                 $("#teks_branch_approval_sc").val(role);
             } else {
-                //console.log('clicked cancel');
             }
         })
-        //$("#bs-persetujuan-modal").modal("show");
+    }
+
+    function showTolakBerkas(id){
+        $("#bs-tolak-modal").modal("show");
+    }
+
+    function showApprovePmb(id, role, person) {
+        Swal.fire({
+            title: 'Approve Document ?',
+            text: "Apakah Anda Yakin Akan Verifikasi",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Ya, Setujui'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                let urlDoc = "";
+                $(".formInputNew").hide();
+                $("#formAddPembayaranNew").show();
+                $("#div-informasi-dasar").hide();
+                $("#div-input-dokumen").show();
+                $("#div-pendukung-dokumen").hide();
+                $("#teks_branch_approval_sc").val(role);
+            } else {
+            }
+        })
     }
 </script>
 @endsection

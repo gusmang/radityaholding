@@ -17,12 +17,16 @@
         #tbl_detail tbody {
             border: 1px solid #333333;
         }
+
+        .page-break {
+            page-break-before: always;
+        }
     </style>
 </head>
 
 <body>
     <div>
-        <img src="{{ $logoPath }}" height="100" />
+        <img src="{{ $logoPath }}" height="40" />
     </div>
     <div style="border:1px solid #000000; margin-top: 5px;"></div>
     <div style="border:2px solid #000000; margin-top: 2px;"></div>
@@ -84,7 +88,7 @@
                     <?php
                     if ($rows->signature_url !== "-") {
                     ?>
-                        <img src={{ str_replace("public","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
                             style="height: 90px;" />
                     <?php
                     }
@@ -99,8 +103,12 @@
         }
         ?>
 
+        <div style="clear: both;"></div>
+        <div class="page-break"></div>
+
         <p>&nbsp;</p>
         <center> Menyetujui </center>
+        <p>&nbsp;</p>
 
         <?php
         $incr = 0;
@@ -120,13 +128,13 @@
             ?>
             <div style="float: left; width: 50%; text-align: center;">
                 <div style="text-decoration: underline; font-weight; bold;">
-                    <b><?php echo str_replace("public", "", getcwd()) . '/storage/app/public/' . $rows->signature_url ?></b>
+                    <b><?php echo $rows->name ?></b>
                 </div>
                 <div style="height: 100px; padding: 10px 0;">
                     <?php
                     if ($rows->signature_url !== "-") {
                     ?>
-                        <img src={{ str_replace("public","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
                             style="height: 90px;" />
                     <?php
                     }

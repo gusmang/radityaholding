@@ -285,7 +285,7 @@ $display_pengguna = 'display: none;';
                     text: response.message
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location = "{{ route('pengadaan') }}";
+                      //  window.location = "{{ route('pengadaan') }}";
                     }
                 });
 

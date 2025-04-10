@@ -10,7 +10,7 @@
         $users->reset_password_token = "-";
         $users->status = $request->chk_aktif_add === null ? 0 : $request->chk_aktif_add ; 
     --}}
-    <form method="post" action="{{ route('addHolding') }}">
+    <form method="post" action="{{ route('addHoldingNew') }}">
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
             <div class="modal-content">

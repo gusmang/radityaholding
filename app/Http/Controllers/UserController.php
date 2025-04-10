@@ -57,7 +57,7 @@ class UserController extends Controller
         $users = new User();
 
         $users->name = $request->name;
-        $users->email = $request->email;
+        $users->email = strtolower($request->email);
         $users->password = Hash::make($request->password);
         $users->id_positions = $request->t_unit_usaha;
         $users->role = $jabatan->name;

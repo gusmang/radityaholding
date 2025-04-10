@@ -7,8 +7,8 @@
                 <th class="table-plus datatable-nosort">No. Surat</th>
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
-                <th>Status Surat</th>
-                <th>Status Pembelian</th>
+                <th>Unit Usaha</th>
+                <th>Detail</th>
             </tr>
         </thead>
         <tbody>
@@ -39,23 +39,28 @@
                     @endphp
                 </td>
                 <td>
-                    -
+                    @php
+                    echo $row->unit_usaha
+                    @endphp
                 </td>
                 <td>
-                    -
+                    <?php
+                    if($row->tipe_surat == "2"){
+                        ?>
+                            <a href="{{route('detailLainnya',['index'=> $row->id])}}"> 
+                                <i class="fa fa-eye"></i> 
+                            </a>
+                        <?php
+                    }
+                    else{
+                    ?>
+                        <a href="{{route('detailPengadaan',['index'=> $row->id])}}"> 
+                            <i class="fa fa-eye"></i> 
+                        </a>
+                    <?php
+                    }
+                    ?>
                 </td>
-                <!-- <td>
-                <div class="dropdown">
-                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                        <i class="dw dw-more"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                        <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                    </div>
-                </div>
-            </td> -->
             </tr>
             @endforeach
         </tbody>

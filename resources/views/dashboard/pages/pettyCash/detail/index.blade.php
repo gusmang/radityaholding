@@ -36,11 +36,17 @@
                                 </button>
                             </a>
 
-                            <a href="{{ route('addPengadaan') }}" type="button">
+                            <div class="disabled-button">
+                                <button class="btn btn-primary disabled-btn" type="submit" style="margin-left: 20px; margin-top: 20px;">
+                                    <i class="fas fa-spinner fa-spin"></i>&nbsp; Please Wait ...
+                                </button>
+                            </div>
+                        
+                            <div class="shows-button">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fa fa-plus"></i>&nbsp; Simpan
                                 </button>
-                            </a>
+                            </div>
                         </div>
 
                     </div>
@@ -111,7 +117,7 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan"
+                                            <input type="text" class="form-control rupiahInput" name="nominalPengajuan"
                                                 id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
                                         </div>
                                     </div>
@@ -154,7 +160,7 @@
                         <div style="clear: both;"></div>
                         <div style="width: 100%; margin-top: 10px;">
                             <h5 class="small-text">Diajukan Oleh</h5>
-                            <h3 class="sub-title-text">Goesmang Asmara</h3>
+                            <h3 class="sub-title-text">{{ Auth::user()->name }}</h3>
                             <input type="hidden" class="form-control mt-2" name="inp_diajukan" id="inp_diajukan"
                                 placeholder="Input Diajukan ..." required />
                         </div>
@@ -182,7 +188,7 @@
                             <h5 class="small-text">Nomor Surat</h5>
                             <div>
                                 <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                    placeholder="Input Invoice ..." required />
+                                    placeholder="Input No. Surat ..." required />
                                 {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
                             </div>
                         </div>
@@ -210,9 +216,14 @@
                                         <label class="required-label"> Dokumen ( Pdf ) </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="file" multiple class="form-control" name="docFile[]"
-                                                id="docFile" placeholder="Pilih Dokumen ..." />
+                                        <div class="row">
+                                            <div class="col-md-11">
+                                                <input type="file"  class="form-control" name="docFile[]"
+                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf" />
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button class="btn btn-primary" id="button-plus" onClick="addTemplate()" type="button"> + </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -220,9 +231,9 @@
 
                             <div class="col-md-12">
 
-                                <div class="row">
+                                <div class="row" id="uploaded-div">
 
-                                    <div class="col-md-6" style="margin: 0;">
+                                    {{-- <div class="col-md-6" style="margin: 0;">
                                         <div class="col-md-12 card" style="padding: 15px;">
                                             <div class="row">
                                                 <div class="col-md-12 font-500">
@@ -242,7 +253,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                 </div>
 
@@ -260,6 +271,46 @@
 
 @section("footer_add_pengadaan")
 <script type="text/javascript">
+    let tempFiles = [];
+
+    function addTemplate(){
+        const file = document.getElementById("docFile").files[0];
+
+        if (file) {
+            // Get the file size in bytes
+            const fileSizeInBytes = file.size;
+
+            // Convert the file size to a readable format (e.g., KB, MB)
+            let fileSizeReadable = fileSizeInBytes;
+            let unit = 'bytes';
+
+            if (fileSizeInBytes >= 1024) {
+                fileSizeReadable = (fileSizeInBytes / 1024).toFixed(2);
+                unit = 'KB';
+            }
+            if (fileSizeInBytes >= 1024 * 1024) {
+                fileSizeReadable = (fileSizeInBytes / (1024 * 1024)).toFixed(2);
+                unit = 'MB';
+            }
+
+            let templateAdded = '<div class="col-md-6" style="margin: 10px 0 0 0;">'+
+            '<div class="col-md-12 card" style="padding: 15px;">'+'<div class="row">'+
+            '<div><div class="col-md-12 font-500">'+
+            '<label> '+file.name+' </label>'+
+            '<div style="margin-top: -10px; color: #666666;"> '+fileSizeReadable + ' ' + unit+' </div>'+
+            '</div></div></div></div>';
+
+            document.getElementById("docFile").value = "";
+            tempFiles.push(file);
+
+            $("#uploaded-div").append(templateAdded);
+            document.getElementById("docFile").value = "";
+        } else {
+            alert("Tidak ada file dipilih.");
+        }
+
+    }
+
     $(document).ready(function() {
         // Attach event listener for form submission
         const quill = new Quill('#detailIsiSurat', {
@@ -270,18 +321,14 @@
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
-            /* const formData = new FormData();
-             formData.append('tanggal', $("#cmbTglPengajuan").val());
-             formData.append('tipeSurat', $("#cmbTipeSurat").val());
-             formData.append('perihal', $("#inp_perihal").val());
-             formData.append('nominal', $("#nominalPengajuan").val());
-             formData.append('detail', $("#nominalDetail").val());
-             formData.append('unitUsaha', $("#cmbUnitUsaha").val());
-             formData.append('invoice', $("#inp_invoice").val());
-             formData.getAll('docFile');
-             */
+            showStates();
+
             const formData = new FormData(this);
             formData.append("detailIsiSurat", quill.root.innerHTML);
+            for(var ans = 0; ans < tempFiles.length; ans++){
+                formData.append("files"+ans, tempFiles[ans]);
+            }
+            formData.append("fileLength" , tempFiles.length);
 
             const urlPengadaan = "{{ route('postPettyCashNew') }}";
 
@@ -299,8 +346,13 @@
                         title: "Success !",
                         text: response.message
                     }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location = "{{ route('petty_cash') }}";
+                        if(result.isDuplicate){
+                            dialogError(response.message);
+                        }
+                        else{
+                            if (result.isConfirmed) {
+                                window.location = "{{ route('petty_cash') }}";
+                            }
                         }
                     });
 

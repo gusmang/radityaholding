@@ -104,7 +104,6 @@
 
                 <div style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end; margin-bottom: 20px;">
                     <div> @php echo $position->links('pagination::bootstrap-4'); @endphp </div>
-
                 </div>
             </div>
         </div>

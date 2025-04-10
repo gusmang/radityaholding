@@ -39,6 +39,7 @@
                         <th> <input type="checkbox" name="chk_name" id="chk_name" style="transform: scale(1.5);" /></th>
                         <th class="table-plus datatable-nosort">Role / Peran </th>
                         <th class="table-plus datatable-nosort">Note</th>
+                        <th class="table-plus datatable-nosort">Unit</th>
                         <th>Status</th>
                         <th class="datatable-nosort">Action</th>
                     </tr>
@@ -63,9 +64,14 @@
                             echo $row->note
                             @endphp
                         </td>
+                        <td class="table-plus">
+                            @php
+                            echo $row->is_unit_usaha === 1 ? "Holding" : "Unit Usaha"
+                            @endphp
+                        </td>
                         <td>
                             <div class="{{ $row->status === 0 ? 'label-nonaktif' : 'label-aktif' }}">
-                                {{ $row->status === 0 ? 'Non Aktif' : 'Aktif' }}
+                                {{ $row->aktif === 0 ? 'Non Aktif' : 'Aktif' }}
                             </div>
                         </td>
                         <td>
@@ -80,7 +86,7 @@
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addAccMenu-modal-lg" onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
                                         <i class="dw dw-eye"></i> Access Menu
                                     </a>
-                                    <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
+                                    <a class="dropdown-item" href="#" onclick="confirmDelete('<?php echo $row->id; ?>')"><i class="dw dw-delete-3"></i> Delete</a>
                                 </div>
                             </div>
                         </td>
@@ -104,6 +110,32 @@
         $("#edit_note").val(rows.note);
         $("#t_index_edit").val(rows.id);
         $("#chk_aktif_edit").prop('checked', rows.aktif);
+    }
+
+    function confirmDelete(index){
+        Swal.fire({
+            icon: "info",
+            title: "Hapus Data?",
+            showDenyButton: true,
+            confirmButtonText: "Hapus",
+            denyButtonText: `Batal`
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+               // Swal.fire("Saved!", "", "success");
+               let urlDel = "{{ route('delete_position') }}";
+               $.ajax({
+                type:"delete",
+                url: urlDel+"?id="+index+"&_token="+"{{ csrf_token() }}",
+                data: "",
+                success:function(data){
+                    window.location = "{{ route('settings',['index'=> '1']);  }}";
+                }
+               })
+            } else if (result.isDenied) {
+               // Swal.fire("Changes are not saved", "", "info");
+            }
+            });
     }
 
     function showMenu(rows) {

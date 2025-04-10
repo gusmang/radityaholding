@@ -24,6 +24,9 @@
     @yield("footer_endMenu_section")
     @yield("footer_modals_holding")
     @yield("footer_modals_unit")
+    @yield("footers_suratList")
+    @yield("footer_laporan")
+    @yield("footer_dashboard")
 
     <!-- Pengadaan -->
     @yield("footer_add_pengadaan")

@@ -34,7 +34,6 @@
                             <th>Organisasi</th>
                             <th>Aktif</th>
                             <th>Tugas</th>
-                            <!-- <th class="datatable-nosort"></th> -->
                         </tr>
                     </thead>
                     <tbody>
@@ -88,23 +87,6 @@
                                     </option>
                                 </select>
                             </td>
-                            <!-- <td>
-                                <div class="dropdown">
-                                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
-                                        role="button" data-toggle="dropdown">
-                                        <i class="dw dw-more"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                        <a class="dropdown-item" href="#" data-toggle="modal"
-                                            data-target="#bd-password-modal-lg">
-                                            <i class="dw dw-lock"></i> Ganti Password
-                                        </a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td> -->
                         </tr>
                         @endforeach
                     </tbody>
@@ -135,6 +117,21 @@ function showModals() {
     });
 }
 
+$("#pid_role_unit_usaha_ptc").on('change', function(event) {
+        
+    const urlRole = "{{ route('get_role_list') }}";
+    let index = "{{ Request::segment(3) }}";
+    
+    $.ajax({
+        url: urlRole, // URL to handle the form data
+        type: 'GET',
+        data: "value=" + this.value+"&index="+index,
+        success: function(response) {
+            $("#pt_id_rol_ptc").html(response);
+        }
+    });
+
+});
 
 $('.formRolePettyCashNew').on('submit', function(event) {
     event.preventDefault(); // Prevent default form submission

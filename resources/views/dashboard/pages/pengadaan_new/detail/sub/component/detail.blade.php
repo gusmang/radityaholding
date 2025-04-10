@@ -11,7 +11,6 @@
                         <div style="clear: both;"></div>
                     </div>
                     <div style="float:left;">
-
                         <h5 style="color: #555555; font-weight: normal;"> Informasi dasar </h5>
                         <div style="clear: both;"></div>
 
@@ -26,102 +25,6 @@
                             value="{{ $person }}" />
                     </div>
                     <div style="clear: both;"></div>
-                    <div style="width: 95%; margin-left: 50px; display: none;" id="div-informasi-persetujuan">
-                        <div style="width: 95%;">
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Nomor Surat </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="text" class="form-control" name="teksNomorSurat"
-                                                id="teksNomorSurat" placeholder="Ketik Nomor Surat ..." required />
-
-                                            <input type="hidden" id="teks_branch_approval_sc"
-                                                name="teks_branch_approval" />
-                                            <input type="hidden" id="teks_person_approval_new_sc"
-                                                name="teks_person_approval_new" value="{{ Auth::user()->role_id }}" />
-                                            <input type="hidden" name="t_index" id="t_index_sc"
-                                                value="{{ $pengadaan->id }}" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Tanggal </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="date" class="form-control" name="cmbTglPengajuan"
-                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Tipe Pengadaan </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <select class="form-control" name="cmbTipeSurat" id="cmbTipeSurat" required>
-                                                <option value="">- Pilih Tipe -</option>
-                                                <option value="Pengadaan">Permohonan Pengadaan</option>
-                                                <option value="Penghapusan Aset">Permohonan Penghapusan Aset</option>
-                                                <option value="Lainnya">Permohonan Lainnya</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Perihal </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="text" class="form-control" name="inp_perihal" id="inp_perihal"
-                                                placeholder="Input Perihal ..." required />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Nominal Pengajuan </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan"
-                                                id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Detail Isi Surat </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        {{-- <div>
-                                            <textarea class="form-control" rows="6" name="detailIsiSurat" id="detailIsiSurat" placeholder="Detail Isi Surat ..." required></textarea>
-                                        </div> --}}
-                                        <div id="detailIsiSurat">
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <div style="width: 95%; margin-left: 50px;" id="div-informasi-dasar">
                         <div class="col-md-12"
                             style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
@@ -199,87 +102,6 @@
                 </div>
             </div>
 
-            <div class="col-md-12 col-12 mt-4" id="div-input-dokumen" style="margin:0; padding: 0; display: none;">
-
-                <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
-                    <div class="pd-20">
-                        <div style="float:left; width: 50px; height: 50px;">
-                            <div class="container-icon"></div>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div style="float:left;">
-                            <h5 style="color: #555555; font-weight: normal;"> Dokumen Pendukung </h5>
-                            <div style="clear: both;"></div>
-                        </div>
-                        <div style="clear: both;"></div>
-                        <div style="width: 95%;">
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
-                                <div class="row">
-                                    <div class="col-md-12 font-500">
-                                        <label class="required-label"> Dokumen ( Pdf ) </label>
-                                    </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="file" multiple class="form-control" name="docFile[]"
-                                                id="docFile" placeholder="Pilih Dokumen ..." />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12">
-
-                                <div class="row">
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 500kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 200kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div style="width: 100%; margin-top: 30px;">
-                        <div style="width: 100%;">
-                            <a href="{{ route('addPengadaan') }}" type="button" style="float: right;">
-                                <button class="btn btn-primary" type="submit">
-                                    <i class="fa fa-plus"></i>&nbsp; Simpan
-                                </button>
-                            </a>
-
-                            <a href="{{ route('addPengadaan') }}" class="mr-4" type="button" style="float: right;">
-                                <button class="btn btn-primary-outlined">
-                                    Batalkan
-                                </button>
-                            </a>
-                        </div>
-                    </div>
-                    <br clear="all" />
-
-                </div>
-            </div>
-
         </form>
 
         <div class="col-md-12 col-12 mt-4" id="div-pendukung-dokumen" style="margin:0; padding: 0;">
@@ -310,7 +132,7 @@
                                             </div>
                                             <div class="col-md-2 font-500">
                                                 <div style="color: #666666; font-size: 21px;">
-                                                    <a href="#" target="_blank">
+                                                    <a href="{{ asset('storage/uploads/'.$rowDoc->nama_dokumen) }}" target="_blank">
                                                         <i class="fa fa-download"></i>
                                                     </a>
                                                 </div>
@@ -351,11 +173,6 @@
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                                 if (strtolower(Auth::user()->role) == "sekretariat") {
                             ?>
-                                    <button type="button" class="btn btn-primary"
-                                        onClick="showApprove2({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
-                                        style="color: white; font-size: 14px; float: left; margin-right: 10px;">
-                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
-                                    </button>
                                 <?php
                                 } else {
                                 ?>
@@ -378,19 +195,18 @@
                                             <?php
                                             if (strtolower(Auth::user()->role) == "sekretariat") {
                                             ?>
-                                                <button type="button" class="btn btn-danger" onClick="showApprove2()"
-                                                    style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
                                             <?php
-                                            } else {
-                                            ?>
-                                                <button type="button" class="btn btn-danger"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
-                                                    style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
-                                            <?php
+                                            } 
+                                            else {
+                                                if($roleApproval->rj === 1){
+                                                    ?>
+                                                        <button type="button" class="btn btn-danger"
+                                                            onClick="showTolakBerkas('{{ $pengadaan->id}}');"
+                                                            style="color: white; font-size: 14px;">
+                                                            <i class="fa fa-trash"></i>&nbsp; Tolak
+                                                        </button>
+                                                    <?php
+                                                }
                                             }
                                             ?>
                                         </div>

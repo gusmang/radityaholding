@@ -8,7 +8,7 @@
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
                 <th>Status Surat</th>
-                <th>Status Pembelian</th>
+                <th>Detail</th>
             </tr>
         </thead>
         <tbody>
@@ -42,7 +42,9 @@
                     -
                 </td>
                 <td>
-                    -
+                    <a href="{{route('detailPettyCash',['index'=> $row->id])}}">
+                        <i class="fa fa-eye"></i>
+                    </a>
                 </td>
                 <!-- <td>
                 <div class="dropdown">

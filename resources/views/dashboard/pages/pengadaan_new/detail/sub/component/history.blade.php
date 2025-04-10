@@ -17,19 +17,27 @@
                     <div style="height:50px; width: 7px; background: #EEEEEE; margin-left: 18px;">
 
                     </div>
-                    @foreach($hasApproved as $appr)
+                    @foreach($historyPengadaan as $appr)
+                    @if(strpos($appr->title, "ditolak") > 0)
+                    <div style="height:130px; width: 7px; background: #EEEEEE; margin-left: 18px;">
+                        <div
+                            style="width:25px; height: 25px; background: #c50303; border-radius: 50%; margin-left: -8px; border: 4px solid #cfe6d9;">
+                        </div>
+                    </div>
+                    @else
                     <div style="height:130px; width: 7px; background: #EEEEEE; margin-left: 18px;">
                         <div
                             style="width:25px; height: 25px; background: #416351; border-radius: 50%; margin-left: -8px; border: 4px solid #cfe6d9;">
                         </div>
                     </div>
+                    @endif
                     @endforeach
                 </div>
                 <div style="float:left; width: 90%;">
                     <div class="col-md-12" style="margin-bottom: 50px;">
                         <h5 style="color: #555555; font-weight: normal; margin-top: 10px;">Riwayat Approval </h5>
                     </div>
-                    @foreach($hasApproved as $appr)
+                    @foreach($historyPengadaan as $appr)
                     <div class="col-md-12" style="height: 130px;">
                         <div class="col-md-12">
                             <div class="row">
@@ -54,11 +62,24 @@
                         </div>
                         <div>
                             {{-- <label style="font-size: 11px; margin-top: 10px;">Catatan : </label> --}}
-                            <h5
-                                style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
-                                {{ $appr->note ? $appr->note : "-" }}
-                            </h5>
-
+                            <div class="row">
+                                @if($appr->file !== "-")
+                                <div class="col-md-9">
+                                    <h5
+                                        style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
+                                        {{ $appr->note ? $appr->note : "-" }}
+                                    </h5>
+                                </div>
+                                <div class="col-md-3" style="font-size: 12px; text-align: right;">
+                                   <a href="{{ asset('storage/'.$appr->file)}}" target="_blank"> <i class="fa fa-file"></i>&nbsp; Attachment </a>
+                                </div>
+                                @else
+                                <h5
+                                    style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
+                                    {{ $appr->note ? $appr->note : "-" }}
+                                </h5>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     @endforeach
@@ -85,39 +106,36 @@
                         <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
+                                if (strtolower(Auth::user()->role) == "sekretariat") {
                             ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <button type="button" class="btn btn-primary form-control"
-                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
+                                <?php
+                                } 
+                                else {
+                                ?>
+                                    <button type="button" class="btn btn-primary"
+                                        onClick="showApprovePt({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
+                                        style="color: white; font-size: 14px;  float: left; margin-right: 10px;">
+                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
+                                    </button>
+                                <?php
+                                }
                             }
                             ?>
 
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                             ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
+                                <div style="float: left;">
+                                    <div>
                                         <div>
                                             <?php
                                             if (strtolower(Auth::user()->role) == "sekretariat") {
                                             ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
                                             <?php
                                             } else {
                                             ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
+                                                <button type="button" class="btn btn-danger"
+                                                    onClick="tolakBerkas('{{ $pengadaan->id}}');"
                                                     style="color: white; font-size: 14px;">
                                                     <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>

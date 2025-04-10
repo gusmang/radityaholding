@@ -11,7 +11,7 @@
                         <div class="col-md-8"
                             style="padding:0!important; margin:0!important; display: flex; align-items: center;">
                             <div>
-                                <a href="{{ route('petty_cash') }}">
+                                <a href="{{ route('pengadaan') }}">
                                     <div
                                         style="padding: 5px; display: flex; justify-content: center; align-items: center; height: 50px; width: 50px; border: 1px solid #DDDDDD; background: #FFFFFF;">
                                         <i class="fa fa-arrow-left" style="font-size: 18px;"></i>
@@ -42,7 +42,6 @@
                                 </button>
                             </a>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -123,12 +122,7 @@
                                         <label class="required-label"> Detail Isi Surat </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
-                                        {{-- <div>
-                                            <textarea class="form-control" rows="6" name="detailIsiSurat" id="detailIsiSurat" placeholder="Detail Isi Surat ..." required></textarea>
-                                        </div> --}}
-                                        <div id="detailIsiSurat">
-                                        </div>
-
+                                        <div id="detailIsiSurat"></div>
                                     </div>
                                 </div>
                             </div>
@@ -167,14 +161,6 @@
                                     value={{ app('App\Helpers\Str')->getUserLog()->id }} />
                                 <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
                                     value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
-
-                                {{-- <select class="form-control mt-2" name="cmbUnitUsaha" id="cmbUnitUsaha" placeholder="Pilih Tanggal ..." required>
-                                    <option value="">- Pilih Unit Usaha -</option>
-                                    @foreach($unitUsaha as $rows)
-                                    <option value="{{ $rows->id }}">{{ $rows->name }}</option>
-                                @endforeach
-                                </select> --}}
-                                {{-- <h3 class="sub-title-text">UD. Surya Nandha - Galeri Teknologi</h3> --}}
                             </div>
                         </div>
 
@@ -182,7 +168,7 @@
                             <h5 class="small-text">Nomor Surat</h5>
                             <div>
                                 <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                    placeholder="Input Invoice ..." required />
+                                    placeholder="Input No. Surat ..." required />
                                 {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
                             </div>
                         </div>
@@ -266,20 +252,9 @@
             theme: 'snow'
         });
 
-
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
-            /* const formData = new FormData();
-             formData.append('tanggal', $("#cmbTglPengajuan").val());
-             formData.append('tipeSurat', $("#cmbTipeSurat").val());
-             formData.append('perihal', $("#inp_perihal").val());
-             formData.append('nominal', $("#nominalPengajuan").val());
-             formData.append('detail', $("#nominalDetail").val());
-             formData.append('unitUsaha', $("#cmbUnitUsaha").val());
-             formData.append('invoice', $("#inp_invoice").val());
-             formData.getAll('docFile');
-             */
             const formData = new FormData(this);
             formData.append("detailIsiSurat", quill.root.innerHTML);
 
@@ -294,6 +269,11 @@
                 contentType: false, // Important for FormData
                 success: function(response) {
                     //console.log('Success:', response);
+                    //alert(response.status);
+                    if(response.status !== 200){
+                        dialogError(response.message);
+                        return false;
+                    }
                     Swal.fire({
                         icon: "success",
                         title: "Success !",
@@ -303,7 +283,6 @@
                             window.location = "{{ route('petty_cash') }}";
                         }
                     });
-
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);

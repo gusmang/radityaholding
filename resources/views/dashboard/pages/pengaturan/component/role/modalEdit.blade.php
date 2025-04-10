@@ -23,7 +23,17 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-12 mt-2">
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Unit Bisnis </label>
+                                <div>
+                                    <select name="is_unit_usaha" id="is_unit_usaha" class="form-control">
+                                        <option value="0"> Unit Usaha</option>
+                                        <option value="1"> Holding </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
                                 <label class="required-label"> Note </label>
                                 <div>
                                     <textarea rows="2" class="form-control" name="edit_note" id="edit_note"></textarea>

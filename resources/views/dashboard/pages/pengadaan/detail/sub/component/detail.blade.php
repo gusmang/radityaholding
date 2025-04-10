@@ -231,7 +231,7 @@
                             <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
                                     <div class="col-md-12 font-500">
-                                        <label class="required-label"> Dokumen ( Pdf ) </label>
+                                        <label class="required-label"> Dokumen ( Pdf , Jpg, Png ) </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
@@ -405,14 +405,14 @@
                                             if (strtolower(Auth::user()->role) == "sekretariat") {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
+                                                    onClick="showTolakBerkas()" style="color: white; font-size: 14px;">
                                                     <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
                                                 </button>
                                             <?php
                                             } else {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
+                                                    onClick="showTolakBerkas({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
                                                     style="color: white; font-size: 14px;">
                                                     <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
                                                 </button>
@@ -507,12 +507,6 @@
                     <div>
                         {!! $disetujui !!}
                     </div>
-                    {{-- <div>
-                        <h3 class="sub-title-text">General Purwanto ( General Manager )</h3>
-                    </div>
-                    <div>
-                        <h3 class="sub-title-text">PIC Purwanto ( PIC Unit )</h3>
-                    </div> --}}
                 </div>
 
             </div>

@@ -17,6 +17,17 @@
                         <div class="row">
 
                             <div class="col-md-12 mt-2">
+                                <label class="required-label"> Organisasi </label>
+                                <div>
+                                    <select class="form-control" name="pid_role_unit_usaha" id="pid_role_unit_usaha_ptc"
+                                        required>
+                                        <option value="1">Unit Usaha</option>
+                                        <option value="0">Holding</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
                                 <label class="required-label"> Nama Role </label>
                                 <div>
                                     <input type="hidden" name="role_status" id="role_status" value="3" />
@@ -25,7 +36,7 @@
                                     <!-- <select class="select-field" style="width: 100%;" name="pt_id_role" id="pt_id_role">
                                         <option value="">- Pilih Posisi -</option>
                                     </select> -->
-                                    <select class="form-control" style="width: 100%;" name="pt_id_role" id="pt_id_role">
+                                    <select class="form-control" style="width: 100%;" name="pt_id_role" id="pt_id_rol_ptc">
                                         <?php
                                         foreach ($roleList as $rows) {
                                         ?>
@@ -34,17 +45,6 @@
                                         <?php
                                         }
                                         ?>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-12 mt-4" style="display: none;">
-                                <label class="required-label"> Organisasi </label>
-                                <div>
-                                    <select class="form-control" name="pid_role_unit_usaha" id="pid_role_unit_usaha"
-                                        required>
-                                        <option value="1">Unit Usaha</option>
-                                        <option value="0">Holding</option>
                                     </select>
                                 </div>
                             </div>
