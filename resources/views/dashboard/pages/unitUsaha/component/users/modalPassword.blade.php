@@ -60,6 +60,11 @@
         $('#form-ulangi-password').on('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
 
+            if($("#sig_rp_new_pass").val() !== $("#sig_rp_recon_pass").val()){
+                alert("Password tidak sama !");
+                return false;
+            }
+
             // Serialize form data
             const formData = $(this).serialize();
             const urlEdit = "{{ route('reset-password') }}";

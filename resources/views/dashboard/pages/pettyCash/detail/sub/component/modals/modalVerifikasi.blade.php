@@ -32,6 +32,12 @@
                             <textarea rows="4" class="form-control" name="verifikasi_berkas"
                                 id="verifikasi_berkas"></textarea>
                         </div>
+                        <div class="col-md-12" style="margin: 0; padding: 0;">
+                            <div class="col-md-12" style="margin: 10px 0 10px 0; padding: 0;">
+                                File Pendukung :
+                            </div>
+                            <input type="file" name="file_upload_ver" id="file_upload_ver" class="form-control" />
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

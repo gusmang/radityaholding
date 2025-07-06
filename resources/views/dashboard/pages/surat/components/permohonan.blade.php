@@ -8,6 +8,8 @@
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
                 <th>Unit Usaha</th>
+                <th>Verifikator</th>
+                <th>Status</th>
                 <th>Detail</th>
             </tr>
         </thead>
@@ -27,6 +29,12 @@
                         style='color: #666666'>".app('App\Helpers\Date')->tanggal_waktu($row->created_at ,
                         false)."</span>"
                     @endphp
+                    <hr />
+                    @php
+                    echo "<b>".$row->nomor_surat_persetujuan."</b><br /><span
+                        style='color: #666666'>".app('App\Helpers\Date')->tanggal_waktu($row->tanggal_dibuat ,
+                        false)."</span>"
+                    @endphp
                 </td>
                 <td>
                     @php
@@ -42,6 +50,30 @@
                     @php
                     echo $row->unit_usaha
                     @endphp
+                </td>
+                <td>
+                    @php
+                    echo $row->next_verifikator
+                    @endphp
+                </td>
+                <td>
+                    <?php
+                    if($row->is_rejected === 1){
+                        ?>
+                            <div class="badge-rejected"> Rejected</div>
+                        <?php
+                    }
+                    else if($row->is_rejected === 0 && $row->position === 0){
+                        ?>
+                            <div class="badge-pending"> Pending </div>
+                        <?php
+                    }
+                    else if($row->position > 0){
+                        ?>
+                            <div class="badge-success"> Approved </div>
+                        <?php
+                    }
+                    ?>
                 </td>
                 <td>
                     <?php
@@ -68,7 +100,7 @@
 
     <div
         style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
-        <div> @php echo $pengadaan->links('pagination::bootstrap-4'); @endphp </div>
+        <div> @php echo $pengadaan->links('pagination::daftar-surat-pengadaan-paging'); @endphp </div>
     </div>
 
 </div>

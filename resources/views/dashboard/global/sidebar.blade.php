@@ -10,8 +10,8 @@ $segment = Request::segment(2);
             <img src="vendors/images/deskapp-logo-white.svg" alt="" class="light-logo" />
         </a> --}}
             <div style="display: flex; flex-direction: center; align-items: center; height: 70px;">
-                <a href="{{ url('/') }}" style="margin: auto;">
-                    <img src="{{ asset('vendors/images/logo.png') }}" height="50" />
+                <a href="javascript::void(0)" style="margin: auto;">
+                    <img src="{{ asset('vendors/images/big_logo.png') }}" alt="logo-raditya" style="height: 40px;" />
                 </a>
             </div>
             <div class="close-sidebar" data-toggle="left-sidebar-close">
@@ -55,7 +55,7 @@ $segment = Request::segment(2);
             </div>
 
         </div>
-        <div style="position: absolute; z-index: 1; bottom: 30px; width: 80%; left: 0; right: 0; margin: auto;">
+        {{-- <div style="position: absolute; z-index: 1; bottom: 30px; width: 80%; left: 0; right: 0; margin: auto;">
             <div
                 style="width: 100%; display: flex; box-shadow:0 0 1px 1px #EEEEEE; height: 60px; background: #FDFDFD; padding: 10px; border-radius: 10px;">
                 <div class="col-12" style="margin:0; padding: 0;">
@@ -82,6 +82,6 @@ $segment = Request::segment(2);
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 </div>

@@ -28,7 +28,7 @@
                                 Jumlah Akun Terdaftar
                             </div>
                             <div class="col-md-8" style="color: #444444;">
-                                {{ count($users) }} Akun
+                                {{ $unitUsaha->user_count }} Akun
                             </div>
                         </div>
                     </div>
@@ -103,9 +103,9 @@
                         <i class="fa fa-edit"></i> Edit
                     </button>
 
-                    <button type="button" class="btn btn-danger-outlined mt-2" data-dismiss="modal" style="width: 100%;">
+                    {{-- <button type="button" class="btn btn-danger-outlined mt-2" id="btn-hapus-modal" onclick="showModalHapus();" style="width: 100%;">
                         <i class="fa fa-trash"></i> Hapus
-                    </button>
+                    </button> --}}
                 </div>
             </div>
         </div>

@@ -31,25 +31,31 @@
 
             <div class="card-box mb-20">
                 <div class="pd-20">
+                <form method="get">
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-12 col-md-3 mt-2">
                             <div> <label> Cari Nama :</label> </div>
                             <div>
-                                <input type="text" class="form-control" placeholder="Cari Nama" name="cari_nama" />
+                                <input type="text" class="form-control" placeholder="Cari Nama" name="cari_nama" id="cari_nama" value="<?php if(isset($_GET['cari_nama'])){ echo $_GET['cari_nama']; } ?>" />
                             </div>
                         </div>
 
-                        <div class="col-3">
-                            <div> <label> Tipe Pengguna :</label> </div>
+                        <div class="col-12 col-md-3 mt-2">
+                            <div> <label> Email :</label> </div>
                             <div>
-                                <select class="form-control" name="tipe_pengguna">
-                                    <option value=""> - Tipe Pengguna - </option>
-                                    <option value="manager">Manager</option>
-                                    <option value="sekretaris">Sektretaris</option>
-                                </select>
+                                <input type="text" class="form-control" placeholder="Cari Email" name="email_nama" id="email_nama" value="<?php if(isset($_GET['email_nama'])){ echo $_GET['email_nama']; } ?>" />
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-2 mt-2">
+                            <div> 
+                                <button class="btn btn-primary form-control" style="margin-top: 30px;" name="btn-submit" id="btn-submit">
+                                    <i class="fa fa-search"></i>&nbsp; Cari
+                                </button>
                             </div>
                         </div>
                     </div>
+                </form>
                 </div>
                 <div class="pb-20">
                     <div style="clear: both; height: 10px;"></div>
@@ -120,11 +126,6 @@
                                                 <i class="fa fa-eye"></i> View Signature
                                             </a>
                                             <a class="dropdown-item" href="#" data-toggle="modal"
-                                                data-target="#bd-addAccMenu-modal-lg"
-                                                onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
-                                                <i class="fa fa-eye"></i> Access Menu
-                                            </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal"
                                                 data-target="#bd-password-modal-lg">
                                                 <i class="dw dw-lock"></i> Ganti Password
                                             </a>
@@ -160,6 +161,13 @@
         document.getElementById("t_index_edit").value = row.id;
         document.getElementById("email_edit").value = row.email;
         document.getElementById("role_edit").value = row.role_id;
+
+        if(row.status === 1){
+            document.getElementById("chk_aktif_edit").checked = true;
+        }
+        else{
+            document.getElementById("chk_aktif_edit").checked = false;
+        }
     }
 
     function confirmDelete(index){
@@ -179,13 +187,13 @@
                 url: urlDel+"?id="+index+"&_token="+"{{ csrf_token() }}",
                 data: "",
                 success:function(data){
-                    window.location = "{{ route('viewHolding',['index'=> '1']);  }}";
+                    window.location = "{{ route('holding',['index'=> '1']);  }}";
                 }
                })
             } else if (result.isDenied) {
                // Swal.fire("Changes are not saved", "", "info");
             }
-            });
+        });
     }
 
     function showMenu(rows) {

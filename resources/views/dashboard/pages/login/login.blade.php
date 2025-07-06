@@ -5,18 +5,26 @@
     <!-- Basic Page Info -->
     <meta charset="utf-8" />
     <title>Login Page - Raditya Holding</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('vendors/images/logo_profile.ico') }}" />
+    <link rel="icon" href="{{ asset('vendors/images/logo_profile.ico') }}" type="image/x-icon">
+    
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     @include("dashboard.pages.global.header")
 </head>
 
 <body class="login-page" style="background: #FFFFFF !important;">
+    @if(session()->has('errors') && session('errors')->has('419'))
+        <div class="alert alert-danger">
+            Your session has expired. Please refresh the page and try again.
+        </div>
+    @endif
     <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
 
         <div class="col-md-5 col-12" style="min-height: 200px;">
             <div>
                 <div class="col-md-12 col-12">
-                    <img src="{{ asset('vendors/images/logo.png') }}" height="43" />
+                    <img src="{{ asset('vendors/images/logo.png') }}" style="height: 50px;" />
                 </div>
 
                 <div class="col-md-12 col-12 mt-4">
@@ -48,7 +56,7 @@
                                     <label class="required-label">Email</label>
                                 </div>
                                 <div>
-                                    <input type="text" class="form-control" placeholder="Masukkan Email" name="email" />
+                                    <input type="text" class="form-control" placeholder="Masukkan Email" name="email" required="required" />
                                 </div>
                             </div>
                             <div class="col-md-12 mt-4" style="padding:0; margin:0;">
@@ -57,7 +65,7 @@
                                 </div>
                                 <div>
                                     <input type="password" class="form-control" placeholder="Masukkan Kata Sandi"
-                                        name="password" />
+                                        name="password"  required="required" />
                                 </div>
                             </div>
 

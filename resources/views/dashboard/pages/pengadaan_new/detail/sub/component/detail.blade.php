@@ -35,8 +35,8 @@
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
                                         {{
-                                        app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at);
-                                    }}
+                                            app('App\Helpers\Date')->tanggalIndo($pengadaan->tanggal);
+                                        }}
                                     </div>
                                 </div>
                             </div>
@@ -49,7 +49,18 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        Pengadaan
+                                        <?php
+                                        //echo $pengadaan->tipe_surat." ";
+                                            if($pengadaan->tipe_surat == "1"){
+                                                echo "Pengadaan Aset";
+                                            }
+                                            else if($pengadaan->tipe_surat == "3"){
+                                                echo "Penghapusan Aset";
+                                            }
+                                            else{
+                                                echo "Pengadaan Lainnya";
+                                            }
+                                        ?>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +101,7 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        {{ strip_tags($pengadaan->detail) }}
+                                        {{ strip_tags(html_entity_decode(($pengadaan->detail))) }}
                                     </div>
                                 </div>
                             </div>
@@ -171,7 +182,7 @@
                         <div style="margin: 0; padding: 0; width: 100%">
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                                if (strtolower(Auth::user()->role) == "sekretariat") {
+                                if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                             ?>
                                 <?php
                                 } else {
@@ -193,12 +204,13 @@
                                     <div>
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                                             ?>
                                             <?php
                                             } 
                                             else {
-                                                if($roleApproval->rj === 1){
+                                                // echo "<br />".Auth::user()->id_positions;
+                                                // if(Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0"){
                                                     ?>
                                                         <button type="button" class="btn btn-danger"
                                                             onClick="showTolakBerkas('{{ $pengadaan->id}}');"
@@ -206,7 +218,7 @@
                                                             <i class="fa fa-trash"></i>&nbsp; Tolak
                                                         </button>
                                                     <?php
-                                                }
+                                              //   }
                                             }
                                             ?>
                                         </div>
@@ -239,6 +251,9 @@
                             <a href="{{ route($urlPdf,['index'=> Request::segment(3)]) }}" target="_blank">
                                 <i class="micon bi bi-download"></i>
                             </a>
+                            {{-- <a href="javascript:void(0)" onclick="showDownload('{{ route($urlPdf,['index'=> Request::segment(3)]) }}');">
+                                <i class="micon bi bi-download"></i>
+                            </a> --}}
                         </div>
                     </div>
 
@@ -264,6 +279,9 @@
                                 <a href="{{ route($urlPdf,['index'=> $setuju[0]->id]) }}" target="_blank">
                                     <i class="micon bi bi-download"></i>
                                 </a>
+                                {{-- <a href="javascript:void(0)" onclick="showDownload('{{ route($urlPdf,['index'=> $setuju[0]->id]) }}');">
+                                    <i class="micon bi bi-download"></i>
+                                </a> --}}
                             </div>
                         </div>
                     <?php

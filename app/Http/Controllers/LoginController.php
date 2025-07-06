@@ -72,7 +72,7 @@ class LoginController extends Controller
             $access2 = AccessMenu::join("menus", "menus.id", "access_menus.id_menu")->where("menus.section", 2)->where("access_menus.id_jabatan", $idpos)->orderBy("menus.status", "asc")->get();
             $accessAll1 = Menu::where("section", 1)->orderBy("menus.status", "asc")->get();
             $accessAll2 = Menu::where("section", 2)->orderBy("menus.status", "asc")->get();
-            
+
             $request->session()->regenerate();
             Session::put('userLog', $auth);
             Session::put('access1', $access1);
@@ -81,7 +81,7 @@ class LoginController extends Controller
             Session::put('roleId', $idpos);
             Session::put('accessAll1', $accessAll1);
             Session::put('accessAll2', $accessAll2);
-            return redirect()->intended('dashboard');
+            return redirect()->route('dashboard');
         }
 
         // Login failed

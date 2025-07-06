@@ -77,9 +77,9 @@
                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-editSignature-modal-lg" onclick="showedit({{ $row }})">
                                         <i class="dw dw-edit2"></i> Edit
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addAccMenu-modal-lg" onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
+                                    {{-- <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-addAccMenu-modal-lg" onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
                                         <i class="dw dw-eye"></i> Access Menu
-                                    </a>
+                                    </a> --}}
                                     <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
                                 </div>
                             </div>

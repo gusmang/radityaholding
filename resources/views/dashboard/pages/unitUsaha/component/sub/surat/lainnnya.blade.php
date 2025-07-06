@@ -7,6 +7,8 @@
                 <th>Unit Bisnis</th>
                 <th>Aktif</th>
                 <th>Tugas</th>
+                <th>Tolak</th>
+                <th>Tanda Tangan</th>
                 <th class="datatable-nosort"></th>
             </tr>
         </thead>
@@ -59,22 +61,47 @@
                         <option value="1" {{ $row->menyetujui === 1 ? "selected" : "" }}> Menyetujui </option>
                     </select>
                 </td>
-                <!-- <td>
-                <div class="dropdown">
-                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#" role="button"
-                        data-toggle="dropdown">
-                        <i class="dw dw-more"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#bd-password-modal-lg">
-                            <i class="dw dw-lock"></i> Ganti Password
-                        </a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                        <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                    </div>
-                </div>
-            </td> -->
+                <td>
+                    <label class="switch">
+                        <?php
+                        if ($row->rj == "1") {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" checked
+                                id={{ "checked_role_rj_pengadaan_".$an }} name={{ "checked_role_rj_pengadaan_".$an }}>
+                        <?php
+                        } else {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_rj_pengadaan_".$an }}
+                                name={{ "checked_role_rj_pengadaan_".$an }}>
+                        <?php
+                        }
+                        ?>
+
+                        <span class="switch-slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <label class="switch">
+                        <?php
+                        if ($row->is_menyetujui == "1") {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" checked
+                                id={{ "checked_role_is_mt_pengadaan_".$an }} name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                        <?php
+                        } else {
+                        ?>
+                            <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_is_mt_pengadaan_".$an }}
+                                name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                        <?php
+                        }
+                        ?>
+
+                        <span class="switch-slider"></span>
+                    </label>
+                </td>
+                <td>
+                    <button class="btn btn-danger" type="button" onclick="deleteRole({{ $row->id }},'pengadaan')"><i class="fa fa-trash"></i></button>
+                </td>
             </tr>
             @endforeach
         </tbody>

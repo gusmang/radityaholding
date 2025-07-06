@@ -69,10 +69,10 @@ Route::get('/generate_pdf', [ReportPdfController::class, 'generatePDF'])->name('
 Route::get('/notif', [MessageController::class, 'sendMessage'])->name('sendMessageNotif');
 
 Route::post('/save-signature', [ReportPdfController::class, 'saveSignature']);
-
+Route::get('/logoutGlobal', [DashboardController::class, 'logout'])->name('logoutGlobal');
 // Route::middleware(['auth', 'role:admin'])->prefix('dashboard')->group(function () {
 Route::middleware(['auth'])->prefix('dashboard')->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/home', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/logout', [DashboardController::class, 'logout'])->name('logout');
 
     Route::get('/jabatan', [UserController::class, 'index'])->name('list-jabatan');
@@ -104,6 +104,8 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/unit-usaha/pos-role-pengadaan', [UnitUsahaController::class, 'editPosPengadaan'])->name('editPosPengadaan');
     Route::post('/unit-usaha/pos-role-pengadaan-lainnya', [UnitUsahaController::class, 'editPosPengadaanLainnya'])->name('editPosPengadaanLainnya');
     Route::post('/unit-usaha/pos-role-penghapusan-lainnya', [UnitUsahaController::class, 'editPosPengadaanHapus'])->name('editPosPengadaanHapus');
+    Route::post('/unit-usaha/pos-role-maintenance-pengadaan', [UnitUsahaController::class, 'editPosPengadaanMaintenance'])->name('editPosPengadaanMaintenance');
+
     Route::post('/jabatan/add', [JabatanController::class, 'add'])->name('role_pengadaan_save');
 
     Route::post('/role/rolePembayaran', [JabatanController::class, 'roleSave'])->name('role_pembayaran_save');
@@ -121,14 +123,15 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/approval-pengadaan', [PengadaanController::class, 'approvalPengadaan'])->name('approval-pengadaan');
     Route::get('/lainnya/addLainnya', [PengadaanController::class, 'addLainnya'])->name('addPengadaanLainnya');
     Route::get('/detail-lainnya/{index}', [LainnyaController::class, 'detailPengadaan'])->name('detailLainnya');
-    Route::post('/tolak-pengadaan', [PengadaanController::class, 'tolakPengadaan'])->name('tolakPengadaan');
+    Route::post('/tolakPengadaan', [PengadaanController::class, 'tolakPengadaan'])->name('tolakPengadaan');
+    Route::post('/postPengadaanMaintenance', [PengadaanController::class, 'postPengadaanMaintenance'])->name('postPengadaanMaintenance');
 
     Route::post('/editAccessMenu', [MenuController::class, 'crud'])->name('editAccessMenu');
     Route::get('/getAccessMenu', [MenuController::class, 'get'])->name('getAccessMenu');
 
     Route::post('/addHolding', [JabatanController::class, 'saveJabatan'])->name('addHolding');
     Route::post('/addHoldingNew', [JabatanController::class, 'saveJabatanHolding'])->name('addHoldingNew');
-    Route::get('/holding', [JabatanController::class, 'viewHolding'])->name('viewHolding');
+    Route::get('/holding', [JabatanController::class, 'viewHolding'])->name('holding');
     //Route::put('/editHolding', [JabatanController::class, 'editHolding'])->name('editHolding');
     Route::put('/update-holding', [JabatanController::class, 'editUserHolding'])->name('update-holding');
     Route::post('/save-signature-holding', [JabatanController::class, 'saveSignatureHolding'])->name('saveSignatureHolding');
@@ -144,7 +147,11 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/petty-cash/{index}', [PettyCashController::class, 'detailPettyCash'])->name('detailPettyCash');
     Route::post('/petty-cash/pos-role-petycash', [PettyCashController::class, 'editPosPettyCash'])->name('editPosPettyCash');
     Route::post('/approval-pettyCash', [PettyCashController::class, 'approvalPettyCash'])->name('approval-pettyCash');
-
+    Route::post('/tolak-petty-cash', [PettyCashController::class, 'tolakPettyCash'])->name('tolakPettyCash');
+    Route::post('/revisi-petty-cash', [PettyCashController::class, 'revisi'])->name('revisi-pettyCash');
+    Route::get('/revisi-pettyCash/{uuid}', [PettyCashController::class, 'revisiPettyCash'])->name('revisiPettyCash');
+    Route::post('/updatePettyCash', [PettyCashController::class, 'updatePettyCash'])->name('updatePettyCash');
+    Route::post('/hapusDocPettyCash', [PettyCashController::class, 'hapusDocPettyCash'])->name('hapusDocPettyCash');
 
     Route::get('/template_surat', [SettingController::class, 'index'])->name('template_surat');
 
@@ -163,7 +170,13 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
 
     Route::get('/pembayaran', [PembayaranController::class, 'index'])->name('pembayaran');
     Route::get('/pembayaran/add', [PembayaranController::class, 'add'])->name('addPembayaran');
+    Route::get('/pembayaran/revisi/{uuid}', [PembayaranController::class, 'revisiPembayaran'])->name('revisiPembayaran');
+    Route::post('/pembayaran/update', [PembayaranController::class, 'updatePembayaran'])->name('postRevisiPembayaran');
     Route::post('/pembayaran/insert', [PembayaranController::class, 'postPembayaran'])->name('postPembayaranNew');
+    Route::post('/tolak-pembayaran', [PembayaranController::class, 'tolakPembayaran'])->name('tolakPembayaran');
+    Route::post('/revisi-pembayaran', [PembayaranController::class, 'revisi'])->name('revisi-pembayaran');
+    Route::post('/hapusDocPembayaran', [PembayaranController::class, 'hapusDocPembayaran'])->name('hapusDocPembayaran');
+
     Route::get('/detailPembayaran/{index}', [PembayaranController::class, 'detailPembayaran'])->name('detailPembayaran');
     Route::post('/approval-pembayaran', [PembayaranController::class, 'approvalPembayaranRoles'])->name('approval-pembayaran');
     Route::post('/postPembayaranRole', [PembayaranController::class, 'postPembayaranRole'])->name('postPembayaranRole');
@@ -171,4 +184,13 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::get('/get-pencarian-laporan', [LaporanController::class, 'index'])->name('get-pencarian-laporan');
 
     Route::get('/getNotif', [NotificationController::class, 'getNotif'])->name('getNotif');
+    Route::get('/createZipPengadaan/{index}', [ReportPdfController::class, 'createZipPengadaan'])->name('createZipPengadaan');
+    Route::get('/createZipPembayaran/{index}', [ReportPdfController::class, 'createZipPembayaran'])->name('createZipPembayaran');
+    Route::get('/createZipPettycash/{index}', [ReportPdfController::class, 'createZipPettycash'])->name('createZipPettycash');
+
+    Route::get('/export-files/{tipe}/{periode}', [ReportPdfController::class, 'exportPdfReport'])->name('export-laporan');
+    Route::post('/getAccessCred', [DashboardController::class, 'getAccessCred'])->name('getAccessCred');
+
+    Route::get('/delete/unit-usaha/{index}', [UnitUsahaController::class, 'hapusUnitUsaha'])->name('hapus-unit-usaha');
+    Route::get('/rolepengadaan/delete/{index}/{segment}/{modules}', [UnitUsahaController::class, 'deleteRolePengadaan'])->name('role-pengadaan-delete');
 });

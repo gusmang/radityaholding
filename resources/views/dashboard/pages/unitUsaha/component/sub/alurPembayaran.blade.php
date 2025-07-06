@@ -5,12 +5,12 @@
             <div class="pd-20">
                 <div class="row">
                     <div class="col-6 d-flex align-items-center">
-                        <h2 style="font-size: 22px;"> Daftar Role Pembayaran</h2>
+                        <h2 style="font-size: 22px;">Daftar Role Pembayaran</h2>
                     </div>
 
                     <div class="col-md-6">
                         <input type="hidden" name="t_jumlah_role_pembayaran" id="t_jumlah_role_pembayaran"
-                            value="{{ count($users) }}" />
+                            value="{{ count($users_pembayaran) }}" />
                         <input type="hidden" name="t_index_pembayaran" id="t_index_pengadaan_pembayaran"
                             value="{{ $unitUsaha->id }}" />
                         <a href="#" onClick="showModals();" class="btn-block" data-toggle="modal"
@@ -33,6 +33,9 @@
                             <th>Organisasi</th>
                             <th>Status</th>
                             <th>Tugas</th>
+                            <th>Tolak</th>
+                            <th>Tanda Tangan</th>
+                            <th></th>
                             <!-- <th class="datatable-nosort"></th> -->
                         </tr>
                     </thead>
@@ -83,27 +86,63 @@
                             </td>
                             <td>
                                 <select id={{ "select_role_pembayaran_".$an }} name={{ "select_role_pembayaran_".$an }} class="form-control">
-                                    <option value="0"> Mengajukan </option>
-                                    <option value="1"> Menyetujui </option>
+                                    <?php
+                                        if($row->menyetujui === 0){
+                                        ?>
+                                            <option value="0" selected> Mengajukan </option>
+                                            <option value="1"> Menyetujui </option>
+                                        <?php
+                                        }
+                                        else{
+                                        ?>
+                                            <option value="0"> Mengajukan </option>
+                                            <option value="1" selected> Menyetujui </option>
+                                        <?php
+                                        }
+                                        ?>
                                 </select>
                             </td>
-                            <!-- <td>
-                                <div class="dropdown">
-                                    <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="#"
-                                        role="button" data-toggle="dropdown">
-                                        <i class="dw dw-more"></i>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
-                                        <a class="dropdown-item" href="#" data-toggle="modal"
-                                            data-target="#bd-password-modal-lg">
-                                            <i class="dw dw-lock"></i> Ganti Password
-                                        </a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-eye"></i> View</a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-edit2"></i> Edit</a>
-                                        <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
-                                    </div>
-                                </div>
-                            </td> -->
+                            <td>
+                                <label class="switch">
+                                    <?php
+                                    if ($row->rj == "1") {
+                                    ?>
+                                        <input type="checkbox" class="switch-input" value="1" checked
+                                            id={{ "checked_role_rj_pengadaan_".$an }} name={{ "checked_role_rj_pengadaan_".$an }}>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_rj_pengadaan_".$an }}
+                                            name={{ "checked_role_rj_pengadaan_".$an }}>
+                                    <?php
+                                    }
+                                    ?>
+            
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <label class="switch">
+                                    <?php
+                                    if ($row->is_menyetujui == "1") {
+                                    ?>
+                                        <input type="checkbox" class="switch-input" value="1" checked
+                                            id={{ "checked_role_is_mt_pengadaan_".$an }} name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <input type="checkbox" class="switch-input" value="1" id={{ "checked_role_is_mt_pengadaan_".$an }}
+                                            name={{ "checked_role_is_mt_pengadaan_".$an }}>
+                                    <?php
+                                    }
+                                    ?>
+            
+                                    <span class="switch-slider"></span>
+                                </label>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger" type="button" onclick="deleteRole({{ $row->id }}, 'pembayaran')"><i class="fa fa-trash"></i></button>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -135,7 +174,6 @@
                     theme: 'bootstrap-5',
                     data: data
                 });
-
             }
         });
     }
@@ -175,7 +213,7 @@
                 success: function(response) {
                     // Display server response
                     if (response.status === 200) {
-                         window.location = response.redirectUrl;
+                        window.location = response.redirectUrl;
                     } else {
                         alert(response.message);
                     }

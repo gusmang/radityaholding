@@ -5202,3 +5202,46 @@ input[type=checkbox] {
 .font-500 {
     font-weight: 500 !important;
 }
+
+.green-circle {
+    width: 40px; 
+    min-height: 40px; 
+    padding: 7px; 
+    border-radius: 50%; 
+    background: #416351; 
+    position: absolute; 
+    z-index: 50; 
+    top: -20px;
+}
+
+.green-check{
+    width: 26px; 
+    height: 26px; 
+    border-radius: 50%; 
+    background: #FFFFFF; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+}
+
+.waiting-circle{
+    width: 40px; 
+    min-height: 40px; 
+    padding: 7px; 
+    border-radius: 50%; 
+    background: brown; 
+    position: absolute; 
+    z-index: 50; 
+    top: -20px;
+}
+
+.disabled-circle{
+    width: 40px; 
+    min-height: 40px;
+    padding: 7px; 
+    border-radius: 50%; 
+    background: #DDDDDD; 
+    position: absolute; 
+    z-index: 50; 
+    top: -20px;
+}

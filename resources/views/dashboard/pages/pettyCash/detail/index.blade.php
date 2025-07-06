@@ -76,7 +76,7 @@
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
                                             <input type="date" class="form-control" name="cmbTglPengajuan"
-                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
+                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required value="<?php echo date('Y-m-d'); ?>"  />
                                         </div>
                                     </div>
                                 </div>
@@ -132,9 +132,9 @@
                                         {{-- <div>
                                             <textarea class="form-control" rows="6" name="detailIsiSurat" id="detailIsiSurat" placeholder="Detail Isi Surat ..." required></textarea>
                                         </div> --}}
-                                        <div id="detailIsiSurat">
-                                        </div>
-
+                                        {{-- <div id="detailIsiSurat">
+                                        </div> --}}
+                                        <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -186,10 +186,15 @@
 
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Nomor Surat</h5>
-                            <div>
-                                <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                    placeholder="Input No. Surat ..." required />
-                                {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
+                            <div class="row">
+                                <div class="col-4">
+                                        <input type="text" class="form-control mt-2" style="display: none;" name="inp_invoice_no" id="inp_invoice_no"
+                                        placeholder="Input No. Surat ..." required disabled="disabled" value="{{ $codeLast }}" />
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
+                                        placeholder="Input No. Surat ..." required />
+                                </div>
                             </div>
                         </div>
 
@@ -217,11 +222,11 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div class="row">
-                                            <div class="col-md-11">
+                                            <div class="col-md-11 col-10">
                                                 <input type="file"  class="form-control" name="docFile[]"
-                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf" />
+                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf,.docx,.jpeg,.xlsx" />
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-1 col-2">
                                                 <button class="btn btn-primary" id="button-plus" onClick="addTemplate()" type="button"> + </button>
                                             </div>
                                         </div>
@@ -273,6 +278,29 @@
 <script type="text/javascript">
     let tempFiles = [];
 
+    CKEDITOR.replace('editor1', {
+        // Disable all notifications
+        disableNotifications: true,
+        
+        // Remove "Powered by CKEditor" from the bottom
+        removePlugins: 'about,notification',
+        
+        // Disable upgrade notifications
+        startupMode: 'wysiwyg',
+        
+        // Hide the "This document was saved from an older version" warning
+        ignoreEmptyParagraph: true,
+        
+        // Disable deprecated API warnings
+        on: {
+            instanceReady: function(ev) {
+                ev.editor.on('notificationShow', function(event) {
+                    event.cancel();
+                });
+            }
+        }
+    });
+
     function addTemplate(){
         const file = document.getElementById("docFile").files[0];
 
@@ -312,19 +340,22 @@
     }
 
     $(document).ready(function() {
-        // Attach event listener for form submission
-        const quill = new Quill('#detailIsiSurat', {
-            theme: 'snow'
-        });
+        const defaultTemplate = templates();
 
+        let editors = CKEDITOR.instances.editor1;
+
+        editors.setData(defaultTemplate);
 
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
             showStates();
 
+            let editor = CKEDITOR.instances.editor1;
+            let htmlContent = editor.getData();
+
             const formData = new FormData(this);
-            formData.append("detailIsiSurat", quill.root.innerHTML);
+            formData.append("detailIsiSurat", htmlContent);
             for(var ans = 0; ans < tempFiles.length; ans++){
                 formData.append("files"+ans, tempFiles[ans]);
             }
@@ -340,7 +371,6 @@
                 processData: false, // Important for FormData
                 contentType: false, // Important for FormData
                 success: function(response) {
-                    //console.log('Success:', response);
                     Swal.fire({
                         icon: "success",
                         title: "Success !",
@@ -355,7 +385,6 @@
                             }
                         }
                     });
-
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);

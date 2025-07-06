@@ -8,7 +8,7 @@
                 <th>Aktif</th>
                 <th>Tugas</th>
                 <th>Tolak</th>
-                <th>Menyetujui</th>
+                <th>Tanda Tangan</th>
                 <!-- <th>Tanda Tangan</th> -->
                 <th class="datatable-nosort"></th>
             </tr>
@@ -99,6 +99,9 @@
 
                         <span class="switch-slider"></span>
                     </label>
+                </td>
+                <td>
+                    <button class="btn btn-danger" type="button" onclick="deleteRole({{ $row->id }},'pengadaan')"><i class="fa fa-trash"></i></button>
                 </td>
             </tr>
             @endforeach

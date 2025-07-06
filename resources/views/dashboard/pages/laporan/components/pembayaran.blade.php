@@ -43,7 +43,7 @@
                         @endphp
                     </td>
                     <td>
-                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="{{ url('dashboard/show-pengadaan-new-pdf/'.$row->id) }}" target="_blank">
+                        <a class="btn btn-link font-24 p-0 line-height-1 no-arrow dropdown-toggle" href="<?php echo route('createZipPembayaran',['index' => $row->id]); ?>" target="_blank">
                             <i class="fa fa-download"></i>
                         </a>
                     </td>

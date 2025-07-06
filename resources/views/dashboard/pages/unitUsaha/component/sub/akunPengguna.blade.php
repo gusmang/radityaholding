@@ -21,8 +21,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg"
-                        type="button">
+                    <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
                         <button class="btn btn-primary" style="float: right;">
                             <i class="fa fa-plus"></i>&nbsp; Tambah Pengguna
                         </button>
@@ -96,15 +95,15 @@
                                         onclick="showPasswordNew({{ $row->id}});" data-target="#bd-password-modal-lg">
                                         <i class="dw dw-lock"></i> Ganti Password
                                     </a>
-                                    <a class="dropdown-item" href="#" data-toggle="modal"
+                                    {{-- <a class="dropdown-item" href="#" data-toggle="modal"
                                         data-target="#bd-addAccMenu-modal-lg"
                                         onclick="showMenu({{ $row }}); $('#acc_t_index').val({{ $row->id}});">
                                         <i class="dw dw-eye"></i> Access Menu
-                                    </a>
+                                    </a> --}}
                                     <a class="dropdown-item" href="#" data-toggle="modal"
                                         data-target="#bd-edituser-modal-lg" onclick="showedit({{ $row }});"><i
                                             class="dw dw-edit2"></i> Edit</a>
-                                    <a class="dropdown-item" href="#"><i class="dw dw-delete-3"></i> Delete</a>
+                                    <a  class="dropdown-item" href="javascript:void(0)" onclick="showDeleteUser({{ $row }})"><i class="dw dw-delete-3"></i> Delete</a>
                                 </div>
                             </div>
                         </td>
@@ -150,6 +149,32 @@
                 for (let an = 0; an < resData.length; an++) {
                     $("#chk_menu_" + resData[an].id_menu).prop("checked", 1);
                 }
+            }
+        });
+    }
+
+    function showDeleteUser(row){
+        Swal.fire({
+            icon: "info",
+            title: "Hapus Data?",
+            showDenyButton: true,
+            confirmButtonText: "Hapus",
+            denyButtonText: `Batal`
+            }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+               // Swal.fire("Saved!", "", "success");
+               let urlDel = "{{ route('delete_user') }}";
+               $.ajax({
+                    type:"delete",
+                    url: urlDel+"?id="+row.id+"&_token="+"{{ csrf_token() }}",
+                    data: "",
+                    success:function(data){
+                        window.location = "{{ route('detailUsaha',['index'=> Request::segment(3)]);  }}";
+                    }
+               })
+            } else if (result.isDenied) {
+               // Swal.fire("Changes are not saved", "", "info");
             }
         });
     }

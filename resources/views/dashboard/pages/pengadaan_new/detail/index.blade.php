@@ -69,7 +69,7 @@
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
                                             <input type="date" class="form-control" name="cmbTglPengajuan"
-                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
+                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required value="<?php echo date('Y-m-d'); ?>"  />
                                         </div>
                                     </div>
                                 </div>

@@ -29,7 +29,7 @@
                     <div class="col-md-12" style="margin-bottom: 50px;">
                         <h5 style="color: #555555; font-weight: normal; margin-top: 10px;">Riwayat Approval </h5>
                     </div>
-                    @foreach($hasApproved as $appr)
+                    @foreach($historyPettyCash as $appr)
                     <div class="col-md-12" style="height: 130px;">
                         <div class="col-md-12">
                             <div class="row">
@@ -53,12 +53,24 @@
                                 <?php echo $appr->nama; ?></h5>
                         </div>
                         <div>
-                            {{-- <label style="font-size: 11px; margin-top: 10px;">Catatan : </label> --}}
-                            <h5
-                                style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
-                                {{ $appr->note ? $appr->note : "-" }}
-                            </h5>
-
+                            <div class="row">
+                                @if($appr->file !== "-")
+                                <div class="col-md-9">
+                                    <h5
+                                        style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
+                                        {{ $appr->note ? $appr->note : "-" }}
+                                    </h5>
+                                </div>
+                                <div class="col-md-3" style="font-size: 12px; text-align: right;">
+                                   <a href="{{ asset('storage/'.$appr->file)}}" target="_blank"> <i class="fa fa-file"></i>&nbsp; Attachment </a>
+                                </div>
+                                @else
+                                <h5
+                                    style="font-weight: normal; font-size: 14px; margin-top: 10px; color: #555555; font-weight: normal; width: 70%;  line-height: 20px;">
+                                    {{ $appr->note ? $appr->note : "-" }}
+                                </h5>
+                                @endif
+                            </div>
                         </div>
                     </div>
                     @endforeach
@@ -82,55 +94,6 @@
                 <div style="clear: both;"></div>
                 <div style="width: 100%; margin-top: 10px;">
                     <div style="margin-top: -20px;">
-                        <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                            ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <button type="button" class="btn btn-primary form-control"
-                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                            ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
-                                            ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
-                                                </button>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
-                                                    style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
-                                                </button>
-                                            <?php
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                        </div>
                     </div>
                     <div
                         style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">

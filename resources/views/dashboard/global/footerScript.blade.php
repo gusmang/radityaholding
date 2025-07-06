@@ -14,8 +14,10 @@ if ($segmentUrl === "dashboard") {
 }
 ?>
 <script src={{ asset("src/scripts/swal2.js") }}></script>
+<script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-daterangepicker/3.0.5/daterangepicker.min.js" integrity="sha512-mh+AjlD3nxImTUGisMpHXW03gE6F4WdQyvuFRkjecwuWLwD2yCijw4tKA3NsEFpA1C3neiKhGXPSIGSfCYPMlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script src={{ asset("src/plugins/datatables/js/jquery.dataTables.min.js") }}></script>
 <script src={{ asset("src/plugins/datatables/js/dataTables.bootstrap4.min.js") }}></script>
@@ -25,13 +27,61 @@ if ($segmentUrl === "dashboard") {
 
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
 {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> --}}
-
+<script src="https://cdn.jsdelivr.net/npm/quill-better-table@1.2.8/dist/quill-better-table.min.js"></script>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0"
         style="display: none; visibility: hidden"></iframe></noscript>
 
 <script type="text/javascript">
 const rupiahInput = document.querySelector('.rupiahInput');
+
+if (typeof CKEDITOR !== 'undefined') {
+    // Disable notifications
+    CKEDITOR.config.notification = { show: function() {} };
+    
+    // Cancel all notifications
+    CKEDITOR.on('instanceCreated', function(event) {
+        event.editor.on('notificationShow', function(evt) {
+            evt.cancel();
+        });
+    });
+    
+    // Remove problematic plugins
+    CKEDITOR.config.removePlugins = 'autosave,flash,iframe';
+}
+
+$(document).ready(function() {
+            // Initialize DateRangePicker
+    // $('.dateRange').daterangepicker({
+    //     opens: 'right', // or 'left', 'center'
+    //     startDate: moment().subtract(29, 'days'),
+    //     endDate: moment(),
+    //     minDate: '01/01/2015',
+    //     maxDate: '12/31/2025',
+    //     locale: {
+    //         format: 'YYYY/MM/DD',
+    //         applyLabel: 'Apply',
+    //         cancelLabel: 'Cancel',
+    //         fromLabel: 'From',
+    //         toLabel: 'To',
+    //         customRangeLabel: 'Custom',
+    //         daysOfWeek: ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'],
+    //         monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    //         firstDay: 1
+    //     },
+    //     ranges: {
+    //         'Today': [moment(), moment()],
+    //         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    //         'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    //         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    //         'This Month': [moment().startOf('month'), moment().endOf('month')],
+    //         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    //     }
+    // }, function(start, end, label) {
+    //     // Callback function when dates are selected
+    //     $('#selectedRange').html('You selected: ' + start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    // });
+});
 
 function loadStates(){
     $(".disabled-button").show();
@@ -43,6 +93,27 @@ function showStates(){
     $(".disabled-button").show();
     $(".shows-button").hide();
 }
+
+function cekCredentials(){
+    let segmentUrl = "{{ Request::segment(2) }}";
+    let _token = "{{ csrf_token() }}";
+
+    let urlPost = "{{ route('getAccessCred') }}";
+
+    $.ajax({
+        type: "POST",
+        data: "url="+segmentUrl+"&_token="+_token,
+        url: urlPost,
+        dataType: "json",
+        success:function(data){
+            if(data.status === 500){
+                window.location = "{{ Route('dashboard') }}";
+            }
+        }
+    })
+}
+
+cekCredentials();
 
 $("#frm-pencarian-laporan").submit(function(e){
     e.preventDefault();
@@ -103,35 +174,36 @@ function getNotifNew(event){
 
 getNotif();
 
-rupiahInput.addEventListener('input', function (e) {
-    // Hapus semua karakter selain angka
-    let value = e.target.value.replace(/[^0-9]/g, '');
+if(rupiahInput !== null){
+    rupiahInput.addEventListener('input', function (e) {
+        // Hapus semua karakter selain angka
+        let value = e.target.value.replace(/[^0-9]/g, '');
 
-    // Format nilai ke dalam format Rupiah
-    if (value.length > 0) {
-        value = parseInt(value, 10).toLocaleString('id-ID');
-    } else {
-        value = '';
-    }
+        // Format nilai ke dalam format Rupiah
+        if (value.length > 0) {
+            value = parseInt(value, 10).toLocaleString('id-ID');
+        } else {
+            value = '';
+        }
 
-    // Set nilai input dengan format Rupiah
-    e.target.value = value ? `Rp ${value}` : '';
-});
+        // Set nilai input dengan format Rupiah
+        e.target.value = value ? `Rp ${value}` : '';
+    });
 
-rupiahInput.addEventListener('blur', function (e) {
-    // Jika input kosong, set ke Rp 0
-    if (e.target.value === '') {
-        e.target.value = 'Rp 0';
-    }
-});
+    rupiahInput.addEventListener('blur', function (e) {
+        // Jika input kosong, set ke Rp 0
+        if (e.target.value === '') {
+            e.target.value = 'Rp 0';
+        }
+    });
 
-rupiahInput.addEventListener('focus', function (e) {
-    // Hapus "Rp" saat input difokuskan
-    if (e.target.value === 'Rp 0') {
-        e.target.value = '';
-    }
-});
-
+    rupiahInput.addEventListener('focus', function (e) {
+        // Hapus "Rp" saat input difokuskan
+        if (e.target.value === 'Rp 0') {
+            e.target.value = '';
+        }
+    });
+}
 
 var sampleArray = [{
     id: 0,
@@ -240,15 +312,15 @@ const requestPermissionAndGetToken = async () => {
     }
 };
 
-document.getElementById("enable-notifications").addEventListener("click", () => {
-    if (Notification.permission === "granted") {
-        requestPermissionAndGetToken();
-    } else if (Notification.permission === "default") {
-        requestNotificationPermission();
-    } else {
-        console.log("Notifications are blocked. Please enable them in the browser settings.");
-    }
-});
+// document.getElementById("enable-notifications").addEventListener("click", () => {
+//     if (Notification.permission === "granted") {
+//         requestPermissionAndGetToken();
+//     } else if (Notification.permission === "default") {
+//         requestNotificationPermission();
+//     } else {
+//         console.log("Notifications are blocked. Please enable them in the browser settings.");
+//     }
+// });
 
 function requestNotificationPermission() {
     Notification.requestPermission().then(permission => {

@@ -69,7 +69,7 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="date" class="form-control" name="cmbTglPengajuan"
+                                            <input type="date" value="<?php echo date('Y-m-d'); ?>" class="form-control" name="cmbTglPengajuan"
                                                 id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
                                         </div>
                                     </div>
@@ -126,9 +126,9 @@
                                         {{-- <div>
                                             <textarea class="form-control" rows="6" name="detailIsiSurat" id="detailIsiSurat" placeholder="Detail Isi Surat ..." required></textarea>
                                         </div> --}}
-                                        <div id="detailIsiSurat">
-                                        </div>
-
+                                        {{-- <div id="detailIsiSurat">
+                                        </div> --}}
+                                        <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -172,9 +172,15 @@
 
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Nomor Surat</h5>
-                            <div>
-                                <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                    placeholder="Input No. Surat ..." required />
+                            <div class="row">
+                                <div class="col-4" style="display: none;">
+                                    <input type="text" class="form-control mt-2" name="inp_invoice_no" id="inp_invoice_no"
+                                    placeholder="Input No. Surat ..." required disabled="disabled" value="{{ $codeLast }}" />
+                                </div>
+                                <div class="col-12">
+                                    <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
+                                        placeholder="Input No. Surat ..." required />
+                                </div>
                             </div>
                         </div>
 
@@ -202,11 +208,11 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div class="row">
-                                            <div class="col-md-11">
+                                            <div class="col-md-11 col-10">
                                                 <input type="file"  class="form-control" name="docFile[]"
-                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf" />
+                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf,.docx,.jpeg,.xlsx" />
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-1 col-2">
                                                 <button class="btn btn-primary" id="button-plus" onClick="addTemplate()" type="button"> + </button>
                                             </div>
                                         </div>
@@ -217,28 +223,6 @@
                             <div class="col-md-12">
 
                                 <div class="row" id="uploaded-div">
-
-                                    {{-- <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 500kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 200kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
 
                                 </div>
 
@@ -257,6 +241,29 @@
 @section("footer_add_pengadaan")
 <script type="text/javascript">
     let tempFiles = [];
+
+    CKEDITOR.replace('editor1', {
+        // Disable all notifications
+        disableNotifications: true,
+        
+        // Remove "Powered by CKEditor" from the bottom
+        removePlugins: 'about,notification',
+        
+        // Disable upgrade notifications
+        startupMode: 'wysiwyg',
+        
+        // Hide the "This document was saved from an older version" warning
+        ignoreEmptyParagraph: true,
+        
+        // Disable deprecated API warnings
+        on: {
+            instanceReady: function(ev) {
+                ev.editor.on('notificationShow', function(event) {
+                    event.cancel();
+                });
+            }
+        }
+    });
 
     function addTemplate(){
         const file = document.getElementById("docFile").files[0];
@@ -296,17 +303,35 @@
     }
 
     $(document).ready(function() {
+        const defaultTemplate = templates();
+
+        const customTemplate = templates(
+        '20 Oktober 2024', 
+        '215/RDT/GYR/X/2024', 
+        'I Wayan Sudarma', 
+        'Marketing Officer', 
+        '15 Januari 2015',
+        'Ni Luh Suastini',
+        '18 Oktober 2024',
+        '648/Holding/HRD/VI/2023',
+        '750.000',
+        'Tujuh Ratus Lima Puluh Ribu Rupiah'
+        );
+
+        let editors = CKEDITOR.instances.editor1;
+
+        editors.setData(customTemplate);
+
         // Attach event listener for form submission
-        const quill = new Quill('#detailIsiSurat', {
-            theme: 'snow'
-        });
-
-
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
             const formData = new FormData(this);
-            formData.append("detailIsiSurat", quill.root.innerHTML);
+
+            let editor = CKEDITOR.instances.editor1;
+            let htmlContent = editor.getData();
+
+            formData.append("detailIsiSurat", htmlContent);
             for(var ans = 0; ans < tempFiles.length; ans++){
                 formData.append("files"+ans, tempFiles[ans]);
             }

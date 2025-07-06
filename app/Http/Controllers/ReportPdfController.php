@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\approval_surat_pembayaran;
 use App\Models\approval_surat_pengadaan;
 use App\Models\approval_surat_pety_cash;
+use App\Models\DocPembayaran;
+use App\Models\DocPengadaan;
+use App\Models\DocPettyCash;
+use App\Models\dokumenPersetujuan;
 use App\Models\Pembayaran;
 use App\Models\User;
 use App\Models\Pengadaan;
@@ -14,7 +18,10 @@ use App\Models\rolePembayaran;
 use App\Models\rolePengadaan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use ZipArchive;
+
 
 class ReportPdfController extends Controller
 {
@@ -26,8 +33,6 @@ class ReportPdfController extends Controller
 
     public function generatePDF(Request $request)
     {
-        $fileName = 'signatures/' . uniqid('signature_', true) . '.png';
-
         $data = [
             'title' => 'Laravel Dompdf Example',
             'date' => date('m/d/Y'),
@@ -45,22 +50,90 @@ class ReportPdfController extends Controller
     {
         $approval_doc = Pengadaan::where("id", $index)->first();
 
-        //$user = User::where("id" , Auth::user()->id)->first();
-
         $pengadaan = Pengadaan::where("id", $index)->first();
 
-        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
-
         $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
-        $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 1)->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
 
-        $row = rolePengadaan::where("menyetujui", 0)->where("id_unit_usaha", $pengadaan->id_unit_usaha)->where("aktif", 1)->where("tipe_surat", 0)->get();
+        $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")
+            ->join("users", "users.id", "approval_doc_pengadaan.approved_by")
+            ->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")
+            ->select("approval_doc_pengadaan.*", "positions.name", "users.*")
+            ->where("approval_doc_pengadaan.id_surat", $index)
+            ->where("approval_doc_pengadaan.status", 1)
+            ->where("role_pengadaan.menyetujui", 1)
+            ->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)
+            ->where("role_pengadaan.aktif", 1)
+            ->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))
+            ->distinct('approval_doc_pengadaan.id_jabatan')->get();
 
+        $lampiran = DocPengadaan::where("id_surat", $index)->count();
 
         $data = [
             'title' => 'Surat Permohonan',
             'date' => date('m/d/Y'),
-            'logoPath' => str_replace("", "", getcwd()) . '/public/vendors/images/logo.png',
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
+            'data' => $approval_doc,
+            'jabatan' => $jabatan,
+            'lampiran' => $lampiran,
+            'menyetujui' => $menyetujui
+        ];
+
+        $pdf = PDF::loadView('pdf.suratPengadaan', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream(str_replace("/", "-", $pengadaan->no_surat) . '.pdf'); // Stream in the browser
+        // return $pdf->download('sample.pdf'); // Download directly
+    }
+
+    public function createZipPengadaan(Request $request)
+    {
+        $zip = new ZipArchive;
+
+        $index = $request->index;
+
+        $pengadaan = Pengadaan::where("id", $request->index)->get();
+
+        $fileName = 'pdf-reporting-pengadaan-archive.zip';
+
+        if (file_exists(storage_path('app/public/' . $fileName))) {
+            unlink(storage_path('app/public/' . $fileName));
+        }
+
+        $approval_doc = Pengadaan::where("id", $index)->first();
+        $persetujuan = Persetujuan::where("id_permohonan", $index)->first();
+
+        $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->where("role_pengadaan.id_unit_usaha", $pengadaan[0]->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan[0]->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
+        $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 1)->where("role_pengadaan.id_unit_usaha", $pengadaan[0]->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan[0]->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
+
+        $lampiran = DocPengadaan::where("id_surat", $index)->count();
+
+        $data = [
+            'title' => 'Surat Permohonan',
+            'date' => date('m/d/Y'),
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
+            'data' => $approval_doc,
+            'lampiran' => $lampiran,
+            'jabatan' => $jabatan,
+            'menyetujui' => $menyetujui
+        ];
+
+        $pdf = PDF::loadView('pdf.suratPengadaan', $data);
+
+        $path = 'pdfs/' . str_replace("/", "-", $pengadaan[0]->no_surat);
+
+        Storage::put($path, $pdf->output());
+
+        $approval_doc = Pengadaan::where("id", $index)->first();
+
+        $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->where("role_pengadaan.id_unit_usaha", $pengadaan[0]->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan[0]->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
+        $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 1)->where("role_pengadaan.id_unit_usaha", $pengadaan[0]->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan[0]->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
+        $lampiran = DocPengadaan::where("id_surat", $persetujuan->id)->count();
+
+        $data = [
+            'title' => 'Surat Permohonan',
+            'date' => date('m/d/Y'),
+            'lampiran' => $lampiran,
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
             'data' => $approval_doc,
             'jabatan' => $jabatan,
             'menyetujui' => $menyetujui
@@ -68,9 +141,108 @@ class ReportPdfController extends Controller
 
         $pdf = PDF::loadView('pdf.suratPengadaan', $data);
 
-        // Optionally, stream or download the PDF
-        return $pdf->stream('sample.pdf'); // Stream in the browser
-        // return $pdf->download('sample.pdf'); // Download directly
+        $path = 'pdfs/persetujuan-' . str_replace("/", "-", $pengadaan[0]->no_surat);
+
+        Storage::put($path, $pdf->output());
+        //Storage::put($path, $pdf->output());
+
+        if ($zip->open(storage_path('app/public/' . $fileName), ZipArchive::CREATE) === TRUE) {
+            $pengadaan = Pengadaan::where("id", $request->index)->get();
+
+            $attach = DocPengadaan::where("id_surat", $request->index)->get();
+
+            $zip->addFile(storage_path('app/pdfs/' . str_replace("/", "-", $pengadaan[0]->no_surat)), "surat-pengadaan-" . $pengadaan[0]->no_surat . "." . "pdf");
+
+            $index = 0;
+            foreach ($attach as $files) {
+                $index++;
+                $exx = explode(".", $files->nama_dokumen);
+                $zip->addFile(storage_path('app/public/uploads/' . $files->nama_dokumen), "file-attachment-" . $index . "." . $exx[1]);
+            }
+
+            $persetujuan = Persetujuan::where("id_permohonan", $pengadaan[0]->id)->first();
+            $docsPersetujuan = dokumenPersetujuan::where("id_surat", $persetujuan->id)->get();
+
+            $zip->addFile(storage_path('app/pdfs/persetujuan-' . str_replace("/", "-", $pengadaan[0]->no_surat)), "surat-persetujuan-" . $persetujuan->no_surat . "." . "pdf");
+
+            $index = 0;
+            foreach ($docsPersetujuan as $files) {
+                $index++;
+                $exx = explode(".", $files->nama_dokumen);
+                $zip->addFile(storage_path('app/public/uploads/persetujuan/' . $files->nama_dokumen), "file-attachment-persetujuan-" . $index  . "." . $exx[1]);
+            }
+
+            $zip->close();
+        }
+
+        //return Storage::disk('public')->download($fileName)->deleteFileAfterSend(true);
+        //return response()->stream(storage_path('app/public/' . $fileName))->deleteFileAfterSend(true);
+        return response()->download(
+            storage_path('app/public/' . $fileName),
+            $pengadaan[0]->no_surat . '.zip', // Nama file yang di-download oleh user
+            ['Content-Type' => 'application/zip']
+        )->deleteFileAfterSend(true);
+    }
+
+    public function createZipPembayaran(Request $request)
+    {
+        $zip = new ZipArchive;
+
+        $pengadaan = Pembayaran::where("id", $request->index)->get();
+
+        $fileName = 'pdf-reporting-pengadaan-archive' . $pengadaan[0]->no_surat . '.zip';
+
+
+        if (file_exists(storage_path('app/public/' . $fileName))) {
+            unlink(storage_path('app/public/' . $fileName));
+        }
+
+        if ($zip->open(storage_path('app/public/' . $fileName), ZipArchive::CREATE) === TRUE) {
+            // Add files to the zip
+            //$files = Storage::files('public/files-to-zip');
+
+            $attach = DocPengadaan::where("id_surat", $request->index)->get();
+
+            $index = 0;
+            foreach ($attach as $files) {
+                $index++;
+                $exx = explode(".", $files->nama_dokumen);
+                $zip->addFile(storage_path('app/public/uploads/' . $files->nama_dokumen), "file-attachment-" . $index . "." . $exx[1]);
+            }
+
+            $zip->close();
+        }
+
+        //return Storage::disk('public')->download($fileName)->deleteFileAfterSend(true);
+        return response()->stream(storage_path('app/public/' . $fileName))->deleteFileAfterSend(true);
+    }
+
+    public function createZipPettycash(Request $request)
+    {
+        $zip = new ZipArchive;
+        $pengadaan = pettyCash::where("id", $request->index)->get();
+
+        $fileName = 'pdf-reporting-pettycash-archive' . $pengadaan[0]->no_surat . '.zip';
+
+        if (file_exists(storage_path('app/public/' . $fileName))) {
+            unlink(storage_path('app/public/' . $fileName));
+        }
+
+        if ($zip->open(storage_path('app/public/' . $fileName), ZipArchive::CREATE) === TRUE) {
+            $attach = DocPettyCash::where("id_surat", $request->index)->get();
+
+            $index = 0;
+            foreach ($attach as $files) {
+                $index++;
+                $exx = explode(".", $files->nama_dokumen);
+                $zip->addFile(storage_path('app/public/uploads/' . $files->nama_dokumen), "file-attachment-" . $index . "." . $exx[1]);
+            }
+
+            $zip->close();
+        }
+
+        //return Storage::disk('public')->download($fileName)->deleteFileAfterSend(true);
+        return response()->stream(storage_path('app/public/' . $fileName))->deleteFileAfterSend(true);
     }
 
     public function showPembayaran(Request $request, $index)
@@ -99,19 +271,22 @@ class ReportPdfController extends Controller
             ->where("role_pembayaran.aktif", 1)
             ->distinct('approval_doc_pembayarans.id_jabatan')->get();
 
+        $lampiran = DocPembayaran::where("id_surat", $request->index)->count();
+
         $data = [
             'title' => 'Surat Permohonan',
             'date' => date('m/d/Y'),
-            'logoPath' => str_replace("", "", getcwd()) . '/public/vendors/images/logo.png',
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
             'data' => $approval_doc,
             'jabatan' => $jabatan,
+            'lampiran' => $lampiran,
             'menyetujui' => $menyetujui
         ];
 
         $pdf = PDF::loadView('pdf.suratPembayaran', $data);
 
         // Optionally, stream or download the PDF
-        return $pdf->stream('sample.pdf'); // Stream in the browser
+        return $pdf->stream(str_replace("/", "-", $pengadaan->no_surat) . '.pdf'); // Stream in the browser
         // return $pdf->download('sample.pdf'); // Download directly
     }
 
@@ -123,6 +298,8 @@ class ReportPdfController extends Controller
 
         $pengadaan = pettyCash::where("id", $index)->first();
 
+        $lampiran = DocPettyCash::where("id_surat", $request->index)->count();
+
         // $user = User::where("id", $pengadaan->id_unit_usaha)->first();
 
         $jabatan = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")
@@ -133,13 +310,15 @@ class ReportPdfController extends Controller
             ->where("approval_doc_pettycash.status", 1)
             ->where("role_petty_cash.menyetujui", 0)
             ->where("role_petty_cash.aktif", 1)->get();
+
         $menyetujui = approval_surat_pety_cash::join("positions", "positions.id", "approval_doc_pettycash.id_jabatan")->join("users", "users.id", "approval_doc_pettycash.approved_by")->join("role_petty_cash", "role_petty_cash.id_role", "approval_doc_pettycash.id_jabatan")->select("approval_doc_pettycash.*", "positions.name", "users.*")->where("approval_doc_pettycash.id_surat", $index)->where("approval_doc_pettycash.status", 1)->where("role_petty_cash.menyetujui", 1)->where("role_petty_cash.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_petty_cash.aktif", 1)->get();
 
         $data = [
             'title' => 'Dokumen Petty Cash',
             'date' => date('m/d/Y'),
-            'logoPath' => str_replace("", "", getcwd()) . '/public/vendors/images/logo.png',
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
             'data' => $approval_doc,
+            'lampiran' => $lampiran,
             'jabatan' => $jabatan,
             'menyetujui' => $menyetujui
         ];
@@ -147,7 +326,7 @@ class ReportPdfController extends Controller
         $pdf = PDF::loadView('pdf.suratPettyCash', $data);
 
         // Optionally, stream or download the PDF
-        return $pdf->stream('pettyCashes.pdf'); // Stream in the browser
+        return $pdf->stream(str_replace("/", "-", $pengadaan->no_surat) . '.pdf'); // Stream in the browser
         // return $pdf->download('sample.pdf'); // Download directly
     }
 
@@ -155,94 +334,28 @@ class ReportPdfController extends Controller
     {
         $approval_doc = Persetujuan::where("id", $index)->first();
 
-        //$user = User::where("id" , Auth::user()->id)->first();
-
-        //$user = User::where("id" , Auth::user()->id)->first();
-
         $pengadaan = Pengadaan::where("id", $approval_doc->id_permohonan)->first();
 
-        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
-
-        // $jabatan = DB::table('users')
-        //     ->where(function ($query) use ($user) {
-        //         $query->where('id_positions',  0)
-        //             ->orWhere('id_positions',  $user->id_positions);
-        //     })
-        //     ->where(function ($query) use ($index) {
-        //         $query->where('role_status',  1)
-        //             ->orWhere('id_positions', 0);
-        //     })
-        //     ->where('status', 1)
-        //     ->orderBy('role_pengadaan', 'asc')
-        //     ->get();
+        $lampiran = DocPengadaan::where("id_surat", $request->index)->count();
 
         $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $approval_doc->id_permohonan)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
         $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $approval_doc->id_permohonan)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 1)->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
 
-        $row = rolePengadaan::where("menyetujui", 0)->where("id_unit_usaha", $pengadaan->id_unit_usaha)->where("aktif", 1)->where("tipe_surat", 0)->get();
-
-        //foreach($)
-
-        //print_r($jabatan);
-        // echo '<pre>' . print_r($jabatan, true) . '</pre>';
-        // die();
-
         $data = [
             'title' => 'Surat Persetujuan',
             'date' => date('m/d/Y'),
-            'logoPath' => str_replace("", "", getcwd()) . '/public/vendors/images/logo.png',
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png',
             'data' => $approval_doc,
             'jabatan' => $jabatan,
+            'lampiran' => $lampiran,
             'menyetujui' => $menyetujui
         ];
 
         $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
 
-        // Optionally, stream or download the PDF
-        return $pdf->stream('sample.pdf'); // Stream in the browser
+        return $pdf->stream(str_replace("/", "-", $pengadaan->no_surat) . '.pdf'); // Stream in the browser
     }
 
-    // public function showPersetujuanPDF(Request $request, $index)
-    // {
-    //     $persetujuan = Persetujuan::where("id", $index)->first();
-    //     $approval_doc = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
-    //     //$user = User::where("id" , Auth::user()->id)->first();
-    //     $approval_docs = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
-
-    //     $pengadaan = Pengadaan::where("id", $persetujuan->id_permohonan)->first();
-
-    //     $user = User::where("id", $pengadaan->id_unit_usaha)->first();
-
-    //     $jabatan = DB::table('users')
-    //         ->where(function ($query) use ($user) {
-    //             $query->where('id_positions',  0)
-    //                 ->orWhere('id_positions',  $user->id_positions);
-    //         })
-    //         ->where(function ($query) use ($user) {
-    //             $query->where('role_status',  1)
-    //                 ->orWhere('id_positions', 0);
-    //         })
-    //         ->where('status', 1)
-    //         ->orderBy('role_pengadaan', 'asc')
-    //         ->get();
-
-    //     $data = [
-    //         'title' => 'Laravel Dompdf Example',
-    //         'date' => date('m/d/Y'),
-    //         'logoPath' => public_path('storage/vendors/images/logo.png'),
-    //         'data' => $persetujuan,
-    //         'approval' => $approval_docs,
-    //         'jabatan' => $jabatan
-    //     ];
-
-    //     $pdf = PDF::loadView('pdf.suratPersetujuan', $data);
-
-    //     // Optionally, stream or download the PDF
-    //     return $pdf->stream('sample.pdf'); // Stream in the browser
-    //     // return $pdf->download('sample.pdf'); // Download directly
-    // }
-
-    //
     public function saveSignature(Request $request)
     {
         // Validate the request
@@ -270,6 +383,84 @@ class ReportPdfController extends Controller
         }
 
         return response()->json(['message' => 'Invalid image data.'], 400);
+    }
+
+    public function exportPdfReport(Request $request, $tipe, $periode)
+    {
+        $periode = $periode;
+        $tipeSurat = $tipe;
+
+        $suratPengadaan = "";
+
+        $dataExport = [];
+
+        if (Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0" || Auth::user()->role_status === 1) {
+            // $pengadaan = Pengadaan::where("isPermohonan", '!=', 1)->where("position", "!=", 0)->orderBy("id", "desc");
+            // $pembayaran = Pembayaran::where("deleted_at", null)->where("position", "1")->orderBy("id", "desc")->paginate(10);
+            // $surat = pettyCash::where("position", "1")->orderBy("id", "desc")->paginate(10);
+            if ($tipe === 1) {
+                $dataExport = Pengadaan::where("isPermohonan", '!=', 1)->where("position", "!=", 0);
+            } else if ($tipe === 2) {
+                $dataExport = Pembayaran::where("deleted_at", null)->where("position", "1");
+            } else {
+                $dataExport = pettyCash::where("position", "1");
+            }
+        } else {
+            if ($tipe === 1) {
+                $dataExport = Pengadaan::where("isPermohonan", '!=', 1)->where("id_unit_usaha", Auth::user()->id_positions)->where("position", "!=", 0);
+            } else if ($tipe === 2) {
+                $dataExport = Pembayaran::where("deleted_at", null)->where("id_unit_usaha", Auth::user()->id_positions)->where("position", "1");
+            } else {
+                $dataExport = pettyCash::where("position", "1")->where("id_unit_usaha", Auth::user()->id_positions);
+            }
+            // $pengadaan = Pengadaan::select("pengadaan.*")->where("isPermohonan", '!=', 1)->where("position", "!=", 0)->join("approval_doc_pengadaan", "approval_doc_pengadaan.id_surat", "pengadaan.id")->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)->where("approval_doc_pengadaan.is_next", 1)->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)->orderBy("pengadaan.id", "desc");
+            // $pembayaran = Persetujuan::where("id_unit_usaha", Auth::user()->id_positions)->where("position", "1")->orderBy("id", "desc")->paginate(10);
+            // $surat = Pembayaran::orderBy("id", "desc")->where("position", "1")->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("petty_cashes.id_unit_usaha", Auth::user()->id_positions)->paginate(10);
+        }
+
+        // echo $periode;
+        // return;
+
+        if ($periode == "1") {
+            $sekarang = time();
+            $satuBulanLalu = strtotime('-1 month', $sekarang);
+            $periode = date('Y-m-d', $satuBulanLalu);
+
+            $dataExport = $dataExport->where("created_at", ">=", $periode)->where("created_at", "<=", date("Y-m-d"));
+        } else if ($periode == "2") {
+            $sekarang = time();
+            $satuBulanLalu = strtotime('-3 month', $sekarang);
+            $periode = date('Y-m-d', $satuBulanLalu);
+
+            $dataExport = $dataExport->where("created_at", ">=", $periode)->where("created_at", "<=", date("Y-m-d"));
+        } else if ($periode == "3") {
+            $sekarang = time();
+            $satuBulanLalu = strtotime('-6 month', $sekarang);
+            $periode = date('Y-m-d', $satuBulanLalu);
+
+            $dataExport = $dataExport->where("created_at", ">=", $periode)->where("created_at", "<=", date("Y-m-d"));
+        } else if ($periode == "4") {
+            $sekarang = time();
+            $satuBulanLalu = strtotime('-12 month', $sekarang);
+            $periode = date('Y-m-d', $satuBulanLalu);
+
+            $dataExport = $dataExport->where("created_at", ">=", $periode)->where("created_at", "<=", date("Y-m-d"));
+        }
+
+        $dataExport = $dataExport->orderBy("id")->get();
+
+        $data = [
+            'title' => 'Dokumen Pengadan',
+            "data" => $periode,
+            "tipe" => $tipeSurat,
+            "dataExport" => $dataExport,
+            'logoPath' => str_replace("", "", getcwd()) . '/vendors/images/big_logo.png'
+        ];
+
+        $pdf = PDF::loadView('pdf.exportedSuratList', $data);
+
+        // Optionally, stream or download the PDF
+        return $pdf->stream(str_replace("/", "-", "export-laporan-" . $suratPengadaan . '.pdf'));
     }
 
     public function saveSignatureNew(Request $request)

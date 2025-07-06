@@ -22,8 +22,14 @@ class SettingController extends Controller
     // }
     public function index(Request $request)
     {
-        $position = Position::orderBy("id", "desc")->paginate(10);
+        $position = Position::orderBy("id", "desc");
         $menu = Menu::where("is_active", 1)->get();
+
+        if (isset($_GET['role_name'])) {
+            $position = $position->where("name", "like", "%" . $_GET['role_name'] . "%");
+        }
+
+        $position = $position->paginate(10);
 
         return view('dashboard.pages.pengaturan.component.detail', compact('position', 'menu'));
     }
@@ -68,11 +74,13 @@ class SettingController extends Controller
         $insertGetId = DB::table('positions')->insert([
             'name' => $request->name,
             'uuid' => Str::uuid(),
-            'note' => $request->note,
+            'note' => $request->note == "" ? "-" : $request->note,
             'id_unit_usaha' => 0,
             'is_unit_usaha' => $request->is_unit_usaha,
-            'aktif' => $request->chk_aktif === null ? "0" : "1"
+            'aktif' => $request->chk_aktif_add === null ? "0" : "1"
         ]);
+
+        $lastId = DB::getPdo()->lastInsertId();
 
         if ($insertGetId) {
             $menu = Menu::where("is_active", 1)->get();
@@ -82,14 +90,14 @@ class SettingController extends Controller
             foreach ($menu as $rows) {
                 if ($request->input("chk_menu_" . $rows->id)) {
                     $accMenu = new AccessMenu();
-                    $accMenu->id_jabatan = $insertGetId;
+                    $accMenu->id_jabatan = $lastId;
                     $accMenu->id_menu = $request->input("chk_menu_" . $rows->id);
 
                     $accMenu->save();
                 }
             }
 
-            return response()->json(['message' => 'Add Positions Success', 'redirectUrl' => route('settings'), 'status' => 200], 200);
+            return response()->json(['message' => 'Jabatan Berhasil ditambahkan', 'redirectUrl' => route('settings'), 'status' => 200], 200);
         } else {
             return response()->json(['message' => 'Failed', 'status' => 400], 400);
         }

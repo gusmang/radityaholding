@@ -60,12 +60,41 @@
                             </div> --}}
 
                             <div class="col-md-12 mt-4">
+                                <label class="required-label"> Prioritas </label>
+                                <div>
+                                    <input type="number" id="cmb-prioritas" name="cmb-prioritas" class="form-control" value="{{ !isset($lastNumPengadaan->urutan) ? 1 : $lastNumPengadaan->urutan+1 }}" />
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
                                 <label class="required-label"> Tanda Tangan </label>
                                 <div>
                                     <select class="form-control" name="pid_ttd_unit_usaha" id="pid_ttd_unit_usaha"
                                         required>
                                         <option value="1">Ya</option>
                                         <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Tolak Berkas </label>
+                                <div>
+                                    <select class="form-control" name="pid_tolak_unit_usaha" id="pid_tolak_unit_usaha"
+                                        required>
+                                        <option value="1">Ya</option>
+                                        <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Tugas </label>
+                                <div>
+                                    <select class="form-control" name="pid_menyetujui_unit_usaha" id="pid_menyetujui_unit_usaha"
+                                        required>
+                                        <option value="0">Mengajukan</option>
+                                        <option value="1">Menyetujui</option>
                                     </select>
                                 </div>
                             </div>

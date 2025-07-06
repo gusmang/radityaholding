@@ -147,7 +147,7 @@
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
                                         {{
-                                        app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at);
+                                        app('App\Helpers\Date')->tanggalIndo($pengadaan->tanggal);
                                     }}
                                     </div>
                                 </div>
@@ -202,7 +202,7 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        {{ strip_tags($pengadaan->detail) }}
+                                        {{ html_entity_decode($pengadaan->detail) }}
                                     </div>
                                 </div>
                             </div>
@@ -370,7 +370,7 @@
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                                             ?>
                                                 <button type="button" class="btn btn-primary form-control"
                                                     onClick="showApprove2()" style="color: white; font-size: 14px;">
@@ -402,7 +402,7 @@
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
                                                     onClick="showTolakBerkas()" style="color: white; font-size: 14px;">
@@ -491,7 +491,7 @@
                 <div style="width: 100%; margin-top: 30px;">
                     <h5 class="small-text">Unit Usaha</h5>
                     <div>
-                        <h3 class="sub-title-text">{{ $pengadaan->unit_usaha }}</h3>
+                        <h3 class="sub-title-text">{{ $usahaBr->name }}</h3>
                     </div>
                 </div>
 

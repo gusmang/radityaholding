@@ -38,6 +38,10 @@
                         id="tab-three-details" onclick="active_tab_surat(this.id , 3)">
                         Surat Penghapusan Aset
                     </div>
+                    <div style="padding:0 20px; color: #666666; cursor: pointer;" class="tab-list-sub"
+                        id="tab-four-details" onclick="active_tab_surat(this.id , 4)">
+                        Surat Maintenance
+                    </div>
                 </div>
                 <div
                     style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
@@ -88,6 +92,18 @@
 
                 @include("dashboard.pages.unitUsaha.component.sub.surat.penghapusan")
 
+            </form>
+
+            <form method="post" id="formAlurPengadaanMaintenance" name="formAlurPengadaanMaintenance">
+                <input type="hidden" name="t_jumlah_role_pengadaanMaintenance" id="t_jumlah_role_pengadaanMaintenance"
+                    value="{{ count($users_maintenance) }}" />
+
+                <input type="hidden" name="t_index_pengadaan_maintenance" id="t_index_pengadaanMaintenance"
+                    value="{{ $unitUsaha->id }}" />
+
+                {{ csrf_field() }}
+
+                @include("dashboard.pages.unitUsaha.component.sub.surat.maintenance")
             </form>
         </div>
 
@@ -222,6 +238,37 @@
             });
         });
 
+        $('#formAlurPengadaanMaintenance').on('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            const formData = $(this).serialize();
+            const urlEdit = "{{ route('editPosPengadaanMaintenance') }}";
+            loadStates();
+            // alert("BosQue");
+
+            // Send AJAX request
+            $.ajax({
+                url: urlEdit, // URL to handle the form data
+                type: 'POST',
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    // Display server response
+                    if (response.status === 200) {
+                      window.location = response.redirectUrl;
+                    } else {
+                      alert(response.message);
+                    }
+
+                    showStates();
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors
+                    $('#response').text('An error occurred: ' + error);
+                }
+            });
+        });
 
         $("#pid_role_unit_usaha").on('change', function(event) {
             //alert("changed");
@@ -234,6 +281,10 @@
                 data: "value=" + this.value+"&index="+index,
                 success: function(response) {
                     $("#pt_id_role").html(response);
+                    // $('#pt_id_role').select2({
+                    //     theme: 'bootstrap-5',
+                    //     data: response
+                    // });
                 }
             });
 

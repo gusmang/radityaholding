@@ -180,11 +180,43 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        {{ strip_tags($pengadaan->detail) }}
+                                        {{ strip_tags(html_entity_decode(($pengadaan->detail))) }}
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <?php
+                            if($pengadaan->is_rejected == true){
+                        ?>
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                            <div class="row">
+                                <div class="col-md-5 font-500">
+                                    <label> Catatan </label>
+                                </div>
+                                <div class="col-md-7" style="color: #444444;">
+                                    <div>
+                                        {{ strip_tags($lastHistory->note) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12"
+                            style="padding:15px 0 15px 0; margin: 0; border-bottom: 1px solid #DDDDDD;">
+                            <div class="row">
+                                <div class="col-md-5 font-500">
+                                    <label> Lampiran </label>
+                                </div>
+                                <div class="col-md-7" style="color: #444444;">
+                                    <div>
+                                        <a href="{{ asset('storage/'.$lastHistory->file)}}" target="_blank"> <i class="fa fa-file"></i>&nbsp; Attachment </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                            }
+                        ?>
 
                     </div>
 
@@ -208,10 +240,10 @@
                         <div style="width: 95%;">
                             <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
-                                    <div class="col-md-12 font-500">
+                                    <div class="col-md-12 col-10 font-500">
                                         <label class="required-label"> Dokumen ( Pdf ) </label>
                                     </div>
-                                    <div class="col-md-12" style="color: #444444;">
+                                    <div class="col-md-12 col-2" style="color: #444444;">
                                         <div>
                                             <input type="file" multiple class="form-control" name="docFile[]"
                                                 id="docFile" placeholder="Pilih Dokumen ..." />
@@ -330,14 +362,15 @@
                     <div style="margin-top: -20px;">
                         <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
                             <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
+                            //echo Session::get('roleId')."===".$lastApprove."&&".$jabatanApproval->status."=== 0";
+                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0 && $pengadaan->is_rejected == true) {
                             ?>
                                 <div style="width: 50%; margin-top: 10px;">
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <button type="button" class="btn btn-primary form-control"
-                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi Berkas
+                                                onClick="showApproveRev()" style="color: white; font-size: 14px;">
+                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
                                             </button>
                                         </div>
                                     </div>
@@ -347,25 +380,43 @@
                             ?>
 
                             <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
+                            //echo Session::get('roleId')."===".$lastApprove."&&".$jabatanApproval->status."=== 0";
+                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0 && $pengadaan->is_rejected == false) {
+                            ?>
+                                <div style="width: 50%; margin-top: 10px;">
+                                    <div style="display: flex; margin-top: 5px;">
+                                        <div>
+                                            <button type="button" class="btn btn-primary form-control"
+                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
+                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php
+                            }
+                            ?>
+
+                            <?php
+                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0  && $pengadaan->is_rejected == false) {
                             ?>
                                 <div style="width: 50%; margin-top: 10px;">
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    onClick="showTolakBerkas()" style="color: white; font-size: 14px;">
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             } else {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
+                                                    onClick="showTolakBerkas({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
                                                     style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak Berkas
+                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
                                                 </button>
                                             <?php
                                             }

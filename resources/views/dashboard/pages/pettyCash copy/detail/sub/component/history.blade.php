@@ -107,7 +107,7 @@
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (app('App\Helpers\Status')->isSekretariat(Auth::user()->role)) {
                                             ?>
                                                 <button type="button" class="btn btn-danger form-control"
                                                     onClick="showApprove2()" style="color: white; font-size: 14px;">

@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\ApprovalDocument;
 use App\Models\DocPengadaan;
 use App\Models\dokumenPersetujuan;
+use App\Models\historyPengadaan;
 use App\Models\rolePembayaran;
 use App\Models\rolePengadaan;
 use Illuminate\Support\Facades\Auth;
@@ -26,23 +27,44 @@ class LainnyaController extends Controller
     public function index(Request $request)
     {
         $users = User::orderBy("id", "desc")->paginate(10);
+        $tanggalSekarang = time(); // Timestamp sekarang
+        $tanggalKemarin = strtotime('-3 days', $tanggalSekarang); // Kurangi 3 hari
+
+        $maxDate = date('Y-m-d', $tanggalKemarin); // Output: tanggal 3 hari yang lalu
         $jabatan = Position::where("deleted_at", null)->get();
-        if (Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0" || Auth::user()->role_status === 1) {
-            $pengadaan = Pengadaan::where("tipe_surat", 2)->orderBy("id", "desc");
+        // Sekretariat
+        if (Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0") {
+            $pengadaan = Pengadaan::select('pengadaan.id as pid', 'approval_doc_pengadaan.*', 'pengadaan.*')
+                ->where("tipe_surat", "=", 2)
+                ->join("approval_doc_pengadaan", "approval_doc_pengadaan.id_surat", "pengadaan.id")
+                ->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)
+                // ->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)
+                ->orderBy("pengadaan.id", "desc");
+
+            $pengadaan_rj = Pengadaan::where("deleted_at", null)->where("tipe_surat", "=", 2)
+                ->where("is_rejected", true)->orderBy("pengadaan.id", "desc")->paginate(12);
+            $pengadaan_appr = Pengadaan::where("deleted_at", null)->where("tipe_surat", "=", 2)
+                ->where("is_rejected", false)->where("position", "!=", 0)->orderBy("pengadaan.id", "desc")->paginate(12);
+            $pengadaan_urgent = Pengadaan::where("deleted_at", null)->where("tipe_surat", "=", 2)
+                ->where("is_rejected", false)->where("position", 0)->where('pengadaan.updated_at', '<=', $maxDate)->orderBy("pengadaan.id", "desc")->paginate(12);
         } else {
-            $pengadaan = Pengadaan::where("tipe_surat", 2)->where("id_unit_usaha", Auth::user()->id_positions)->orderBy("id", "desc");
+            $pengadaan = Pengadaan::select('pengadaan.id as pid', 'approval_doc_pengadaan.*', 'pengadaan.*')
+                ->where("tipe_surat", "=", 2)
+                ->join("approval_doc_pengadaan", "approval_doc_pengadaan.id_surat", "pengadaan.id")
+                ->where("id_unit_usaha", Auth::user()->id_positions)
+                ->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)
+                ->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)
+                ->orderBy("pengadaan.id", "desc");
+
+            $pengadaan_rj = Pengadaan::where("deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc")->where("id_unit_usaha", Auth::user()->id_positions)->orderBy("pengadaan.id", "desc")->paginate(12);
+            $pengadaan_appr = Pengadaan::where("deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->where("id_unit_usaha", Auth::user()->id_positions)->orderBy("pengadaan.id", "desc")->paginate(12);
+            $pengadaan_urgent = Pengadaan::where("tipe_surat", "!=", 2)->join("approval_doc_pengadaan", "approval_doc_pengadaan.id_surat", "pengadaan.id")->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)->where("approval_doc_pengadaan.is_next", 1)->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)->where("is_rejected", false)->where("position", 0)->where("id_unit_usaha", Auth::user()->id_positions)->where('pengadaan.updated_at', '<=', $maxDate)->orderBy("pengadaan.id", "desc")->paginate(12);
         }
 
-        if (Auth::user()->id_positions == "0") {
-            $roles = rolePengadaan::where("tipe_surat", 1)->where("id_role", Auth::user()->role_id)->orderBy("urutan", "asc")->first();
-        } else {
-            $roles = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("tipe_surat", 1)->where("id_role", Auth::user()->role_id)->first();
-        }
+        // echo Auth::user()->role_id;
+        // return;
 
-        // print_r($roles);
-        // die();
-        // echo $roles->urutan;
-        // die();
+        $roles = rolePengadaan::where("tipe_surat", "1")->where("id_role", Auth::user()->role_id)->first();
 
         $submitted = (isset($_GET['btn-submit-new']) && $_GET['btn-submit-new'] === "submit") ? true : false;
 
@@ -51,13 +73,34 @@ class LainnyaController extends Controller
                 $pengadaan = $pengadaan->where("no_surat", $_GET['search_surat']);
             }
             if (!empty($_GET['tanggal_surat'])) {
-                $pengadaan = $pengadaan->where("tanggal", $_GET['tanggal_surat']);
+                $ex_created = explode(" - ", $_GET['tanggal_surat']);
+
+                $pengadaan = $pengadaan->where("pengadaan.created_at", ">=", str_replace("/", "-", $ex_created[0]))->where("pengadaan.created_at", "<=", str_replace("/", "-", $ex_created[1]));
+            }
+            if (!empty($_GET['status_surat'])) {
+                if ($_GET['status_surat'] == "4") {
+                    $pengadaan = $pengadaan->where("position", "!=", "0");
+                } else if ($_GET['status_surat'] == "1") {
+                    $pengadaan = $pengadaan->where('pengadaan.tanggal', '<=', $maxDate);
+                } else if ($_GET['status_surat'] == "2") {
+                    $pengadaan = $pengadaan->where("approval_doc_pengadaan.is_next", 1)
+                        ->where("is_rejected", false)
+                        ->where("position", 0);
+                } else if ($_GET['status_surat'] == "5") {
+                    $pengadaan = $pengadaan->where("is_rejected", true)->where("position", 0);
+                } else if ($_GET['status_surat'] == "3") {
+                    $pengadaan = $pengadaan->where("is_rejected", false)
+                        ->where("position", 0)
+                        ->where('pengadaan.tanggal', '>', $maxDate);
+                } else {
+                    $pengadaan = $pengadaan->where("position", "0");
+                }
             }
         }
 
         $pengadaan = $pengadaan->paginate(12);
 
-        return view('dashboard.pages.lainnya.index', compact('users', 'roles', 'jabatan', 'pengadaan'));
+        return view('dashboard.pages.lainnya.index', compact('users', 'roles', 'jabatan', 'pengadaan', 'pengadaan_rj', 'pengadaan_appr', 'pengadaan_urgent'));
     }
 
     public function detailPengadaan(Request $request, $index)
@@ -82,11 +125,13 @@ class LainnyaController extends Controller
 
         $dokumen = DocPengadaan::where("id_surat", $index)->get();
 
+        $historyPengadaan = historyPengadaan::join("positions", "positions.id", "history_pengadaan.id_jabatan")->select("history_pengadaan.*", "positions.name")->where("id_surat_pengadaan", $index)->get();
+
         $lastApprove = !isset($currentApproval->id_jabatan) ? $jabatan[count($jabatan) - 1]->id_jabatan : $currentApproval->id_jabatan;
         $approvalNext = !isset($currentApproval->name) ? $jabatan[count($jabatan) - 1]->name : $currentApproval->name;
         $diajukan = $jabatan[0]->name;
 
-        return view('dashboard.pages.pengadaan_new.detail.sub.index', compact('jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+        return view('dashboard.pages.pengadaan_new.detail.sub.index', compact('historyPengadaan', 'jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
 
     public function add(Request $request)
@@ -103,6 +148,10 @@ class LainnyaController extends Controller
         $pettyCashes->id_unit_usaha = $request->pid_index_usaha;
         $pettyCashes->id_role = $request->pt_id_role;
         $pettyCashes->urutan = 0;
+        // $pettyCashes->urutan = $request->input("cmb-prioritas");
+        // $pettyCashes->menyetujui = $request->pid_menyetujui_unit_usaha;
+        // $pettyCashes->rj = $request->pid_tolak_unit_usaha;
+        // $pettyCashes->is_menyetujui = $request->pid_ttd_unit_usaha;
         $pettyCashes->aktif = $request->pd_chk_aktif;
 
         $pettyCashes->save();

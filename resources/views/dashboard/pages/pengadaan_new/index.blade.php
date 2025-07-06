@@ -47,17 +47,78 @@
                                     </div>
                                     <div class="col-3">
                                         <div><label> Status : </label></div>
-                                        <select name="status_surat" placeholder="Status Surat ..." class="form-control">
-                                            <option value="">- Pilih Status Surat -</option>
+                                        <select name="status_surat" placeholder="Status Surat ..."
+                                                class="form-control">
+                                                <option value="">- Pilih Status Surat -</option>
+                                                <?php
+                                                    $urgent_sts = "";
+                                                    $onAppr_sts = "";
+                                                    $pending_sts = "";
+                                                    $finished_sts = "";
+                                                    $rejected_sts = "";
+
+                                                    if(isset($_GET['status_surat'])){
+                                                        if($_GET['status_surat'] == "1"){
+                                                            $urgent_sts = "selected";
+                                                        }
+                                                        else if($_GET['status_surat'] == "2"){
+                                                            $onAppr_sts = "selected";
+                                                        }
+                                                        else if($_GET['status_surat'] == "3"){
+                                                            $pending_sts = "selected";
+                                                        }
+                                                        else if($_GET['status_surat'] == "4"){
+                                                            $finished_sts = "selected";
+                                                        }
+                                                        else if($_GET['status_surat'] == "5"){
+                                                            $rejected_sts = "selected";
+                                                        }
+                                                    }
+                                                ?>
+                                                <option value="1" <?php echo $urgent_sts; ?>>Urgent</option>
+                                                <option value="2" <?php echo $onAppr_sts; ?>>On Approve</option>
+                                                <option value="3" <?php echo $pending_sts; ?>>Pending</option>
+                                                <option value="4" <?php echo $finished_sts; ?>>Finished</option>
+                                                <option value="5" <?php echo $rejected_sts; ?>>Rejected</option>
                                         </select>
                                     </div>
                                     <div class="col-3">
                                         <div><label> Tanggal Pengajuan : </label></div>
-                                        <input type="date" name="tanggal_surat" placeholder="Tanggal Pengajuan ..."
+                                        <input type="text" class="dateRange" id="dateRange" name="tanggal_surat" placeholder="Tanggal Pengajuan ..."
                                             class="form-control" />
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pb-20" style="overflow: auto; margin-top: 30px;">
+                <div class="mt-40">
+                    <div style="display: flex; flex-direction: row; margin-top: 10px; padding:0 10px;">
+                        <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;"
+                            class="tab-list {{ $active_detail }} " id="tab-one-detail"
+                            onclick="active_tab(this.id , 1)">
+                            On Progress
+                        </div>
+                        <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                            class="tab-list {{ $active_pengadaan }} " id="tab-two-detail"
+                            onclick="active_tab(this.id , 3);">
+                            Approved
+                        </div>
+                        <div style="padding:0 20px; color: #666666; cursor: pointer;"
+                            class="tab-list {{ $active_pembayaran }} " id="tab-three-detail"
+                            onclick="active_tab(this.id , 2)">
+                            Rejected
+                        </div>
+                    </div>
+                    <div
+                        style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
+                        <div style="display: flex; flex-direction: row;">
+                            <div style="padding:0 10px; width: 170px;"></div>
+                            <div style="padding:0 10px; width: 170px;"></div>
+                            <div style="padding:0 10px; width: 152px;"></div>
                         </div>
                     </div>
                 </div>
@@ -73,8 +134,7 @@
                     $an++;
                     @endphp
                     <div class="col-md-4 col-6 mt-4">
-                        <div class="col-md-12 col-12 card"
-                            style="min-height: 200px; border-radius: 15px;  overflow: hidden; margin: 0; padding:0;">
+                        <div class="col-md-12 col-12 card" style="min-height: 200px; border-radius: 15px; overflow: hidden; margin: 0; padding:0;">
                             <table style="height: 80px; border-bottom: 1px solid #DDDDDD;">
                                 <tbody>
                                     <td style="padding: 20px 10px 20px 30px;">
@@ -172,4 +232,25 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function active_tab(id, page) {
+        $(".tab-list").removeClass("active-tab");
+        $("#" + id).addClass("active-tab");
+
+        if (page === 1) {
+            $(".div_display_unit").hide();
+            $("#div_tab_detail").fadeIn("slow");
+        } else if (page === 2) {
+            $(".div_display_unit").hide();
+            $("#div_tab_pengadaan").fadeIn("slow");
+        } else if (page === 3) {
+            $(".div_display_unit").hide();
+            $("#div_tab_pembayaran").fadeIn("slow");
+        } else if (page === 4) {
+            $(".div_display_unit").hide();
+            $("#div_tab_user").fadeIn("slow");
+        }
+    }
+</script>
 @endsection

@@ -26,7 +26,7 @@
                             <div class="col-md-12 mt-2">
                                 <label class="required-label"> Note </label>
                                 <div>
-                                    <textarea rows="2" class="form-control" name="note" id="note"></textarea>
+                                    <textarea rows="2" class="form-control" name="note" id="note" required></textarea>
                                 </div>
                             </div>
 

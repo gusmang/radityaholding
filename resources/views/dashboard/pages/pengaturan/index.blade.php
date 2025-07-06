@@ -24,12 +24,6 @@
 
             @include("dashboard.pages.pengaturan.component.sub.modals.addDetail")
 
-            <!-- Simple Datatable start -->
-            {{-- @include("dashboard.pages.users.components.modalUser")
-            @include("dashboard.pages.users.components.modalPassword")
-            @include("dashboard.pages.users.components.modalEdit") 
-            --}}
-
             <div class="card-box mb-20">
                 <div class="pd-20">
                     <div class="row">
@@ -50,6 +44,7 @@
                                 </select>
                             </div>
                         </div>
+
                     </div>
                 </div>
                 <div class="pb-20">

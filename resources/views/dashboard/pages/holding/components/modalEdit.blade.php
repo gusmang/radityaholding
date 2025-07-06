@@ -52,7 +52,7 @@
 
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" role="switch" value="1"
-                                        name="chk_aktif_edit" id="chk_aktif">
+                                        name="chk_aktif_edit" id="chk_aktif_edit">
                                     <label class="form-check-label" for="flexSwitchCheckDefault">&nbsp;Aktif </label>
                                 </div>
 

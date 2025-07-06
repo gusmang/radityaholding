@@ -43,7 +43,7 @@ if(isset($_GET['tab'])){
                             </ol>
                         </nav>
                     </div>
-                    <div class="col-md-6 col-sm-12 text-right">
+                    {{-- <div class="col-md-6 col-sm-12 text-right">
                         <div style="padding:0; width: 100%; clear: both;">
                             <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
                                 <button class="btn btn-primary" style="float: right;">
@@ -51,7 +51,7 @@ if(isset($_GET['tab'])){
                                 </button>
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -67,7 +67,7 @@ if(isset($_GET['tab'])){
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $pengadaanJml }}</div>
                                             <div class="mt-2 font-14">
-                                                +40% dibanding minggu lalu
+                                                Total Surat TerVerifikasi
                                             </div>
                                         </div>
                                     </div>
@@ -102,7 +102,7 @@ if(isset($_GET['tab'])){
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $pembayaranJml }}</div>
                                             <div class="mt-2 font-14">
-                                                +40% dibanding minggu lalu
+                                                Total Surat TerVerifikasi
                                             </div>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@ if(isset($_GET['tab'])){
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $suratJml }}</div>
                                             <div class="mt-2 font-14">
-                                                +40% dibanding minggu lalu
+                                                Total Surat TerVerifikasi
                                             </div>
                                         </div>
                                     </div>
@@ -215,20 +215,11 @@ if(isset($_GET['tab'])){
                             </form>
                         </div>
                         <div class="col-2">
-                            <div class="dropdown" style="float: right;">
-                                <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-toggle="dropdown">
-                                    Action
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-calendar-date"></i> &nbsp;Date Filter
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-search"></i> &nbsp;Search
-                                    </a>
-                                    <a class="dropdown-item" href="#">
-                                        <i class="bi bi-filetype-xls"></i> &nbsp;Export List
-                                    </a>
+                            <div class="col-md-12 col-sm-12 text-right">
+                                <div style="padding:0; width: 100%; clear: both;">
+                                       <button class="btn btn-primary" style="float: right;" onclick="exportFile()">
+                                            Export Data
+                                        </button>
                                 </div>
                             </div>
                         </div>
@@ -278,6 +269,7 @@ if(isset($_GET['tab'])){
 
     <script type="text/javascript">
         let index = "<?php echo $_GET['index']; ?>";
+        let activePosi = 1
 
         if(index == "1"){
             $(".div_display_unit").hide();
@@ -297,11 +289,17 @@ if(isset($_GET['tab'])){
             document.getElementById("sp_tabs_title").innerHTML = "Petty Cash";
         }
 
+        function exportFile(){
+            window.open("<?php echo url('dashboard/export-files'); ?>"+'/'+activePosi+'/'+document.getElementById('cmb-laporan-periode').selectedIndex);
+        }
+
         function active_tab(id, page) {
             $(".tab-list").removeClass("active-tab");
             $("#" + id).addClass("active-tab");
             
             $("#index").val(page);
+
+            activePosi = page;
 
             if (page === 1) {
                 $(".div_display_unit").hide();

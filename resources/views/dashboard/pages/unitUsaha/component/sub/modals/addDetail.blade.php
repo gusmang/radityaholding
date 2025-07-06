@@ -25,7 +25,7 @@
                             <div class="col-md-12 mt-4">
                                 <label class="required-label"> Limit Petty Cash </label>
                                 <div>
-                                    <input type="number" class="form-control" name="limit_petty_cash" id="limit_petty_cash" placeholder="Input Amount ..." required />
+                                    <input type="text" class="form-control rupiahInput" name="limit_petty_cash" id="limit_petty_cash" placeholder="Input Amount ..." required />
                                 </div>
                             </div>
 
@@ -33,9 +33,20 @@
                                 <label class="required-label"> Unit Bisnis </label>
                                 <select class="form-control" name="id_unit_bisnis" id="id_unit_bisnis" required>
                                     <option value="">- Pilih Unit Bisnis -</option>
-                                    <option value="1">- Unit Bisnis 1 -</option>
-                                    <option value="2">- Unit Bisnis 2 -</option>
-                                    <option value="3">- Unit Bisnis 3 -</option>
+                                    @php
+                                    $bisnis = app('App\Helpers\Status')->getUnitType();
+
+                                    $an = 0;
+                                    @endphp
+
+                                    <?php
+                                    foreach($bisnis as $rows){
+                                        $an++;
+                                        ?>
+                                            <option value="<?php echo $an; ?>"><?php echo $rows; ?></option>
+                                        <?php
+                                    }
+                                    ?>
                                 </select>
                             </div>
 

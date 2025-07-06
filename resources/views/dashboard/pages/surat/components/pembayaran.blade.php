@@ -67,7 +67,7 @@
 
     <div
         style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
-        <div> @php echo $pembayaran->links('pagination::bootstrap-4'); @endphp </div>
+        <div> @php echo $pembayaran->links('pagination::daftar-surat-pembayaran-paging'); @endphp </div>
     </div>
 
 </div>

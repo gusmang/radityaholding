@@ -36,20 +36,32 @@
                             </div>
 
                             <div class="col-md-12 mt-4">
+                                <label class="required-label"> Kategori Unit Bisnis </label>
                                 <select class="form-control" name="id_unit_bisnis" id="id_unit_bisnis" required
                                     value={{ $unitUsaha->id_unit_bisnis }}>
-                                    <option value="">- Pilih Unit Bisnis -</option>
-                                    <option value="1">Unit Bisnis 1</option>
-                                    <option value="2">Unit Bisnis 2</option>
-                                    <option value="3">Unit Bisnis 3</option>
+                                    <?php
+                                    $unitBisnis = $unitUsaha->id_unit_bisnis;
+
+                                    for($an = 1; $an <= 3; $an++){
+                                    $selected = $an === $unitBisnis ? "selected" : "";
+                                    ?>
+                                        <option value="<?php echo $an; ?>" <?php echo $selected; ?>>Unit Bisnis <?php echo $an; ?></option>
+                                    <?php
+                                    }
+                                    ?>
                                 </select>
                             </div>
 
                             <div class="col-md-12 mt-4">
 
                                 <div class="form-check form-switch">
+                                    @php
+                                        $active = $unitUsaha->status === 1 ? "checked" : "";
+                                    @endphp
                                     <input class="form-check-input" type="checkbox" role="switch"
-                                        id="flexSwitchCheckDefault" value="1" name="chk_aktif" id="chk_aktif">
+                                        id="flexSwitchCheckDefault" value="1" name="chk_aktif" id="chk_aktif"
+                                        {{ $active }} 
+                                    />
                                     <label class="form-check-label" for="flexSwitchCheckDefault"> Aktif </label>
                                 </div>
 

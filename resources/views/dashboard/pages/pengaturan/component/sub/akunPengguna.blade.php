@@ -1,33 +1,29 @@
 <div class="mt-40">
     <div class="card-box mb-20">
         <div class="pd-20">
-            <div class="row">
-                <div class="col-3">
-                    <div> <label> Cari Nama :</label> </div>
-                    <div>
-                        <input type="text" class="form-control" placeholder="Cari Nama" name="cari_nama" />
-                    </div>
-                </div>
-
-                <div class="col-3">
-                    <div> <label> Tipe Pengguna :</label> </div>
-                    <div>
-                        <select class="form-control" name="tipe_pengguna">
-                            <option value=""> - Tipe Pengguna - </option>
-                            <option value="manager">Manager</option>
-                            <option value="sekretaris">Sektretaris</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
-                        <button class="btn btn-primary" style="float: right;">
-                            <i class="fa fa-plus"></i>&nbsp; Tambah Pengguna
-                        </button>
-                    </a>
-                </div>
+            <div class="col-md-12">
+                <a href="#" onClick="" class="btn-block" data-toggle="modal" data-target="#bd-example-modal-lg" type="button">
+                    <button class="btn btn-primary" style="float: right;">
+                        <i class="fa fa-plus"></i>&nbsp; Tambah Role
+                    </button>
+                </a>
             </div>
+            <form method="get">
+                <div class="row">
+                    <div class="col-4">
+                        <div> <label> Cari Nama :</label> </div>
+                        <div>
+                            <input type="text" class="form-control" placeholder="Nama Role" name="role_name" value="<?php if(isset($_GET['role_name'])){ echo $_GET['role_name']; }?>" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <button class="btn btn-primary" style="margin-top: 32px;">
+                            <i class="fa fa-search"></i>&nbsp; Cari Data
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
 
 
@@ -70,7 +66,7 @@
                             @endphp
                         </td>
                         <td>
-                            <div class="{{ $row->status === 0 ? 'label-nonaktif' : 'label-aktif' }}">
+                            <div class="{{ $row->aktif == 0 ? 'label-nonaktif' : 'label-aktif' }}">
                                 {{ $row->aktif === 0 ? 'Non Aktif' : 'Aktif' }}
                             </div>
                         </td>

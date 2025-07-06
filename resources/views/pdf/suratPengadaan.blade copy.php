@@ -33,11 +33,11 @@
             <td>: {{ $data->no_surat }} </td>
         </tr>
         <tr>
-            <td width="150">Lampiran. </td>
+            <td width="150">Lampiran </td>
             <td>: (satu) Lampiran </td>
         </tr>
         <tr>
-            <td width="150">Perihal. </td>
+            <td width="150">Perihal </td>
             <td>: {{ $data->perihal }} </td>
         </tr>
 

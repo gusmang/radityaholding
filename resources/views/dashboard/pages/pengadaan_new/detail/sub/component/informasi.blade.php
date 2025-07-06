@@ -21,6 +21,7 @@
                     <div class="container-icon"></div>
                     <div style="clear: both;"></div>
                 </div>
+
                 <div style="float:left;">
                     <?php
                     $pos = -1;
@@ -38,7 +39,7 @@
                     if (count($setuju) == 0) {
                     ?>
                         <?php
-                         if(strtolower(Auth::user()->role) === "sekretariat" && Session::get('roleId') === $lastApprove){
+                         if(app('App\Helpers\Status')->isSekretariat(Auth::user()->role) && Session::get('roleId') === $lastApprove){
                             ?>
                                 <div style="width: 95%; margin-left: 50px;" id="div-informasi-persetujuan">
                                     <div style="width: 95%;">
@@ -79,14 +80,12 @@
                                         <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                             <div class="row">
                                                 <div class="col-md-12 font-500">
-                                                    <label class="required-label"> Tipe Pengadaan </label>
+                                                    <label class="required-label"> Tipe Pengadaan</label>
                                                 </div>
                                                 <div class="col-md-12" style="color: #444444;">
                                                     <div>
                                                         <select class="form-control" name="cmbTipeSurat" id="cmbTipeSurat" required>
-                                                            <option value="">- Pilih Tipe -</option>
-                                                            <option value="Permohonan Pengadaan">Permohonan Pengadaan</option>
-                                                            <option value="Penghapusan Aset">Penghapusan Aset</option>
+                                                            <option value="{{ $pengadaan->tipe_surat }}">{{ app('App\Helpers\Status')->tipe_surat_pengadaan($pengadaan->tipe_surat - 1) }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -124,7 +123,8 @@
                                                     <label class="required-label"> Detail Isi Surat </label>
                                                 </div>
                                                 <div class="col-md-12" style="color: #444444;">
-                                                    <div id="detailIsiSuratNew"></div>
+                                                    {{-- <div id="detailIsiSuratNew"></div> --}}
+                                                    <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
                                                 </div>
                                             </div>
                                         </div>
@@ -164,7 +164,7 @@
                                     <div class="col-md-7" style="color: #444444;">
                                         <div>
                                             {{
-                                         app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at);
+                                         app('App\Helpers\Date')->tanggalIndo($setuju[0]->tanggal);
                                         }}
                                         </div>
                                     </div>
@@ -240,7 +240,7 @@
 
         
         <?php
-            if((strtolower(Auth::user()->role) === "sekretariat" && Session::get('roleId') === $lastApprove) && count($setuju) == 0){
+            if((app('App\Helpers\Status')->isSekretariat(Auth::user()->role) && Session::get('roleId') === $lastApprove) && count($setuju) == 0){
         ?>
         <div class="col-md-12 col-12 mt-4" id="div-input-dokumen" style="margin:0; padding: 0;">
 
@@ -428,7 +428,7 @@
                         <div style="font-weight: 600; width: 90%;">
                             Surat Permohonan {{ $pengadaan->no_surat }}.pdf <br />
                             <div style="font-size: 14px; font-weight: normal;">
-                                Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at) }}
+                                Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->tanggal) }}
                             </div>
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
@@ -453,7 +453,7 @@
                             <div style="font-weight: 600; width: 90%;">
                                 Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
                                 <div style="font-size: 14px; font-weight: normal;">
-                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
+                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->tanggal) }}
                                 </div>
                             </div>
                             <div style="font-size: 18px; margin-right: 10px;">

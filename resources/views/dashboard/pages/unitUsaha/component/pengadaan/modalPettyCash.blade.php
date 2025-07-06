@@ -49,23 +49,42 @@
                                 </div>
                             </div>
 
-                            {{-- <div class="col-md-12 mt-4">
-                                <label class="required-label"> Status </label>
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Prioritas </label>
                                 <div>
-                                    <select class="form-control" name="pid_status_unit_usaha" id="pid_status_unit_usaha" required>
-                                        <option value="1">Aktif</option>
-                                        <option value="0">Non Aktif</option>
-                                    </select>
+                                    <input type="number" id="cmb-pty-prioritas" name="cmb-pty-prioritas" class="form-control" value="{{ !isset($lastNumPengadaan->urutan) ? 1 : $lastNumPengadaan->urutan+1 }}" />
                                 </div>
-                            </div> --}}
+                            </div>
 
                             <div class="col-md-12 mt-4">
                                 <label class="required-label"> Tanda Tangan </label>
                                 <div>
-                                    <select class="form-control" name="pid_ttd_unit_usaha" id="pid_ttd_unit_usaha"
+                                    <select class="form-control" name="pty_ttd_unit_usaha" id="pid_ttd_unit_usaha"
                                         required>
                                         <option value="1">Ya</option>
                                         <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Tolak Berkas </label>
+                                <div>
+                                    <select class="form-control" name="pty_tolak_unit_usaha" id="pid_tolak_unit_usaha"
+                                        required>
+                                        <option value="1">Ya</option>
+                                        <option value="0">Tidak</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 mt-4">
+                                <label class="required-label"> Tugas </label>
+                                <div>
+                                    <select class="form-control" name="pty_menyetujui_unit_usaha" id="pid_menyetujui_unit_usaha"
+                                        required>
+                                        <option value="0">Mengajukan</option>
+                                        <option value="1">Menyetujui</option>
                                     </select>
                                 </div>
                             </div>

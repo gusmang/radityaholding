@@ -106,8 +106,7 @@
                                     </div>
                                     <div class="col-md-7" style="color: #444444;">
                                         <div>
-                                            {{ strip_tags($setuju[0]->detail) }}
-
+                                            {{ strip_tags(html_entity_decode(($setuju[0]->detail))) }}
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +160,7 @@
                                     <div style="display: flex; margin-top: 5px;">
                                         <div>
                                             <button type="button" class="btn btn-danger form-control"
-                                                onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}')"
+                                                onClick="showTolakBerkas({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}')"
                                                 style="color: white; font-size: 14px;">
                                                 <i class="fa fa-trash"></i>&nbsp; Tolak
                                             </button>

@@ -1,16 +1,5 @@
 <div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    {{--
-        $users->name = $request->name;
-        $users->email = $request->email;
-        $users->password = $request->password;
-        $users->id_positions = 0;
-        $users->role = $jabatan->name;
-        $users->role_id = $jabatan->id;
-        $users->is_verified = true;
-        $users->reset_password_token = "-";
-        $users->status = $request->chk_aktif_add === null ? 0 : $request->chk_aktif_add ; 
-    --}}
-    <form method="post" action="{{ route('addHoldingNew') }}">
+    <form method="post" id="form-role-holding">
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
             <div class="modal-content">
@@ -27,6 +16,7 @@
                         <div class="row">
 
                             <div class="col-md-12">
+                                {{ csrf_field() }}
                                 <label class="required-label"> Nama </label>
                                 <div>
                                     <input type="hidden" class="form-control" name="t_index" id="t_index" placeholder="Input Index ..." required />
@@ -94,6 +84,30 @@
 
 @section("footer_modals")
 <script type="text/javascript">
+ $("#form-role-holding").submit(function(e){
+    if($("#password").val() != $("#form_password").val()){
+        alert("Password tidak sama !")
+        return false;
+    }
+    e.preventDefault();
 
+    let routes = "{{ route('addHoldingNew') }}";
+    let dataPost = $("#form-role-holding").serialize();
+
+    $.ajax({
+        type: "POST",
+        data: dataPost,
+        url: routes,
+        dataType: "json",
+        success:function(response){
+            if(response.status === 200){
+                window.location = response.redirectUrl;
+            }
+            else{
+                alert(response.message);
+            }
+        }
+    })
+ })
 </script>
 @endsection

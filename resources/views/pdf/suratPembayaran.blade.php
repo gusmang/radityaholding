@@ -3,6 +3,15 @@
 <head>
     <title> Surat Pengadaan </title>
     <style>
+        @page{
+            margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         #tbl_detail table {
             padding: 15px;
             border: 1px solid #333333;
@@ -21,27 +30,67 @@
         .page-break {
             page-break-before: always;
         }
+
+        table#ttdTable {
+            width: 100%;
+            border-collapse: collapse;
+            direction: rtl;
+        }
+
+        .ttd-td {
+            width: 50%;
+            vertical-align: top;
+            text-align: center;
+            padding: 20px;
+            page-break-inside: avoid;
+            box-sizing: border-box;
+        }
+
+        .ttd-td img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .ttd-td {
+            break-inside: avoid;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        table{
+            page-break-inside: avoid;
+            table-layout: auto !important; /* Otomatis sesuaikan lebar kolom */
+            width: 100% !important;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
     </style>
 </head>
 
 <body>
     <div>
-        <img src="{{ $logoPath }}" height="40" />
+        <img src="{{ $logoPath }}" style="height: 70px;" />
     </div>
     <div style="border:1px solid #000000; margin-top: 5px;"></div>
     <div style="border:2px solid #000000; margin-top: 2px;"></div>
 
     <table style="margin-top: 10px;">
         <tr>
-            <td width="150">No. </td>
+            <td width="150">No </td>
             <td>: {{ $data->no_surat }} </td>
         </tr>
         <tr>
-            <td width="150">Lampiran. </td>
-            <td>: (satu) Lampiran </td>
+            <td width="150">Lampiran </td>
+            <td>: {{ $lampiran === 0 ? "-" : $lampiran. " (".app('App\Helpers\Status')->terbilang($lampiran).")"." Gabung" }}  
         </tr>
         <tr>
-            <td width="150">Perihal. </td>
+            <td width="150">Perihal </td>
             <td>: {{ $data->perihal }} </td>
         </tr>
 
@@ -49,106 +98,109 @@
 
     <div style="margin-top: 50px;">
         Kepada Yth. <br />
-        Ibu Direksi
+        Bapak dan Ibu Direksi 
         <br />
-        di Tempat
+        Di Tempat
     </div>
 
-    <div style="margin-top: 30px;" id="tbl_detail">
-        {!! $data->detail !!}
+    <div style="margin-top: 30px; line-height: 1.15!important;" id="tbl_detail">
+        {!! app('App\Helpers\Status')->clean_width($data->detail) !!}
     </div>
 
     <div style="text-align: center; margin-top: 30px;">
-        Canggu , {{ app('App\Helpers\Date')->tanggalIndo($data->created_at) }} <br />
+        Canggu, {{ app('App\Helpers\Date')->tanggalIndo($data->created_at) }} <br />
         Mengajukan
     </div>
 
-    <div style="margin-top: 50px;">
-        <?php
-        $incr = 0;
-        $incs = 0;
-        $positions = $data->position;
+    <div class="ttd-td-new">
 
-        foreach ($jabatan as $rows) {
-            $incr++;
-        ?>
+        <div style="margin-top: 50px;" dir="rtl">
             <?php
-            if ($incr === 3) {
+            $incr = 0;
+            $incs = 0;
+            $positions = $data->position;
+    
+            foreach ($jabatan as $rows) {
+                $incr++;
             ?>
-                <div style="clear: both; height: 30px;"></div>
+                <?php
+                if ($incr === 3) {
+                ?>
+                    <div style="clear: both; height: 30px;"></div>
+                <?php
+                    $incr = 1;
+                }
+                ?>
+                <div style="float: right; width: 50%; text-align: center; page-break-inside: avoid;">
+                    <div style="height: 100px; padding: 10px 0;">
+                        <?php
+                        if ($rows->signature_url !== "-") {
+                        ?>
+                            <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}
+                                style="height: 90px;" />
+                        <?php
+                        }
+                        ?>
+                    </div>
+                    <div style="font-weight; bold; text-decoration: underline;">
+                        <b><?php echo $rows->name ?></b>
+                    </div>
+                    <div style="font-weight: bold; ">
+                        <?php echo $rows->role; ?>
+                    </div>
+                </div>
             <?php
-                $incr = 1;
+                $incs++;
             }
             ?>
-            <div style="float: left; width: 50%; text-align: center;">
-                <div style="text-decoration: underline; font-weight; bold;">
-                    <b><?php echo $rows->name ?></b>
-                </div>
-                <div style="height: 100px; padding: 10px 0;">
-                    <?php
-                    if ($rows->signature_url !== "-") {
+    
+            <div style="clear: both;"></div>
+                <p>&nbsp;</p>
+                <center> Menyetujui </center>
+                <p>&nbsp;</p>
+    
+                <?php
+                    $incr = 0;
+                    $incs = 0;
+                    $positions = $data->position;
+    
+                    foreach ($menyetujui as $rows) {
+                        $incr++;
                     ?>
-                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
-                            style="height: 90px;" />
+                        <?php
+                        if ($incr === 3) {
+                        ?>
+                            <div style="clear: both; height: 30px;"></div>
+                        <?php
+                            $incr = 1;
+                        }
+                        ?>
+                        <div style="float: right; width: 50%; text-align: center; page-break-inside: avoid;">
+                            <div style="height: 100px; padding: 10px 0;">
+                                <?php
+                                if ($rows->signature_url !== "-") {
+                                ?>
+                                    <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}  />
+                                <?php
+                                }
+                                ?>
+                            </div>
+                            <div style="font-weight; bold; text-decoration: underline;">
+                                <b><?php echo $rows->name ?></b>
+                            </div>
+                            <div style="font-weight: bold; ">
+                                <?php echo $rows->role; ?>
+                            </div>
+                        </div>
                     <?php
+                        $incs++;
                     }
                     ?>
-                </div>
-                <div>
-                    <?php echo $rows->role; ?>
+    
                 </div>
             </div>
-        <?php
-            $incs++;
-        }
-        ?>
-
-        <div style="clear: both;"></div>
-        <div class="page-break"></div>
-
-        <p>&nbsp;</p>
-        <center> Menyetujui </center>
-        <p>&nbsp;</p>
-
-        <?php
-        $incr = 0;
-        $incs = 0;
-        $positions = $data->position;
-
-        foreach ($menyetujui as $rows) {
-            $incr++;
-        ?>
-            <?php
-            if ($incr === 3) {
-            ?>
-                <div style="clear: both; height: 30px;"></div>
-            <?php
-                $incr = 1;
-            }
-            ?>
-            <div style="float: left; width: 50%; text-align: center;">
-                <div style="text-decoration: underline; font-weight; bold;">
-                    <b><?php echo $rows->name ?></b>
-                </div>
-                <div style="height: 100px; padding: 10px 0;">
-                    <?php
-                    if ($rows->signature_url !== "-") {
-                    ?>
-                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
-                            style="height: 90px;" />
-                    <?php
-                    }
-                    ?>
-                </div>
-                <div>
-                    <?php echo $rows->role; ?>
-                </div>
-            </div>
-        <?php
-            $incs++;
-        }
-        ?>
-    </div>
+    
+        </div>
 </body>
 
 </html>

@@ -3,6 +3,15 @@
 <head>
     <title> Surat Pengadaan </title>
     <style>
+        @page{
+            margin: 2.54cm 2.54cm 2.54cm 2.54cm;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
         #tbl_detail table {
             padding: 15px;
             border: 1px solid #333333;
@@ -21,12 +30,52 @@
         .page-break {
             page-break-before: always;
         }
+
+        table#ttdTable {
+            width: 100%;
+            border-collapse: collapse;
+            direction: rtl;
+        }
+
+        .ttd-td {
+            width: 50%;
+            vertical-align: top;
+            text-align: center;
+            padding: 20px;
+            break-inside: avoid;
+            box-sizing: border-box;
+        }
+
+        .ttd-td img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .ttd-td {
+            break-inside: avoid;
+        }
+
+        .underline {
+            text-decoration: underline;
+        }
+
+        table{
+            page-break-inside: avoid;
+            table-layout: auto !important; /* Otomatis sesuaikan lebar kolom */
+            width: 100% !important;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
     </style>
 </head>
 
 <body>
     <div>
-        <img src="{{ $logoPath }}" height="40" />
+        <img src="{{ $logoPath }}" style="height: 70px;"  />
     </div>
     <div style="border:1px solid #000000; margin-top: 5px;"></div>
     <div style="border:2px solid #000000; margin-top: 2px;"></div>
@@ -37,11 +86,11 @@
             <td>: {{ $data->no_surat }} </td>
         </tr>
         <tr>
-            <td width="150">Lampiran. </td>
-            <td>: (satu) Lampiran </td>
+            <td width="150">Lampiran </td>
+            <td>: {{ $lampiran === 0 ? "-" : $lampiran. " (".app('App\Helpers\Status')->terbilang($lampiran).")"." Gabung" }} 
         </tr>
         <tr>
-            <td width="150">Perihal. </td>
+            <td width="150">Perihal </td>
             <td>: {{ $data->perihal }} </td>
         </tr>
 
@@ -49,18 +98,13 @@
 
     <div style="margin-top: 50px;">
         Kepada Yth. <br />
-        Ibu Direksi
+        Bapak dan Ibu Direksi 
         <br />
-        di Tempat
+        Di Tempat
     </div>
 
-    <div style="margin-top: 30px;" id="tbl_detail">
-        {!! $data->detail !!}
-    </div>
-
-    <div style="text-align: center; margin-top: 30px;">
-        Canggu , {{ app('App\Helpers\Date')->tanggalIndo($data->created_at) }} <br />
-        Mengajukan
+    <div style="margin-top: 30px; line-height: 1.15;" id="tbl_detail">
+        {!! app('App\Helpers\Status')->clean_width($data->detail) !!}
     </div>
 
     <div style="margin-top: 50px;">
@@ -80,21 +124,21 @@
                 $incr = 1;
             }
             ?>
-            <div style="float: left; width: 50%; text-align: center;">
-                <div style="text-decoration: underline; font-weight; bold;">
-                    <b><?php echo $rows->name ?></b>
-                </div>
+            <div style="float: right; width: 50%; text-align: center;">
                 <div style="height: 100px; padding: 10px 0;">
                     <?php
                     if ($rows->signature_url !== "-") {
                     ?>
-                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                        <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}
                             style="height: 90px;" />
                     <?php
                     }
                     ?>
                 </div>
-                <div>
+                <div style="font-weight; bold; font-size: 16px; text-decoration: underline;">
+                    <b><?php echo $rows->name ?></b>
+                </div>
+                <div style="font-size: 14px; margin-top: 5px;">
                     <?php echo $rows->role; ?>
                 </div>
             </div>
@@ -104,7 +148,7 @@
         ?>
 
         <div style="clear: both;"></div>
-        <div class="page-break"></div>
+        {{-- <div class="page-break"></div> --}}
 
         <p>&nbsp;</p>
         <center> Menyetujui </center>
@@ -114,40 +158,44 @@
         $incr = 0;
         $incs = 0;
         $positions = $data->position;
+        $increment = 0;
+        ?>
 
-        foreach ($menyetujui as $rows) {
-            $incr++;
-        ?>
+        <table id="ttdTable">
             <?php
-            if ($incr === 3) {
+                foreach ($menyetujui as $rows) {
+                    //if($rows->is_menyetujui == 1){
+                        $incr++;
+                        $increment++;
+
+                        if ($incr === 3) {
+                        ?>
+                            <tr>
+                        <?php
+                        $incr = 1;
+                        }
+                        ?>
+                            <td class="ttd-td">
+                                <?php
+                                if ($rows->signature_url !== "-") {
+                                ?>
+                                    <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}  />
+                                <?php
+                                }
+                                ?>
+                                <div class="underline"><strong><?php echo $rows->name ?></strong></div>
+                                <div style="font-weight: 500;"><?php echo $rows->role; ?></div>
+                            </td>
+                        <?php
+                        if ($incr === 3) {
+                        ?>
+                            </tr>
+                        <?php
+                        }
+                   // }
+                }
             ?>
-                <div style="clear: both; height: 30px;"></div>
-            <?php
-                $incr = 1;
-            }
-            ?>
-            <div style="float: left; width: 50%; text-align: center;">
-                <div style="text-decoration: underline; font-weight; bold;">
-                    <b><?php echo $rows->name ?></b>
-                </div>
-                <div style="height: 100px; padding: 10px 0;">
-                    <?php
-                    if ($rows->signature_url !== "-") {
-                    ?>
-                        <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
-                            style="height: 90px;" />
-                    <?php
-                    }
-                    ?>
-                </div>
-                <div>
-                    <?php echo $rows->role; ?>
-                </div>
-            </div>
-        <?php
-            $incs++;
-        }
-        ?>
+        </table>
     </div>
 </body>
 

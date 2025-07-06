@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccessMenu;
 use Session;
 use App\Models\Menu;
 use App\Models\User;
@@ -80,35 +81,38 @@ class JabatanController extends Controller
         return $option;
     }
 
-    // public function editUserHolding(Request $request)
-    // {
-    //     $update = Position::where("id", $request->t_index_edit)->update(array(
-    //         "name" => $request->name_edit,
-    //         "note" => $request->email_edit,
-    //         'aktif' => $request->chk_aktif_edit === null ? 0 : $request->chk_aktif_edit
-    //     ));
+    public function listJson(Request $request)
+    {
+        $values = $request->value === "1" ? "0" : "1";
+        $jabatan = null;
 
-    //     if ($update) {
-    //         return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
-    //         // return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State saved correctly!!!');
-    //     } else {
-    //         return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
-    //         //return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State error !!!');
-    //     }
-    // }
+        if ($values === "1") {
+            $jabatan = Position::where("deleted_at", null)->where("is_unit_usaha", $values)->get();
+        } else {
+            $index = $request->index;
+            $jabatan = User::where("id_positions", "!=", "0")->where("id_positions", $index)->distinct('role_id')->get();
+        }
+
+
+        return response()->json($jabatan);
+    }
+
 
     public function add(Request $request)
     {
-        $pettyCashes = new rolePengadaan();
+        $rolePengadaan = new rolePengadaan();
 
-        $pettyCashes->id_user = 0;
-        $pettyCashes->id_unit_usaha = $request->pid_index_usaha;
-        $pettyCashes->id_role = $request->pt_id_role;
-        $pettyCashes->urutan = 0;
-        $pettyCashes->tipe_surat = ($request->selected_surat_tipe === null || $request->selected_surat_tipe === "") ? 0 : $request->selected_surat_tipe;
-        $pettyCashes->aktif = $request->pd_chk_aktif;
+        $rolePengadaan->id_user = 0;
+        $rolePengadaan->id_unit_usaha = $request->pid_index_usaha;
+        $rolePengadaan->id_role = $request->pt_id_role;
+        $rolePengadaan->urutan = $request->input("cmb-prioritas");
+        $rolePengadaan->menyetujui = $request->pid_menyetujui_unit_usaha;
+        $rolePengadaan->rj = $request->pid_tolak_unit_usaha;
+        $rolePengadaan->is_menyetujui = $request->pid_ttd_unit_usaha;
+        $rolePengadaan->tipe_surat = ($request->selected_surat_tipe === null || $request->selected_surat_tipe === "") ? 0 : $request->selected_surat_tipe;
+        $rolePengadaan->aktif = isset($request->pd_chk_aktif) ? true : false;
 
-        $pettyCashes->save();
+        $rolePengadaan->save();
 
         return response()->json([
             'message' => 'Role Pengadaan Berhasil Disimpan!',
@@ -119,15 +123,18 @@ class JabatanController extends Controller
 
     public function roleSave(Request $request)
     {
-        $pettyCashes = new rolePembayaran();
+        $pembayaran = new rolePembayaran();
 
-        $pettyCashes->id_user = 0;
-        $pettyCashes->id_unit_usaha = $request->pid_index_usaha;
-        $pettyCashes->id_role = $request->pt_id_role;
-        $pettyCashes->urutan = 0;
-        $pettyCashes->aktif = $request->pd_chk_aktif;
+        $pembayaran->id_user = 0;
+        $pembayaran->id_unit_usaha = $request->pid_index_usaha;
+        $pembayaran->id_role = $request->pt_id_role;
+        $pembayaran->urutan = $request->input("pmb-cmb-prioritas");
+        $pembayaran->is_menyetujui = $request->input("pmb_ttd_unit_usaha");
+        $pembayaran->menyetujui = $request->input("pmb_menyetujui_unit_usaha");
+        $pembayaran->rj = $request->input("pmb_tolak_unit_usaha");
+        $pembayaran->aktif = isset($request->pd_chk_aktif) ? true : false;
 
-        $pettyCashes->save();
+        $pembayaran->save();
 
         return response()->json([
             'message' => 'Role Pengadaan Berhasil Disimpan!',
@@ -155,9 +162,19 @@ class JabatanController extends Controller
 
     public function viewHolding(Request $request)
     {
-        $jabatan = Position::where("deleted_at", null)->get();
-        $users = User::where("id_positions", "0")->orderBy("id", "desc")->paginate(10);
+        $jabatan = Position::where("is_unit_usaha", "1")->where("deleted_at", null)->get();;
+        $users = User::where("id_positions", "0")->orderBy("id", "desc");
         $menu = Menu::where("is_active", 1)->get();
+
+        if (isset($request->cari_nama)) {
+            $users = $users->where("name", "like", "%" . $request->cari_nama . "%");
+        }
+
+        if (isset($request->email_nama)) {
+            $users = $users->where("email", "like", "%" .  $request->email_nama . "%");
+        }
+
+        $users = $users->paginate(10);
 
         return view('dashboard.pages.holding.index', compact('users', 'jabatan', 'menu'));
     }
@@ -179,11 +196,30 @@ class JabatanController extends Controller
         $users->signature_url = "-";
 
         $users->save();
-        return \Redirect::route('viewHolding')->with('message', 'State saved correctly!!!');
+
+        // $menu = Menu::where("is_active", 1)->get();
+
+        // foreach ($menu as $rows) {
+        //     if ($request->input("chk_menus_" . $rows->id)) {
+        //         $accMenu = new AccessMenu();
+        //         $accMenu->id_jabatan = $request->acc_t_index;
+        //         $accMenu->id_menu = $request->input("chk_menus_" . $rows->id);
+
+        //         $accMenu->save();
+        //     }
+        // }
+
+        return \Redirect::route('holding')->with('message', 'State saved correctly!!!');
     }
 
     public function saveJabatanHolding(Request $request)
     {
+        $cekUser = User::where("email", $request->email)->count();
+
+        if ($cekUser > 0) {
+            return response()->json(['message' => 'Duplicate Email', 'redirectUrl' => route('holding'), 'status' => 500], 200);
+        }
+
         $jabatan = Position::where("id", $request->role)->first();
         $users = new User();
 
@@ -198,8 +234,15 @@ class JabatanController extends Controller
         $users->status = $request->chk_aktif === null ? 0 : $request->chk_aktif;
         $users->signature_url = "-";
 
-        $users->save();
-        return \Redirect::route('viewHolding')->with('message', 'State saved correctly!!!');
+
+        if ($users->save()) {
+            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('holding'), 'status' => 200], 200);
+            // return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State saved correctly!!!');
+        } else {
+            return response()->json(['message' => 'Terjadi Kesalahan', 'redirectUrl' => route('holding'), 'status' => 500], 200);
+            //return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State error !!!');
+        }
+        //return \Redirect::route('holding')->with('message', 'State saved correctly!!!');
     }
 
     public function editJabatan(Request $request)
@@ -219,7 +262,7 @@ class JabatanController extends Controller
         $users->signature_url = "-";
 
         $users->save();
-        return \Redirect::route('viewHolding')->with('message', 'State saved correctly!!!');
+        return \Redirect::route('holding')->with('message', 'State saved correctly!!!');
     }
 
     public function editUserHolding(Request $request)
@@ -235,10 +278,10 @@ class JabatanController extends Controller
         ));
 
         if ($update) {
-            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('holding'), 'status' => 200], 200);
             // return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State saved correctly!!!');
         } else {
-            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('holding'), 'status' => 200], 200);
             //return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State error !!!');
         }
     }
@@ -270,7 +313,7 @@ class JabatanController extends Controller
                 'signature_url' => $fileName
             ));
 
-            return response()->json(['message' => 'Signature saved successfully ! ', 'redirectUrl' => route('viewHolding'), 'file' => $fileName], 200);
+            return response()->json(['message' => 'Signature saved successfully ! ', 'redirectUrl' => route('holding'), 'file' => $fileName], 200);
         }
 
         return response()->json(['message' => 'Invalid image data.'], 400);
@@ -289,10 +332,10 @@ class JabatanController extends Controller
         ));
 
         if ($update) {
-            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('holding'), 'status' => 200], 200);
             // return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State saved correctly!!!');
         } else {
-            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('viewHolding'), 'status' => 200], 200);
+            return response()->json(['message' => 'Update Holding Success', 'redirectUrl' => route('holding'), 'status' => 200], 200);
             //return \Redirect::route('detailUsaha', [$request->index_edit."?tab=users"])->with('message', 'State error !!!');
         }
     }

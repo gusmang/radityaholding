@@ -7,9 +7,7 @@
                 $roles = "";
                 $person = "";
                 $role_id = "";
-
                 ?>
-
                 <div style="float:left; width: 50px; height: auto;">
                     <div class="container-semi-lg-icon"></div>
                     <div style="clear: both;"></div>
@@ -102,54 +100,7 @@
                 </div>
                 <div style="clear: both;"></div>
                 <div style="width: 100%; margin-top: 10px;">
-                    <div style="margin-top: -20px;">
-                        <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                                if (strtolower(Auth::user()->role) == "sekretariat") {
-                            ?>
-                                <?php
-                                } 
-                                else {
-                                ?>
-                                    <button type="button" class="btn btn-primary"
-                                        onClick="showApprovePt({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
-                                        style="color: white; font-size: 14px;  float: left; margin-right: 10px;">
-                                        <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
-                                    </button>
-                                <?php
-                                }
-                            }
-                            ?>
-
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                            ?>
-                                <div style="float: left;">
-                                    <div>
-                                        <div>
-                                            <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
-                                            ?>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <button type="button" class="btn btn-danger"
-                                                    onClick="tolakBerkas('{{ $pengadaan->id}}');"
-                                                    style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
-                                            <?php
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                    </div>
+                    <div style="margin-top: -20px;"></div>
                     <div
                         style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
                         <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">
@@ -159,7 +110,7 @@
                         <div style="font-weight: 600; width: 90%;">
                             Surat Permohonan {{ $pengadaan->no_surat }}.pdf <br />
                             <div style="font-size: 14px; font-weight: normal;">
-                                Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->created_at) }}
+                                Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($pengadaan->tanggal) }}
                             </div>
                         </div>
                         <div style="font-size: 18px; margin-right: 10px;">
@@ -184,7 +135,7 @@
                             <div style="font-weight: 600; width: 90%;">
                                 Surat Persetujuan {{ $setuju[0]->no_surat }}.pdf <br />
                                 <div style="font-size: 14px; font-weight: normal;">
-                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->created_at) }}
+                                    Dibuat pada {{ app('App\Helpers\Date')->tanggalIndo($setuju[0]->tanggal) }}
                                 </div>
                             </div>
                             <div style="font-size: 18px; margin-right: 10px;">

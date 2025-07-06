@@ -144,7 +144,7 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        Pengadaan
+
                                     </div>
                                 </div>
                             </div>
@@ -218,7 +218,7 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                                <input type="file" name="file" name="docFile[]" id="docFile" />
+                                            <input type="file" name="file" name="docFile[]" id="docFile" />
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +257,7 @@
 
         </form>
 
-        <form method="post" id="formAddPembayaranNew" name="formAddPembayaranNew"  class="formInputNew" enctype="multipart/form-data" style="display: none;">
+        <form method="post" id="formAddPembayaranNew" name="formAddPembayaranNew" class="formInputNew" enctype="multipart/form-data" style="display: none;">
             @csrf
             <input type="hidden" name="idPermohonan" id="idPermohonan" value="{{ Request::segment(3) }}" />
 
@@ -477,7 +477,7 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                                <input type="file" name="file" name="docFile[]" id="docFile" />
+                                            <input type="file" name="file" name="docFile[]" id="docFile" />
                                         </div>
                                     </div>
                                 </div>
@@ -573,7 +573,7 @@
                     <div style="clear: both;"></div>
                 </div>
                 <div style="float:left;">
-                    <h5 style="color: #555555; font-weight: normal;"> Informasi lainnya</h5>
+                    <h5 style="color: #555555; font-weight: normal;"> Informasi lainnya 2</h5>
                     <div style="clear: both;"></div>
                 </div>
                 <div style="clear: both;"></div>
@@ -582,7 +582,7 @@
                         <div style="margin: 0; padding: 0; width: 100%">
                             <?php
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                                if (strtolower(Auth::user()->role) == "sekretariat") {
+                                if (str_contains(strtolower(Auth::user()->role), "sekretariat")) {
                             ?>
                                     <button type="button" class="btn btn-primary"
                                         onClick="showApprove2({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}','{{ $next_role }}')"
@@ -603,13 +603,14 @@
                             ?>
 
                             <?php
+                            //echo Session::get('roleId') . "===" . $lastApprove."&&".$jabatanApproval->status;
                             if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
                             ?>
                                 <div style="float: left;">
                                     <div>
                                         <div>
                                             <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
+                                            if (str_contains(strtolower(Auth::user()->role), "sekretariat")) {
                                             ?>
                                                 <button type="button" class="btn btn-danger" onClick="showApprove2()"
                                                     style="color: white; font-size: 14px;">

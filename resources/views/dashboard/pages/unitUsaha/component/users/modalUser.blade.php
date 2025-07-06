@@ -1,5 +1,5 @@
 <div class="modal fade bs-example-modal-lg" id="bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-    <form method="post" action="{{ route('users-save') }}">
+    <form method="post" id="frm-users-save">
         @csrf
         <div class="modal-dialog modal modal-dialog-centered">
             <div class="modal-content">
@@ -18,12 +18,6 @@
                             <div class="col-md-12 mt-2">
                                 <label class="required-label"> Unit Usaha </label>
                                 <div style="margin-top: -5px;">
-                                    {{-- <select class="form-control" name="role" id="role" required>
-                                        <option value="">- Pilih Unit Usaha -</option>
-                                        @foreach($jabatan as $rows)
-                                        <option value="{{ $rows->id }}">{{ $rows->name }}</option>
-                                    @endforeach
-                                    </select> --}}
                                     <b style="font-size: 18px;"> {{ $unitUsaha->name }} </b>
                                     <input type="hidden" name="t_unit_usaha" id="t_unit_usaha" value="{{ $unitUsaha->id }}" />
                                     <input type="hidden" name="index" id="index" value="{{ Request::segment(3) }}" />
@@ -44,19 +38,6 @@
                                     <input type="email" class="form-control" name="email" id="email" placeholder="Input Email ..." required />
                                 </div>
                             </div>
-
-                            {{-- <div class="col-md-12 mt-4">
-                                <label class="required-label"> Unit Bisnis </label>
-                                <div>
-                                    <select class="form-control" name="id_unit_bisnis" id="id_unit_bisnis" required>
-                                        <option value="">- Pilih Unit Bisnis -</option>
-                                        <option value="1">- Unit Bisnis 1 -</option>
-                                        <option value="2">- Unit Bisnis 2 -</option>
-                                        <option value="3">- Unit Bisnis 3 -</option>
-                                    </select>
-                                </div>
-                            </div> --}}
-
 
                             <div class="col-md-12 mt-4">
                                 <label class="required-label"> Peran </label>
@@ -109,8 +90,36 @@
     </form>
 </div>
 
-@section("footer_modals")
+@section("footer_modals_users_edit")
 <script type="text/javascript">
+    $("#frm-users-save").submit(function(e){
+        e.preventDefault();
 
+        if($("#password").val() !== $("#form_password").val()){
+            alert("Password tidak sama !");
+            return false;
+        }
+        //alert("submitted");
+        let routes = "{{ route('users-save') }}";
+        let dataPost = $("#frm-users-save").serialize();
+
+        $.ajax({
+            type: "POST",
+            data: dataPost,
+            url: routes,
+            dataType: "json",
+            success:function(response){
+                if(response.status === 200){
+                    window.location = response.redirectUrl;
+                }
+                else if(response.status === 501){
+                    alert(response.message);
+                }
+                else{
+                    alert(response.message);
+                }
+            }
+        });
+    });
 </script>
 @endsection

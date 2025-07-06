@@ -105,11 +105,6 @@ if(isset($_GET['tab'])){
                                 onclick="active_tab(this.id , 3)">
                                 Petty Cash
                             </div>
-                            <div style="padding:0 20px; color: #666666; cursor: pointer;"
-                                class="tab-list {{ $active_pembayaran }} " id="tab-three-detail"
-                                onclick="active_tab(this.id , 3)">
-                                Urgent
-                            </div>
                         </div>
                         <div
                             style="border-bottom: 1px solid #DDDDDD; margin-top: 0;  padding:0 10px; margin-left: 10px; margin-right: 10px;">
@@ -117,7 +112,6 @@ if(isset($_GET['tab'])){
                                 <div style="padding:0 10px; width: 170px;"></div>
                                 <div style="padding:0 10px; width: 170px;"></div>
                                 <div style="padding:0 10px; width: 152px;"></div>
-                                <div style="padding:0 10px; width: 140px;"></div>
                             </div>
                         </div>
                     </div>
@@ -125,7 +119,6 @@ if(isset($_GET['tab'])){
                     @include("dashboard.pages.surat.components.permohonan")
                     @include("dashboard.pages.surat.components.pembayaran")
                     @include("dashboard.pages.surat.components.pettyCash")
-                    @include("dashboard.pages.surat.components.urgent")
                 </div>
 
                 <div
@@ -161,9 +154,23 @@ function active_tab(id, page) {
 @section("footers_suratList")
     <script type="text/javascript">
 
+    let activeTabs = "{{ $_GET['index'] }}";
+
+    if(activeTabs == "1"){
+        $(".div_display_unit").hide();
+        $("#suratPermohonanContainer").show();
+    }
+    else if(activeTabs == "2"){
+        $(".div_display_unit").hide();
+        $("#suratPembayaranContainer").show();
+    }
+    else if(activeTabs == "3"){
+        $(".div_display_unit").hide();
+        $("#suratPettyCashContainer").show();
+    }
+
     function getDataLaporan(){
             let urlPost = "{{ route('get-pencarian-laporan') }}";
-
 
             $.ajax({
                 type: "GET",

@@ -65,7 +65,7 @@
 
     <div
         style="width:100%; padding: 10px 10px 20px 10px; display:flex; justify-content: flex-end; align-items: flex-end;">
-        <div> @php echo $surat->links('pagination::bootstrap-4'); @endphp </div>
+        <div> @php echo $surat->links('pagination::daftar-surat-pettycash-paging'); @endphp </div>
     </div>
 
 </div>

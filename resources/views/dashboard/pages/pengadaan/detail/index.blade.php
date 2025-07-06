@@ -80,7 +80,7 @@
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
                                             <input type="date" class="form-control" name="cmbTglPengajuan"
-                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required />
+                                                id="cmbTglPengajuan" placeholder="Pilih Tanggal ..." required value="<?php echo date('Y-m-d'); ?>"  />
                                         </div>
                                     </div>
                                 </div>
@@ -96,6 +96,7 @@
                                                 <option value="">- Pilih Tipe -</option>
                                                 <option value="1">Pengadaan Aset</option>
                                                 <option value="3">Penghapusan Aset</option>
+                                                <option value="4">Maintenance</option>
                                             </select>
                                         </div>
                                     </div>
@@ -135,12 +136,8 @@
                                         <label class="required-label"> Detail Isi Surat </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
-                                        {{-- <div>
-                                            <textarea class="form-control" rows="6" name="detailIsiSurat" id="detailIsiSurat" placeholder="Detail Isi Surat ..." required></textarea>
-                                        </div> --}}
-                                        <div id="detailIsiSurat">
-                                        </div>
-
+                                        {{-- <input type="file" name="word_file" id="word_file" />  --}}
+                                        <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +163,7 @@
                         <div style="clear: both;"></div>
                         <div style="width: 100%; margin-top: 10px;">
                             <h5 class="small-text">Diajukan Oleh</h5>
-                            <h3 class="sub-title-text">Goesmang Asmara</h3>
+                            <h3 class="sub-title-text">{{ Auth::user()->name }}</h3>
                             <input type="hidden" class="form-control mt-2" name="inp_diajukan" id="inp_diajukan"
                                 placeholder="Input Diajukan ..." required />
                         </div>
@@ -174,19 +171,11 @@
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Unit Usaha</h5>
                             <div class="mt-2">
-                                {{ app('App\Helpers\Str')->getUserLog()->name }}
+                                {{ $usahaBr->name }}
                                 <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
                                     value={{ app('App\Helpers\Str')->getUserLog()->id }} />
                                 <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
                                     value="{{ app('App\Helpers\Str')->getUserLog()->name }}" />
-
-                                {{-- <select class="form-control mt-2" name="cmbUnitUsaha" id="cmbUnitUsaha" placeholder="Pilih Tanggal ..." required>
-                                    <option value="">- Pilih Unit Usaha -</option>
-                                    @foreach($unitUsaha as $rows)
-                                    <option value="{{ $rows->id }}">{{ $rows->name }}</option>
-                                @endforeach
-                                </select> --}}
-                                {{-- <h3 class="sub-title-text">UD. Surya Nandha - Galeri Teknologi</h3> --}}
                             </div>
                         </div>
 
@@ -194,14 +183,14 @@
                             <h5 class="small-text">Nomor Surat</h5>
                             <div class="col-12" style="margin:0; padding: 0;">
                                 <div class="row">
-                                    <div class="col-3">
+                                    <div class="col-4" style="display: none;">
                                             <input type="text" class="form-control mt-2" name="inp_invoice_no" id="inp_invoice_no"
                                             placeholder="Input No. Surat ..." required disabled="disabled" value="{{ $codeLast }}" />
                                     </div>
-                                        <div class="col-9">
-                                            <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                                placeholder="Input No. Surat ..." required />
-                                        </div>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
+                                            placeholder="Input No. Surat ..." required value="" />
+                                    </div>
                                 </div>
                                 {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
                             </div>
@@ -229,13 +218,13 @@
                                     <div class="col-md-12 font-500">
                                         <label> Dokumen <small> ( Pdf, Jpg, Png ) </small> </label>
                                     </div>
-                                    <div class="col-md-12" style="color: #444444;">
+                                    <div class="col-md-12 col-12" style="color: #444444;">
                                         <div class="row">
-                                            <div class="col-md-11">
+                                            <div class="col-md-11 col-10">
                                                 <input type="file"  class="form-control" name="docFile[]"
-                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf" />
+                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf,.docx,.jpeg,.xlsx" />
                                             </div>
-                                            <div class="col-md-1">
+                                            <div class="col-md-1 col-2">
                                                 <button class="btn btn-primary" id="button-plus" onClick="addTemplate()" type="button"> + </button>
                                             </div>
                                         </div>
@@ -246,28 +235,6 @@
                             <div class="col-md-12">
 
                                 <div class="row" id="uploaded-div">
-
-                                    {{-- <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 500kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 200kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> --}}
 
                                 </div>
 
@@ -286,6 +253,29 @@
 @section("footer_add_pengadaan")
 <script type="text/javascript">
     let tempFiles = [];
+
+    CKEDITOR.replace('editor1', {
+        // Disable all notifications
+        disableNotifications: true,
+        
+        // Remove "Powered by CKEditor" from the bottom
+        removePlugins: 'about,notification',
+        
+        // Disable upgrade notifications
+        startupMode: 'wysiwyg',
+        
+        // Hide the "This document was saved from an older version" warning
+        ignoreEmptyParagraph: true,
+        
+        // Disable deprecated API warnings
+        on: {
+            instanceReady: function(ev) {
+                ev.editor.on('notificationShow', function(event) {
+                    event.cancel();
+                });
+            }
+        }
+    });
 
     function loadStates(){
         $("#disabled-button").show();
@@ -335,21 +325,42 @@
 
     }
 
-    const quill = new Quill('#detailIsiSurat', {
-        theme: 'snow'
-    });
-
     $(document).ready(function() {
         // Attach event listener for form submission
-        
+    
+        const defaultTemplate = templates();
+
+        const customTemplate = templates(
+        '20 Oktober 2024', 
+        '215/RDT/GYR/X/2024', 
+        'I Wayan Sudarma', 
+        'Marketing Officer', 
+        '15 Januari 2015',
+        'Ni Luh Suastini',
+        '18 Oktober 2024',
+        '648/Holding/HRD/VI/2023',
+        '750.000',
+        'Tujuh Ratus Lima Puluh Ribu Rupiah'
+        );
+
+        let editors = CKEDITOR.instances.editor1;
+
+        editors.setData(customTemplate);
 
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
             loadStates();
 
+            let editor = CKEDITOR.instances.editor1;
+
+            // Get the HTML content
+            let htmlContent = editor.getData();
+
             const formData = new FormData(this);
-            formData.append("detailIsiSurat", quill.root.innerHTML);
+            formData.append("detailIsiSurat", htmlContent);
+            //formData.append("word_file" , document.getElementById("word_file").files[0]);
+            
             for(var ans = 0; ans < tempFiles.length; ans++){
                 formData.append("files"+ans, tempFiles[ans]);
             }
@@ -366,8 +377,7 @@
                 contentType: false, // Important for FormData
                 dataType: "json",
                 success: function(response) {
-                    console.log('error:', response.isDuplicate);
-                    if(response.isDuplicate > 0){
+                    if(response.isDuplicate > 0 && status != "200"){
                         dialogError(response.message);
                     }
                     else{

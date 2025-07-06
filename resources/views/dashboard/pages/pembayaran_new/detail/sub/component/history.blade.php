@@ -81,57 +81,7 @@
                 </div>
                 <div style="clear: both;"></div>
                 <div style="width: 100%; margin-top: 10px;">
-                    <div style="margin-top: -20px;">
-                        <div class="d-flex" style="margin: 0; padding: 0; width: 100%">
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                            ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <button type="button" class="btn btn-primary form-control"
-                                                onClick="showApprovePt()" style="color: white; font-size: 14px;">
-                                                <i class="fa fa-check-circle"></i>&nbsp; Verifikasi
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-
-                            <?php
-                            if (Session::get('roleId') === $lastApprove && $jabatanApproval->status === 0) {
-                            ?>
-                                <div style="width: 50%; margin-top: 10px;">
-                                    <div style="display: flex; margin-top: 5px;">
-                                        <div>
-                                            <?php
-                                            if (strtolower(Auth::user()->role) == "sekretariat") {
-                                            ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove2()" style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
-                                            <?php
-                                            } else {
-                                            ?>
-                                                <button type="button" class="btn btn-danger form-control"
-                                                    onClick="showApprove({{ $pengadaan->id}},'{{ $roles }}','{{ $person }}');"
-                                                    style="color: white; font-size: 14px;">
-                                                    <i class="fa fa-trash"></i>&nbsp; Tolak
-                                                </button>
-                                            <?php
-                                            }
-                                            ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php
-                            }
-                            ?>
-                        </div>
-                    </div>
+                    <div style="margin-top: -20px;"></div>
                     <div
                         style="padding:5px; margin-top: 20px; border:1px solid #DDDDDD; border-radius: 10px; width: 100%; minHeight: 50px; display: flex; align-items: center;">
                         <div style="margin-right: 15px; margin-left: 10px; font-size: 21px; color: #FF0000;">

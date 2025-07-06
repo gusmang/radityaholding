@@ -26,21 +26,27 @@
                             <div class="col-md-12 mt-2">
                                 <label class="required-label"> Email </label>
                                 <div>
-                                    <input type="text" class="form-control" name="tEmail" id="tEmail" value="" placeholder="Input Nama ..." required />
+                                    <input type="text" class="form-control" name="tEmail" id="tEmail" value="" placeholder="Input Email ..." required />
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-2">
                                 <label class="required-label"> Password </label>
                                 <div>
-                                    <input type="password" class="form-control" name="tPassword" id="tPassword" value="" placeholder="Input Nama ..." required />
+                                    <input type="password" class="form-control" name="tPassword" id="tPassword" value="" placeholder="Input Password ..." required />
+                                </div>
+                                <div class="password-match">
+                                    Password Tidak Sama
                                 </div>
                             </div>
 
                             <div class="col-md-12 mt-2">
-                                <label class="required-label"> Ganti Password </label>
+                                <label class="required-label"> Ulangi Password </label>
                                 <div>
-                                    <input type="password" class="form-control" name="tUlangiPassword" id="tUlangiPassword" value="" placeholder="Input Nama ..." required />
+                                    <input type="password" class="form-control" name="tUlangiPassword" id="tUlangiPassword" value="" placeholder="Ulangi Password ..." required />
+                                </div>
+                                <div class="password-match">
+                                    Password Tidak Sama
                                 </div>
                             </div>
 
@@ -62,10 +68,26 @@
 
 @section("footer_modals")
 <script type="text/javascript">
+    function match_password(){
+        let tPassVal = $("#tPassword").val();
+        let tUlangiVal = $("#tUlangiPassword").val();
+        if(tPassVal !== tUlangiVal){
+            return false
+        }
+        else{
+            return true
+        }
+    }
+    
     $(document).ready(function() {
         // Attach event listener for form submission
         $('#formEditUsaha').on('submit', function(event) {
             event.preventDefault(); // Prevent default form submission
+
+            if(match_password() === false){
+                $(".password-match").show();
+                return false;
+            }
 
             // Serialize form data
             const formData = $(this).serialize();

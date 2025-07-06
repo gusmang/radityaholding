@@ -53,6 +53,12 @@ class UserController extends Controller
 
     public function save(Request $request)
     {
+        $userCek = User::where("email", strtolower($request->email))->count();
+
+        if ($userCek > 0) {
+            return response()->json(['message' => 'Duplicate Email', 'redirectUrl' => route('detailUsaha', ['index' => $request->index]), 'status' => 501], 200);
+        }
+
         $jabatan = Position::where("id", $request->role)->first();
         $users = new User();
 
@@ -67,9 +73,13 @@ class UserController extends Controller
         $users->status = $request->chk_aktif_add === null ? 0 : $request->chk_aktif_add;
         $users->signature_url = "-";
 
-        $users->save();
-
+        //$users->save();
+        if ($users->save()) {
+            return response()->json(['message' => 'Add User Success', 'redirectUrl' => route('detailUsaha', ['index' => $request->index]), 'status' => 200], 200);
+        } else {
+            return response()->json(['message' => 'Add User Failed', 'redirectUrl' => route('detailUsaha', ['index' => $request->index]), 'status' => 500], 200);
+        }
         //return redirect("detail-usaha/".$request->index."?tab=user");
-        return \Redirect::route('detailUsaha', [$request->index . "?tab=users"])->with('message', 'State saved correctly!!!');
+        //return \Redirect::route('detailUsaha', [$request->index . "?tab=users"])->with('message', 'State saved correctly!!!');
     }
 }

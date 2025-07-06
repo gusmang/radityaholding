@@ -53,7 +53,7 @@ $display_pengguna = 'display: none;';
                 </div>
             </div>
 
-            <div class="mt-40">
+            <div class="mt-40 riwayat-approval">
                 <div class="row">
                     <div class="col-md-12 col-12">
                         <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
@@ -162,7 +162,7 @@ $display_pengguna = 'display: none;';
                 <div style="display: flex; flex-direction: row; margin-top: 60px;">
                     <div style="padding:0 20px 20px 20px; color: #666666; cursor: pointer;"
                         class="tab-list {{ $active_detail }}" id="tab-one-detail" onclick="active_tab(this.id , 1)">
-                        Detail Surat
+                        Surat Permohonan
                     </div>
                     <div style="padding:0 20px; color: #666666; cursor: pointer;"
                         class="tab-list {{ $active_pembayaran }}" id="tab-three-detail"

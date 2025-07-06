@@ -3,7 +3,7 @@
 $active_detail = (!isset($_GET['tab'])) ? "active-tab" : "";
 $active_pengadaan = (isset($_GET['tab']) && $_GET['tab'] === 'pengadaan') ? "active-tab" : "";
 $active_pembayaran = (isset($_GET['tab']) && $_GET['tab'] === 'pembayaran') ? "active-tab" : "";
-$active_cash = (isset($_GET['tab']) && $_GET['tab'] === 'petty-cash') ? "active-tab" : "";
+$active_cash = (isset($_GET['tab']) && $_GET['tab'] === 'pettycash') ? "active-tab" : "";
 $active_pengguna = (isset($_GET['tab']) && $_GET['tab'] === 'users') ? "active-tab" : "";
 
 $display_detail = (isset($_GET['tab']) && $_GET['tab'] !== '') ? 'display: none;' : '';
@@ -110,7 +110,6 @@ $display_pengguna = 'display: none;';
 
             @include("dashboard.pages.unitUsaha.component.sub.modals.editDetail")
 
-
             @include("dashboard.pages.unitUsaha.component.users.modalUser")
             @include("dashboard.pages.unitUsaha.component.users.modalPassword")
             @include("dashboard.pages.unitUsaha.component.users.modalEdit")
@@ -127,6 +126,7 @@ $display_pengguna = 'display: none;';
 
 <script type="text/javascript">
     let selectedSurat = 1;
+    let segmentId = "{{ Request::segment(3) }}";
 
     function active_tab(id, page) {
         $(".tab-list").removeClass("active-tab");
@@ -169,6 +169,43 @@ $display_pengguna = 'display: none;';
             $("#table_surat_penghapusan").fadeIn("slow");
             $("#table_surat_reguler").hide();
         }
+        else if (page === 4) {
+            $(".div_display_unit_sub").hide();
+            $("#table_surat_maintenance").fadeIn("slow");
+            $("#table_surat_reguler").hide();
+        }
+    }
+
+    function showModalHapus(){
+        Swal.fire({
+            icon: "question",
+            title: "Hapus Unit Usaha",
+            text: "Yakin Hapus Unit Usaha ini?",
+            showCancelButton: true, // Show Cancel button
+            confirmButtonText: "Ya, Hapus!", // Text for OK button
+            cancelButtonText: "Batal", // Text for Cancel button
+            reverseButtons: true // Places "Cancel" on the left (optional)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = "{{ url('dashboard/delete/unit-usaha') }}" + "/" + segmentId;
+            }
+        });
+    }
+
+    function deleteRole(index , module){
+        Swal.fire({
+            icon: "question",
+            title: "Hapus Role ini",
+            text: "Yakin Hapus Role ini?",
+            showCancelButton: true, // Show Cancel button
+            confirmButtonText: "Ya, Hapus!", // Text for OK button
+            cancelButtonText: "Batal", // Text for Cancel button
+            reverseButtons: true // Places "Cancel" on the left (optional)
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = "{{ url('dashboard/rolepengadaan/delete') }}" + "/" + index+"/"+segmentId+"/"+module;
+            }
+        });
     }
 </script>
 @endsection
