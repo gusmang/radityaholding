@@ -33,7 +33,7 @@ class LaporanController extends Controller
             $surat = pettyCash::where("position", "1")->orderBy("id", "desc")->paginate(10);
         } else {
             $pengadaan = Pengadaan::where("position", "!=", 0)->where("pengadaan.id_unit_usaha", Auth::user()->id_positions);
-            $pembayaran = Persetujuan::where("id_unit_usaha", Auth::user()->id_positions)->where("position", "1")->orderBy("id", "desc")->paginate(10);
+            $pembayaran = Pembayaran::where("id_unit_usaha", Auth::user()->id_positions)->where("position", "1")->orderBy("id", "desc")->paginate(10);
             $surat = Pembayaran::orderBy("id", "desc")->where("position", "1")->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("petty_cashes.id_unit_usaha", Auth::user()->id_positions)->paginate(10);
         }
 

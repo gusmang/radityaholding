@@ -41,7 +41,7 @@ class LainnyaController extends Controller
                 ->join('approval_doc_pengadaan', 'approval_doc_pengadaan.id_surat', '=', 'pengadaan.id')
                 ->where('pengadaan.tipe_surat', '=', 2)
                 ->whereNull('pengadaan.deleted_at')
-                ->groupBy('pengadaan.no_surat', 'approval_doc_pengadaan.is_next')
+                ->groupBy('pengadaan.no_surat')
                 ->selectRaw('
                     MAX(pengadaan.id) as pid,
                     pengadaan.*,
@@ -59,7 +59,7 @@ class LainnyaController extends Controller
                 ->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)
                 ->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)
                 ->whereNull('pengadaan.deleted_at')
-                ->groupBy('pengadaan.no_surat', 'approval_doc_pengadaan.is_next')
+                ->groupBy('pengadaan.no_surat')
                 ->selectRaw('
                     MAX(pengadaan.id) as pid,
                     pengadaan.*,

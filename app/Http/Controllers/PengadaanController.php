@@ -45,7 +45,7 @@ class PengadaanController extends Controller
                 ->join('approval_doc_pengadaan', 'approval_doc_pengadaan.id_surat', '=', 'pengadaan.id')
                 ->where('pengadaan.tipe_surat', '!=', 2)
                 ->whereNull('pengadaan.deleted_at')
-                ->groupBy('pengadaan.no_surat', 'approval_doc_pengadaan.is_next')
+                ->groupBy('pengadaan.no_surat')
                 ->selectRaw('
                     MAX(pengadaan.id) as pid,
                     pengadaan.*,
@@ -57,13 +57,19 @@ class PengadaanController extends Controller
                 $pengadaan = $pengadaan->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id);
             }
         } else {
-            $pengadaan = Pengadaan::select('pengadaan.id as pid', 'approval_doc_pengadaan.*', 'pengadaan.*')
-                ->where("tipe_surat", "!=", 2)
-                ->join("approval_doc_pengadaan", "approval_doc_pengadaan.id_surat", "pengadaan.id")
-                ->where("id_unit_usaha", Auth::user()->id_positions)
+            $pengadaan = DB::table('pengadaan')
+                ->join('approval_doc_pengadaan', 'approval_doc_pengadaan.id_surat', '=', 'pengadaan.id')
+                ->where('pengadaan.tipe_surat', '!=', 2)
                 ->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)
                 ->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)
-                ->orderBy("pengadaan.id", "desc");
+                ->whereNull('pengadaan.deleted_at')
+                ->groupBy('pengadaan.no_surat')
+                ->selectRaw('
+                    MAX(pengadaan.id) as pid,
+                    pengadaan.*,
+                    ANY_VALUE(approval_doc_pengadaan.is_next) as is_next
+                ')
+                ->orderByDesc('pid');
         }
 
         $roles = rolePengadaan::where("id_unit_usaha", Auth::user()->id_positions)->where("id_role", Auth::user()->role_id)->first();
@@ -377,39 +383,6 @@ class PengadaanController extends Controller
 
     public function postPengadaan(Request $request)
     {
-        // $request->validate([
-        //     'word_file' => 'required|file|mimes:doc,docx|max:10240',
-        // ]);
-
-        // // Store the uploaded file
-        // $filePath = $request->file('word_file')->store('temp');
-
-        // // Full path to the file
-        // $fullPath = storage_path('app/' . $filePath);
-
-        // // Load the Word document
-        // $phpWord = IOFactory::load($fullPath);
-
-
-        // // Create HTML writer
-        // $htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
-
-        // // Generate HTML content
-        // $htmlContent = '';
-        // ob_start();
-        // $htmlWriter->save('php://output');
-        // //$htmlWriter->getWriterPart('Body')->write();
-        // $fullHtml = ob_get_clean();
-
-        // // Now extract just the body
-        // $dom = new DOMDocument();
-        // @$dom->loadHTML($fullHtml);
-        // $body = $dom->getElementsByTagName('body')->item(0);
-
-
-        // Clean up - delete the temporary file
-        //Storage::delete($filePath);
-
         DB::beginTransaction();
 
         try {
