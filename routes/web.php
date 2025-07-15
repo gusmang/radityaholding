@@ -47,6 +47,7 @@ Route::get('/success-register', [LoginController::class, 'successRegister'])->na
 Route::post('new-registration', [RegistrationController::class, 'registration'])->name('newRegistration');
 Route::post('forgot-pass', [RegistrationController::class, 'forgotPass'])->name('forgotPass');
 Route::post('reset-password', [RegistrationController::class, 'resetPasswordPost'])->name('resetPasswordPost');
+Route::get('/normalisasiTipe', [SuratController::class, 'normalisasiTipe'])->name('normalisasiTipe');
 
 Route::get('/send-notification', function () {
     $user = User::find(41); // Replace with a valid user ID
@@ -132,6 +133,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
     Route::post('/addHolding', [JabatanController::class, 'saveJabatan'])->name('addHolding');
     Route::post('/addHoldingNew', [JabatanController::class, 'saveJabatanHolding'])->name('addHoldingNew');
     Route::get('/holding', [JabatanController::class, 'viewHolding'])->name('holding');
+    Route::post('/resetPasswordholding', [UserController::class, 'resetPasswordholding'])->name('resetPasswordholding');
     //Route::put('/editHolding', [JabatanController::class, 'editHolding'])->name('editHolding');
     Route::put('/update-holding', [JabatanController::class, 'editUserHolding'])->name('update-holding');
     Route::post('/save-signature-holding', [JabatanController::class, 'saveSignatureHolding'])->name('saveSignatureHolding');

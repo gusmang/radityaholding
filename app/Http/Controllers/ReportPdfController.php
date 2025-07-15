@@ -52,6 +52,21 @@ class ReportPdfController extends Controller
 
         $pengadaan = Pengadaan::where("id", $index)->first();
 
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = Pengadaan::where("id", $index)->count();
+        $approvalCount = approval_surat_pengadaan::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        if ((int)Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
         $jabatan = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")->join("users", "users.id", "approval_doc_pengadaan.approved_by")->join("role_pengadaan", "role_pengadaan.id_role", "approval_doc_pengadaan.id_jabatan")->select("approval_doc_pengadaan.*", "positions.name", "users.*")->where("approval_doc_pengadaan.id_surat", $index)->where("approval_doc_pengadaan.status", 1)->where("role_pengadaan.menyetujui", 0)->where("role_pengadaan.id_unit_usaha", $pengadaan->id_unit_usaha)->where("role_pengadaan.aktif", 1)->where("role_pengadaan.tipe_surat", ($pengadaan->tipe_surat - 1))->distinct('approval_doc_pengadaan.id_jabatan')->get();
 
         $menyetujui = approval_surat_pengadaan::join("positions", "positions.id", "approval_doc_pengadaan.id_jabatan")
@@ -251,10 +266,25 @@ class ReportPdfController extends Controller
 
         $pengadaan = Pembayaran::where("id", $index)->first();
 
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null && (int)Auth::user()->id_positions !== -1) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = Pembayaran::where("id", $index)->count();
+        $approvalCount = approval_surat_pembayaran::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        if ((int)Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
         $jabatan = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")
             ->join("users", "users.id", "approval_doc_pembayarans.approved_by")
             ->join("role_pembayaran", "role_pembayaran.id_role", "approval_doc_pembayarans.id_jabatan")
-            ->select("approval_doc_pembayarans.*", "positions.name", "users.*")
+            ->select("approval_doc_pembayarans.*", "positions.name", "users.*", "role_pembayaran.is_menyetujui")
             ->where("approval_doc_pembayarans.id_surat", $index)
             ->where("approval_doc_pembayarans.status", 1)
             ->where("role_pembayaran.menyetujui", 0)
@@ -264,7 +294,7 @@ class ReportPdfController extends Controller
         $menyetujui = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")
             ->join("users", "users.id", "approval_doc_pembayarans.approved_by")
             ->join("role_pembayaran", "role_pembayaran.id_role", "approval_doc_pembayarans.id_jabatan")
-            ->select("approval_doc_pembayarans.*", "positions.name", "users.*")
+            ->select("approval_doc_pembayarans.*", "positions.name", "users.*", "role_pembayaran.is_menyetujui")
             ->where("approval_doc_pembayarans.id_surat", $index)
             ->where("approval_doc_pembayarans.status", 1)
             ->where("role_pembayaran.menyetujui", 1)
@@ -297,6 +327,21 @@ class ReportPdfController extends Controller
         //$user = User::where("id" , Auth::user()->id)->first();
 
         $pengadaan = pettyCash::where("id", $index)->first();
+
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = pettyCash::where("id", $index)->count();
+        $approvalCount = approval_surat_pety_cash::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        if ((int)Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
 
         $lampiran = DocPettyCash::where("id_surat", $request->index)->count();
 
@@ -335,6 +380,21 @@ class ReportPdfController extends Controller
         $approval_doc = Persetujuan::where("id", $index)->first();
 
         $pengadaan = Pengadaan::where("id", $approval_doc->id_permohonan)->first();
+
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = Persetujuan::where("id", $index)->count();
+        $approvalCount = approval_surat_pengadaan::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        if ((int)Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
 
         $lampiran = DocPengadaan::where("id_surat", $request->index)->count();
 

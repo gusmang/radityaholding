@@ -136,7 +136,7 @@
                         <?php
                         if ($rows->signature_url !== "-") {
                         ?>
-                            <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                            <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}
                                 style="height: 90px;" />
                         <?php
                         }
@@ -182,7 +182,7 @@
                                 <?php
                                 if ($rows->signature_url !== "-") {
                                 ?>
-                                    <img src={{ str_replace("","",getcwd()).'/storage/app/public/'.$rows->signature_url }}
+                                    <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}
                                         style="height: 90px;" />
                                 <?php
                                 }

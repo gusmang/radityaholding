@@ -85,6 +85,15 @@ class UnitUsahaController extends Controller
             ->orderBy('role_pengadaan.urutan', 'asc')
             ->get();
 
+        $users_maintenance = DB::table('role_pengadaan')->select("role_pengadaan.*", "positions.name")
+            ->where(function ($query) use ($index) {
+                $query->where('role_pengadaan.id_unit_usaha', $index);
+            })
+            ->where("role_pengadaan.tipe_surat", 3)
+            ->join("positions", "positions.id", "role_pengadaan.id_role")
+            ->orderBy('role_pengadaan.urutan', 'asc')
+            ->get();
+
         $users_pembayaran = DB::table('role_pembayaran')->select("role_pembayaran.*", "positions.name")
             ->where(function ($query) use ($index) {
                 $query->where('role_pembayaran.id_unit_usaha', $index);
@@ -101,14 +110,7 @@ class UnitUsahaController extends Controller
             ->orderBy('role_petty_cash.urutan', 'asc')
             ->get();
 
-        $users_maintenance = DB::table('role_pengadaan')->select("role_pengadaan.*", "positions.name")
-            ->where(function ($query) use ($index) {
-                $query->where('role_pengadaan.id_unit_usaha', $index);
-            })
-            ->where("role_pengadaan.tipe_surat", 3)
-            ->join("positions", "positions.id", "role_pengadaan.id_role")
-            ->orderBy('role_pengadaan.urutan', 'asc')
-            ->get();
+
 
         $users_holding = User::where("id_positions", "!=", "0")->where("status", 1)->get();
 

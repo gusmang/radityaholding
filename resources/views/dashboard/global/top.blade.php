@@ -54,13 +54,20 @@
                     <span class="badge notification-active"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
+                    <div class="col-12 mb-4">
+                        <select name="cmb-notif-type" id="cmb-notif-type" class="form-control" onChange="getNotifNew(event); return false;">
+                            <option value="1"> Pengadaan </option>
+                            <option value="2"> Pembayaran </option>
+                            <option value="3"> Petty Cash </option>
+                            <option value="4"> Lainnya </option>
+                        </select>
+                    </div>
                     <div class="notification-list mx-h-350 customscroll">
                         <ul id="ul-notifications-new">
-                            
                         </ul>
                     </div>
                     <div id="shows-notif-button">
-                        <div class="btn btn-primary form-control mt-2" onClick="getNotifNew(event); return false;" name="btn-submit-new" type="button" value="submit">
+                        <div style="color:#FFFFFF!important;" class="btn btn-primary form-control mt-2" onClick="getNotifNew(event); return false;" name="btn-submit-new" type="button" value="submit">
                             <i class="fa fa-refresh"></i>&nbsp; Refresh Data
                         </div>
                     </div>

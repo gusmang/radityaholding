@@ -1,19 +1,19 @@
-<div class="col-md-12 col-12 div_display_unit" id="div_tab_detail" style="padding:0 0 30px 0; margin: 0; overflow: hidden;">
+<div class="col-md-12 col-12 div_display_unit" id="div_tab_pengadaan" style="padding:0 0 30px 0; margin: 0; overflow: hidden; display: none;">
     <div class="row">
         @php
         $an = 0;
         @endphp
-        @foreach($pengadaan as $row)
+        @foreach($pengadaan_rj as $row)
         @php
         $an++;
         @endphp
-        <div class="col-md-4 col-12 mt-4">
+        <div class="col-md-4 col-6 mt-4">
             <div class="col-md-12 col-12 card"
                 style="min-height: 200px; border-radius: 15px;  overflow: hidden; margin: 0; padding:0;">
                 <table style="height: 80px; border-bottom: 1px solid #DDDDDD;">
                     <tbody>
                         <td style="padding: 20px 10px 20px 30px;">
-                            {{-- <i class="fa fa-users"></i> --}}
+                            <i class="fa fa-users"></i>
                         </td>
                         <td style="padding: 20px 20px 20px 0;">
                             <div>
@@ -23,14 +23,8 @@
                             </div>
 
                             <div class="mt-2">
-                                <h5 style="font-size: 14px; font-weight: normal; letter-spacing: 1px;">
-                                    {{ app('App\Helpers\Date')->hari_tanggal_waktu($row->created_at , true) }}
-                                </h5>
-                            </div>
-
-                            <div class="mt-4">
-                                <h5 style="font-size: 10px; font-weight: normal; letter-spacing: 1px; text-align: right;">
-                                    Last Update : {{ app('App\Helpers\Date')->hari_tanggal_waktu($row->tanggal , true) }}
+                                <h5 style="font-size: 14px; font-weight: normal; letter-spacing: 2px">
+                                    {{ $row->tanggal }}
                                 </h5>
                             </div>
                         </td>
@@ -45,15 +39,15 @@
                     </div>
 
                     <div class="mt-4">
-                        <h5 style="font-size: 16px; font-weight: 500;"> Perihal : {{ $row->title }} </h5>
+                        <h5 style="font-size: 16px; font-weight: 500;"> {{ $row->title }} </h5>
                     </div>
 
-                    {{-- <div class="mt-2" style="height: 100px;">
+                    <div class="mt-2" style="height: 100px;">
                         <h5
                             style="font-size: 12px; font-weight: normal; line-height: 21px; letter-spacing: 2px">
                             {{ substr(strip_tags($row->detail),0,200)." ..." }}
                         </h5>
-                    </div> --}}
+                    </div>
                 </div>
 
                 <div style="border-top: 1px solid #DDDDDD; padding: 20px;">
@@ -64,38 +58,13 @@
                                 <div> Rp {{ app('App\Helpers\Str')->rupiah($row->nominal_pengajuan) }}
                                 </div>
                             </div>
-                            <?php
-                            if ($row->is_rejected === 1) {
-                            ?>
-                                <?php
-                                if(isset($roles->urutan)){
-                                    if($roles->urutan === 1){
-                                        ?>
-                                        <div class="col-md-5 d-flex justify-content-end" style="margin:0; padding: 0;">
-                                            <a href="{{route('revisiPettyCash',['uuid'=> $row->uuid])}}">
-                                                <button class="btn btn-primary-outlined">
-                                                    Lihat Detail
-                                                </button>
-                                            </a>
-                                        </div>
-                                        <?php
-                                    }
-                                }
-                                ?>
-                                <?php
-                                }
-                                else{
-                                ?>
-                                    <div class="col-md-5 d-flex justify-content-end" style="margin:0; padding: 0;">
-                                        <a href="{{route('detailPettyCash',['index'=> $row->id])}}">
-                                            <button class="btn btn-primary-outlined">
-                                                Lihat Detail
-                                            </button>
-                                        </a>
-                                    </div>
-                                <?php
-                                }
-                            ?>
+                            <div class="col-md-5 d-flex justify-content-end" style="margin:0; padding: 0;">
+                                <a href="{{route('detailPengadaan',['index'=> $row->id])}}">
+                                    <button class="btn btn-primary-outlined">
+                                        Lihat Detail
+                                    </button>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

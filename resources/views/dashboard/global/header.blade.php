@@ -173,6 +173,17 @@
             border-radius: 5px;
         }
 
+        .badge-icons{
+            width: 35px; 
+            height: 35px; 
+            color: #FFFFFF; 
+            background: green; 
+            display: flex; 
+            align-items:center; 
+            justify-content: center; 
+            border-radius: 5px;
+        }
+
         .badge-pending{
             width: 80px;
             height: 40px;

@@ -8,6 +8,8 @@
                 <th>Perihal</th>
                 <th>Nominal Pengajuan</th>
                 <th>Unit Usaha</th>
+                <th>Verifikator</th>
+                <th>Status</th>
                 <th>Detail</th>
             </tr>
         </thead>
@@ -42,6 +44,30 @@
                     @php
                     echo $row->unit_usaha
                     @endphp
+                </td>
+                <td>
+                    @php
+                    echo $row->next_verifikator
+                    @endphp
+                </td>
+                <td>
+                    <?php
+                    if($row->is_rejected === 1){
+                        ?>
+                            <div class="badge-rejected"> Rejected</div>
+                        <?php
+                    }
+                    else if($row->is_rejected === 0 && $row->position === 0){
+                        ?>
+                            <div class="badge-pending"> Pending </div>
+                        <?php
+                    }
+                    else if($row->position > 0){
+                        ?>
+                            <div class="badge-success"> Approved </div>
+                        <?php
+                    }
+                    ?>
                 </td>
                 <td>
                     <a href="{{route('detailPembayaran',['index'=> $row->id])}}">

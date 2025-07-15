@@ -97,9 +97,10 @@ class JabatanController extends Controller
         return response()->json($jabatan);
     }
 
-
     public function add(Request $request)
     {
+        $tipe_surat = ($request->selected_surat_tipe === null || $request->selected_surat_tipe === "") ? 0 : $request->selected_surat_tipe;
+
         $rolePengadaan = new rolePengadaan();
 
         $rolePengadaan->id_user = 0;
@@ -109,7 +110,8 @@ class JabatanController extends Controller
         $rolePengadaan->menyetujui = $request->pid_menyetujui_unit_usaha;
         $rolePengadaan->rj = $request->pid_tolak_unit_usaha;
         $rolePengadaan->is_menyetujui = $request->pid_ttd_unit_usaha;
-        $rolePengadaan->tipe_surat = ($request->selected_surat_tipe === null || $request->selected_surat_tipe === "") ? 0 : $request->selected_surat_tipe;
+        $rolePengadaan->tipe_surat = $tipe_surat;
+        $rolePengadaan->tipe_surat_huruf = app("App\Helpers\Status")->tipe_surat_huruf($tipe_surat);
         $rolePengadaan->aktif = isset($request->pd_chk_aktif) ? true : false;
 
         $rolePengadaan->save();

@@ -29,9 +29,6 @@ class PettyCashController extends Controller
     {
         $users = User::orderBy("id", "desc")->paginate(10);
         $jabatan = Position::where("deleted_at", null)->get();
-        // $pengadaan = pettyCash::where("deleted_at", null)->where("is_rejected", false)->where("position", 0)->orderBy("id", "desc")->paginate(10);
-        // $pengadaan_rj = pettyCash::where("deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc")->paginate(10);
-        // $pengadaan_appr = pettyCash::where("deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->orderBy("id", "desc")->paginate(10);
 
         $tanggalSekarang = time(); // Timestamp sekarang
         $tanggalKemarin = strtotime('-3 days', $tanggalSekarang); // Kurangi 3 hari
@@ -40,35 +37,45 @@ class PettyCashController extends Controller
 
         $pengadaan  = "";
         if (Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0") {
-            $pengadaan = pettyCash::where("deleted_at", null)
-                ->where("is_rejected", false)
-                ->where("position", 0)
-                ->orderBy("id", "desc");
+            $pengadaan = pettyCash::select("petty_cashes.*")->where("petty_cashes.deleted_at", null)
+                // ->where("petty_cashes.is_rejected", false)
+                // ->where("petty_cashes.position", 0)
+                ->orderBy("petty_cashes.id", "desc");
+
+            if ((int) Auth::user()->id_positions === 0) {
+                $pengadaan = $pengadaan->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("approval_doc_pettycash.id_jabatan", Auth::user()->role_id);
+            }
         } else {
-            $pengadaan = pettyCash::where("deleted_at", null)
+            $pengadaan = pettyCash::select("petty_cashes.*")->where("petty_cashes.deleted_at", null)
+                ->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")
                 ->where("id_unit_usaha", Auth::user()->id_positions)
+                ->where("approval_doc_pettycash.id_jabatan", Auth::user()->role_id)
                 ->where("is_rejected", false)
-                ->where("position", 0)
-                ->orderBy("id", "desc");
+                //->where("position", 0)
+                ->orderBy("petty_cashes.id", "desc");
         }
         if (isset($_GET['btn-submit-new'])) {
             if ($_GET['status_surat'] === "5") {
-                $pengadaan = pettyCash::where("deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc");
             } else if ($_GET['status_surat'] == "4") {
-                $pengadaan = pettyCash::where("deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->orderBy("id", "desc");
             } else if ($_GET['status_surat'] == "1") {
-                $pengadaan = pettyCash::where("deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->where('petty_cashes.tanggal', '<=', $maxDate)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->whereDate('petty_cashes.tanggal', '<=', $maxDate)->orderBy("id", "desc");
             } else if ($_GET['status_surat'] == "2") {
-                $pengadaan = pettyCash::where("petty_cashes.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("approval_doc_pettycash.id_jabatan", Auth::user()->role_id)->orderBy("id", "desc");
-            } else if ($_GET['status_surat'] == "3") {
-                $pengadaan = pettyCash::where("deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->where('tanggal', '>=', $maxDate)->orderBy("id", "desc");
+                if ((int) Auth::user()->id_positions === -1) {
+                    $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("approval_doc_pettycash.is_next", 1)->where("is_rejected", false)->where("position", "=", 0)->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("approval_doc_pettycash.id_jabatan", Auth::user()->role_id)->orderBy("id", "desc");
+                } else {
+                    $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("approval_doc_pettycash.is_next", 1)->where("is_rejected", false)->where("position", "=", 0);
+                }
+            } else if ($_GET['status_surat'] == "3"  || !isset($_GET['status_surat']) || $_GET['status_surat'] == "") {
+                $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->orderBy("id", "desc");
             }
 
             if (isset($_GET['tanggal_surat']) && $_GET['tanggal_surat'] !== "") {
                 if ($_GET['search_surat'] != "") {
                     $ex_created = explode(" - ", $_GET['tanggal_surat']);
 
-                    $pengadaan = $pengadaan->where("petty_cashes.created_at", ">=", str_replace("/", "-", $ex_created[0]))->where("petty_cashes.created_at", "<=", str_replace("/", "-", $ex_created[1]));
+                    $pengadaan = $pengadaan->whereDate("petty_cashes.created_at", ">=", str_replace("/", "-", $ex_created[0]))->whereDate("petty_cashes.created_at", "<=", str_replace("/", "-", $ex_created[1]));
                 }
             }
 
@@ -78,9 +85,13 @@ class PettyCashController extends Controller
                 }
             }
         }
+
+        if (!isset($_GET['status_surat'])) {
+            $pengadaan = $pengadaan->where("petty_cashes.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0);
+        }
         //$pengadaan = $pengadaan->whereTrim("no_surat", " Inv/001/PTSIDDA");
 
-        $pengadaan = $pengadaan->paginate(10);
+        $pengadaan = $pengadaan->paginate(app("App\Helpers\Setting")->paginatorLimit());
 
         $roles = rolePettyCash::where("id_role", Auth::user()->role_id)->where("aktif", 1)->first();
         //echo "tes " . $roles->urutan;
@@ -88,47 +99,6 @@ class PettyCashController extends Controller
         return view('dashboard.pages.pettyCash.index', compact('roles', 'users', 'jabatan', 'pengadaan'));
     }
 
-    public function detailPengadaan(Request $request, $index)
-    {
-        $unitUsaha = UnitUsaha::orderBy("name", "asc")->get();
-
-        $approvalDoc = ApprovalDocument::where("id_surat", $index)->orderBy("id", "asc")->get();
-        $pengadaan = Pengadaan::where("id", $index)->first();
-
-        $user = User::where("id", $pengadaan->id_unit_usaha)->first();
-        $setuju = Persetujuan::where("id_permohonan", $index)->get();
-
-        $jabatan = DB::table('petty_cashes')
-            ->where(function ($query) use ($user) {
-                $query->where('id_positions',  0)
-                    ->orWhere('id_positions',  $user->id_positions);
-            })
-            ->where(function ($query) use ($index) {
-                $query->where('role_status',  1)
-                    ->orWhere('id_positions', 0);
-            })
-            ->where('status', 1)
-            ->orderBy('role_pengadaan', 'asc')
-            ->get();
-
-        $dokumen = Dokumen::where("id_surat", $index)->get();
-
-        $lastApprove = "";
-        $inc = 0;
-        foreach ($jabatan as $rows) {
-            if (($pengadaan->position + 1) == $inc) {
-                if ($rows->id_positions == "0") {
-                    $lastApprove = $rows->id;
-                } else {
-                    $lastApprove = $rows->role_id;
-                }
-                break;
-            }
-            $inc++;
-        }
-
-        return view('dashboard.pages.pettyCash.detail.sub.index', compact('jabatan', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
-    }
 
     public function editPosPettyCash(Request $request)
     {
@@ -585,9 +555,8 @@ class PettyCashController extends Controller
                     $historyPengadaan->title = "Surat telah disetujui oleh " . Auth::user()->role;
                     $historyPengadaan->note = trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas);
                     $historyPengadaan->tanggal = date("Y-m-d");
-                    $historyPengadaan->note = "-";
                     $historyPengadaan->id_surat_pettycash = $request->t_index;
-                    $historyPengadaan->id_user = $rows->id_jabatan;
+                    $historyPengadaan->id_user = Auth::user()->id;
                     $historyPengadaan->id_jabatan = Auth::user()->role_id;
 
                     if ($request->file("files") !== null) {
@@ -615,6 +584,7 @@ class PettyCashController extends Controller
                         "status" => 1,
                         "is_next" => 0,
                         'title' => Auth::user()->name,
+                        'note' => trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas),
                         "nama" => "Surat telah disetujui oleh " . Auth::user()->role,
                         "approved_by" => Auth::user()->id
                     ));
@@ -694,6 +664,21 @@ class PettyCashController extends Controller
 
         $approvalDoc = approvalDocument::where("id_surat", $index)->orderBy("id", "asc")->get();
         $pengadaan = pettyCash::where("id", $index)->first();
+
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = pettyCash::where("id", $index)->count();
+        $approvalCount = approval_surat_pety_cash::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        if ((int) Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
 
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Persetujuan::where("id_permohonan", $index)->get();

@@ -63,7 +63,7 @@ if(isset($_GET['tab'])){
                             <div style="padding: 15px;">
                                 <div class="row">
                                     <div class="col-md-10 col-10">
-                                        <div class="weight-500 font-18 mt-2">Total Surat Pengadaan</div>
+                                        <div class="weight-500 font-18 mt-2">Total Pengadaan Selesai</div>
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $pengadaanJml }}</div>
                                             <div class="mt-2 font-14">
@@ -72,7 +72,9 @@ if(isset($_GET['tab'])){
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-2">
-                                        <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                        <div class="badge-icons">
+                                            <i class="fa fa-check"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +100,7 @@ if(isset($_GET['tab'])){
                             <div style="padding: 15px;">
                                 <div class="row">
                                     <div class="col-md-10 col-10">
-                                        <div class="weight-500 font-18 mt-2">Total Surat Pembayaran</div>
+                                        <div class="weight-500 font-18 mt-2">Total Pembayaran Selesai</div>
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $pembayaranJml }}</div>
                                             <div class="mt-2 font-14">
@@ -107,7 +109,9 @@ if(isset($_GET['tab'])){
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-2">
-                                        <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                        <div class="badge-icons">
+                                            <i class="fa fa-check"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -133,7 +137,7 @@ if(isset($_GET['tab'])){
                             <div style="padding: 15px;">
                                 <div class="row">
                                     <div class="col-md-10 col-10">
-                                        <div class="weight-500 font-18 mt-2">Total Surat Petty Cash</div>
+                                        <div class="weight-500 font-18 mt-2">Total PettyCash Selesai</div>
                                         <div class="mt-4">
                                             <div class="h4 mb-0">{{ $suratJml }}</div>
                                             <div class="mt-2 font-14">
@@ -142,7 +146,9 @@ if(isset($_GET['tab'])){
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-2">
-                                        <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                        <div class="badge-icons">
+                                            <i class="fa fa-check"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

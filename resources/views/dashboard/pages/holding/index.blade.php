@@ -28,6 +28,7 @@
             @include("dashboard.pages.holding.components.modalSignature")
             @include("dashboard.pages.holding.components.modalViewSignature")
             @include("dashboard.pages.holding.components.modalMenu")
+            @include("dashboard.pages.holding.components.modalPassword")
 
             <div class="card-box mb-20">
                 <div class="pd-20">
@@ -125,7 +126,7 @@
                                                 onclick="$('#sig_image_signature').attr('src','{{ asset('storage/'.$row->signature_url) }}');">
                                                 <i class="fa fa-eye"></i> View Signature
                                             </a>
-                                            <a class="dropdown-item" href="#" data-toggle="modal"
+                                            <a class="dropdown-item" href="#" data-toggle="modal" onclick="$('#sig_rp_t_index').val({{$row->id}})"
                                                 data-target="#bd-password-modal-lg">
                                                 <i class="dw dw-lock"></i> Ganti Password
                                             </a>

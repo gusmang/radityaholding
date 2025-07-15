@@ -168,7 +168,7 @@
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Unit Usaha</h5>
                             <div class="mt-2">
-                                {{ app('App\Helpers\Str')->getUserLog()->name }}
+                                {{ app('App\Helpers\Str')->getUserUnit() }}
                                 <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
                                     value={{ app('App\Helpers\Str')->getUserLog()->id }} />
                                 <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
@@ -218,7 +218,7 @@
                             <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
                                     <div class="col-md-12 font-500">
-                                        <label class="required-label"> Dokumen ( Pdf ) </label>
+                                        <label class="required-label"> Dokumen ( Pdf , Jpg , Jpeg , Png , Docx , Xlsx ) </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div class="row">
@@ -264,6 +264,9 @@
 
                             </div>
 
+                        </div>
+                        <div class="alert alert-success">
+                            <small> <b> *Setelah pilih file, klik tombol "+" utk menambahkan file tersebut </b></small>
                         </div>
                     </div>
                 </div>

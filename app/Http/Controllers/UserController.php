@@ -51,6 +51,19 @@ class UserController extends Controller
         }
     }
 
+    public function resetPasswordholding(Request $request)
+    {
+        $update = User::where("id", $request->sig_rp_t_index)->update(array(
+            "password" => Hash::make($request->sig_rp_new_pass)
+        ));
+
+        if ($update) {
+            return response()->json(['message' => 'Update Role Success', 'redirectUrl' => route('holding', ['index' => 1]), 'status' => 200], 200);
+        } else {
+            return response()->json(['message' => 'Reset Password Error', 'redirectUrl' => route('holding', ['index' => 1]), 'status' => 500], 500);
+        }
+    }
+
     public function save(Request $request)
     {
         $userCek = User::where("email", strtolower($request->email))->count();

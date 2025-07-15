@@ -108,45 +108,6 @@
     </div>
 
     <div style="margin-top: 50px;">
-        <?php
-        $incr = 0;
-        $incs = 0;
-        $positions = $data->position;
-
-        foreach ($jabatan as $rows) {
-            $incr++;
-        ?>
-            <?php
-            if ($incr === 3) {
-            ?>
-                <div style="clear: both; height: 30px;"></div>
-            <?php
-                $incr = 1;
-            }
-            ?>
-            <div style="float: right; width: 50%; text-align: center;">
-                <div style="height: 100px; padding: 10px 0;">
-                    <?php
-                    if ($rows->signature_url !== "-") {
-                    ?>
-                        <img src={{ str_replace("public","",getcwd()).'storage/app/public/'.$rows->signature_url }}
-                            style="height: 90px;" />
-                    <?php
-                    }
-                    ?>
-                </div>
-                <div style="font-weight; bold; font-size: 16px; text-decoration: underline;">
-                    <b><?php echo $rows->name ?></b>
-                </div>
-                <div style="font-size: 14px; margin-top: 5px;">
-                    <?php echo $rows->role; ?>
-                </div>
-            </div>
-        <?php
-            $incs++;
-        }
-        ?>
-
         <div style="clear: both;"></div>
         {{-- <div class="page-break"></div> --}}
 

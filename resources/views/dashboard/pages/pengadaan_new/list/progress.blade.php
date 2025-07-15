@@ -1,13 +1,4 @@
 <div class="col-md-12 col-12 div_display_unit" id="div_tab_detail2" style="padding:0 0 30px 0; margin: 0; overflow: hidden;">
-    {{-- <div>
-        <div style="float: right;">
-            <select name="cmb-status-progress" id="cmb-status-progress" onchange="getStatusProgress(this)" style="width: 150px; padding: 10px;">
-                <option value="1">Semua Status</option>
-                <option value="2">On Approve</option>
-            </select>
-        </div>
-    </div>
-    <br clear="all" /> --}}
     <div class="row">
             @php
             $an = 0;
@@ -16,13 +7,13 @@
             @php
             $an++;
             @endphp
-            <div class="col-md-4 col-6 mt-4">
+            <div class="col-md-4 col-12 mt-4">
                 <div class="col-md-12 col-12 card"
                     style="min-height: 200px; border-radius: 15px;  overflow: hidden; margin: 0; padding:0;">
                     <table style="height: 80px; border-bottom: 1px solid #DDDDDD;">
                         <tbody>
                             <td style="padding: 20px 10px 20px 30px;">
-                                {{-- <i class="fa fa-users"></i> --}}
+                                {{-- <i class="fa fa-document"></i> --}}
                             </td>
                             <td style="padding: 20px 20px 20px 0;">
                                 <div>
@@ -74,7 +65,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-5 d-flex justify-content-end" style="margin:0; padding: 0;">
-                                    <a href="{{route('detailPengadaan',['index'=> $row->pid])}}">
+                                    <a href="{{route('detailPengadaan',['index'=> $row->id])}}">
                                         <button class="btn btn-primary-outlined">
                                             Lihat Detail
                                         </button>

@@ -9,7 +9,9 @@
                 $role_id = "";
                 ?>
                 <div style="float:left; width: 50px; height: auto;">
-                    <div class="container-semi-lg-icon"></div>
+                    <div class="container-semi-lg-icon">
+                        <i class="fa fa-history"></i>
+                    </div>
                     <div style="clear: both;"></div>
 
                     <div style="height:50px; width: 7px; background: #EEEEEE; margin-left: 18px;">
@@ -91,7 +93,9 @@
         <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
             <div class="pd-20">
                 <div style="float:left; width: 50px; height: 50px;">
-                    <div class="container-icon"></div>
+                    <div class="container-icon">
+                        <i class="fa fa-envelope"></i>
+                    </div>
                     <div style="clear: both;"></div>
                 </div>
                 <div style="float:left;">

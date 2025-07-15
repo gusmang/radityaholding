@@ -61,7 +61,9 @@ $display_pengguna = 'display: none;';
                         <div class="card-box mb-20" style="padding: 20px 20px 30px 10px; overflow: auto;">
                             <div class="pd-20" style="margin-top: -10px;">
                                 <div style="float:left; width: 50px; height: 50px;">
-                                    <div class="container-icon"></div>
+                                    <div class="container-icon">
+                                        <i class="fa fa-history"></i>
+                                    </div>
                                     <div style="clear: both;"></div>
                                 </div>
                                 <div style="float:left;">
@@ -346,15 +348,20 @@ $display_pengguna = 'display: none;';
             processData: false,
             contentType: false,
             success: function(response) {
-                Swal.fire({
-                    icon: "success",
-                    title: "Success !",
-                    text: response.message
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        window.location = "{{ route('pengadaan') }}";
-                    }
-                });
+                if(response.isDuplicate > 0){
+                        dialogError(response.message);
+                }
+                else{
+                    Swal.fire({
+                        icon: "success",
+                        title: "Success !",
+                        text: response.message
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = "{{ route('pengadaan') }}";
+                        }
+                    });
+                }
 
             },
             error: function(xhr, status, error) {

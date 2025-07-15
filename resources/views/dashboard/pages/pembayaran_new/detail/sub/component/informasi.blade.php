@@ -63,7 +63,7 @@
                                     </div>
                                     <div class="col-md-7" style="color: #444444;">
                                         <div>
-                                            {{ $setuju[0]->tipe_surat }}
+                                            Pembayaran
                                         </div>
                                     </div>
                                 </div>

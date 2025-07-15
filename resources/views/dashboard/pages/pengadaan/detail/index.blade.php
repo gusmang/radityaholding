@@ -216,7 +216,7 @@
                             <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
                                     <div class="col-md-12 font-500">
-                                        <label> Dokumen <small> ( Pdf, Jpg, Png ) </small> </label>
+                                        <label> Dokumen <small> ( Pdf, Jpg, Jpeg, Png , Xlsx , Docx ) </small> </label>
                                     </div>
                                     <div class="col-md-12 col-12" style="color: #444444;">
                                         <div class="row">
@@ -240,6 +240,9 @@
 
                             </div>
 
+                        </div>
+                        <div class="alert alert-success">
+                            <small> <b> *Setelah pilih file, klik tombol "+" utk menambahkan file tersebut </b></small>
                         </div>
                     </div>
                 </div>

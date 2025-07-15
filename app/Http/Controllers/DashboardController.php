@@ -142,13 +142,18 @@ class DashboardController extends Controller
         if (strtolower(request()->segment(2)) == "") {
             return response()->json(["status" => 200]);
         } else {
-            $menus = Menu::where("url", $request->url)->first();
-            $acc = AccessMenu::where("id_menu", $menus->id)->where("id_jabatan", Auth::user()->role_id)->count();
+            $menusCount = Menu::where("url", $request->url)->count();
+            if ($menusCount > 0) {
+                $menus = Menu::where("url", $request->url)->first();
+                $acc = AccessMenu::where("id_menu", $menus->id)->where("id_jabatan", Auth::user()->role_id)->count();
 
-            if ($acc > 0 || Auth::user()->id_positions == "-1") {
-                return response()->json(["status" => 200, "acc" => $acc]);
+                if ($acc > 0 || Auth::user()->id_positions == "-1") {
+                    return response()->json(["status" => 200, "acc" => $acc]);
+                } else {
+                    return response()->json(["status" => 500]);
+                }
             } else {
-                return response()->json(["status" => 500]);
+                return response()->json(["status" => 200, "acc" => "Not Found"]);
             }
         }
     }

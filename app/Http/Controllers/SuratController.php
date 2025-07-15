@@ -10,6 +10,7 @@ use App\Models\Position;
 use Illuminate\Http\Request;
 use Kutia\Larafirebase\Facades\Larafirebase;
 use App\Models\pettyCash;
+use App\Models\rolePengadaan;
 use App\Models\UnitUsaha;
 use Illuminate\Support\Facades\Auth;
 
@@ -29,8 +30,13 @@ class SuratController extends Controller
             $pengadaan = Pengadaan::join("persetujuan", "persetujuan.id_permohonan", "pengadaan.id")->select("pengadaan.*", "persetujuan.no_surat as nomor_surat_persetujuan", "persetujuan.perihal as perihal_persetujuan", "persetujuan.created_at as tanggal_dibuat", "persetujuan.nominal_pengajuan as nominal_persetujuan")
                 ->where("pengadaan.isPermohonan", '!=', 1)
                 ->orderBy("pengadaan.id", "desc");
-            $pembayaran = Pembayaran::where("deleted_at", null)->orderBy("id", "desc")->paginate(10);
-            $surat = pettyCash::orderBy("petty_cashes.id", "desc")->paginate(10);
+            $pembayaran = Pembayaran::select("pembayaran.*")->where("pembayaran.deleted_at", null)
+                ->orderBy("pembayaran.id", "desc");
+            $surat = pettyCash::orderBy("petty_cashes.id", "desc")->paginate(app("App\Helpers\Setting")->paginatorLimit());
+
+            if (Auth::user()->id_positions == "0") {
+                $pembayaran = $pembayaran->join("approval_doc_pembayarans", "approval_doc_pembayarans.id_surat", "pembayaran.id")->where("approval_doc_pembayarans.id_jabatan", Auth::user()->role_id);
+            }
         } else {
             $pengadaan = Pengadaan::join("persetujuan", "persetujuan.id_permohonan", "pengadaan.id")->select(["pengadaan.*", "persetujuan.no_surat as nomor_surat_persetujuan", "persetujuan.perihal as perihal_persetujuan", "persetujuan.created_at as tanggal_dibuat", "persetujuan.nominal_pengajuan as nominal_persetujuan"])
                 ->where("pengadaan.isPermohonan", '!=', 1)
@@ -38,8 +44,8 @@ class SuratController extends Controller
                 ->where("approval_doc_pengadaan.id_jabatan", Auth::user()->role_id)
                 ->where("pengadaan.id_unit_usaha", Auth::user()->id_positions)
                 ->orderBy("pengadaan.id", "desc");
-            $pembayaran = Pembayaran::where("id_unit_usaha", Auth::user()->id_positions)->orderBy("id", "desc")->paginate(10);
-            $surat = pettyCash::orderBy("petty_cashes.id", "desc")->join("approval_doc_pettycash", "approval_doc_pettycash.id_surat", "petty_cashes.id")->where("petty_cashes.id_unit_usaha", Auth::user()->id_positions)->paginate(10);
+            $pembayaran = Pembayaran::where("id_unit_usaha", Auth::user()->id_positions)->orderBy("id", "desc");
+            $surat = pettyCash::orderBy("petty_cashes.id", "desc")->where("id_unit_usaha", Auth::user()->id_positions)->paginate(app("App\Helpers\Setting")->paginatorLimit());
         }
 
         $index = $_GET['index'];
@@ -49,14 +55,23 @@ class SuratController extends Controller
         if ($submitted) {
             if (!empty($_GET['search_surat'])) {
                 $pengadaan = $pengadaan->whereRaw("REPLACE(pengadaan.no_surat, '/', '') = ?", [str_replace("/", "", $_GET['search_surat'])]);
+                $pembayaran = $pembayaran->whereRaw("REPLACE(pembayaran.no_surat, '/', '') = ?", [str_replace("/", "", $_GET['search_surat'])]);
             }
             if (!empty($_GET['tanggal_surat'])) {
                 $pengadaan = $pengadaan->where("pengadaan.tanggal", $_GET['tanggal_surat']);
+                $pembayaran = $pembayaran->where("pembayaran.tanggal", $_GET['tanggal_surat']);
             }
             if (!empty($_GET['unit_usaha'])) {
                 $pengadaan = $pengadaan->where("pengadaan.id_unit_usaha", $_GET['unit_usaha']);
+                $pembayaran = $pembayaran->where("pembayaran.id_unit_usaha", $_GET['unit_usaha']);
+            }
+            if (!empty($_GET['status_surat'])) {
+                if ((int)$_GET['status_surat'] === 4) {
+                    $pembayaran = $pembayaran->where("pembayaran.position", ">", 0);
+                }
             }
             if ($_GET['status_surat'] == "0") {
+
                 //    $pengadaan = $pengadaan->where("pengadaan.next_verifikator", Auth::user()->role);
             }
         }
@@ -65,13 +80,26 @@ class SuratController extends Controller
             //  $pengadaan = $pengadaan->where("next_verifikator", Auth::user()->role);
         }
 
-        $pengadaan = $pengadaan->paginate(10);
+        $pengadaan = $pengadaan->paginate(app("App\Helpers\Setting")->paginatorLimit());
+        $pembayaran = $pembayaran->paginate(app("App\Helpers\Setting")->paginatorLimit());
         //$pengadaan = $pengadaan->toSql();
 
         //echo $pengadaan;
         //dd($pengadaan->toSql(), $pengadaan->getBindings());
 
         return view('dashboard.pages.surat.index', compact('users', 'unitUsaha', 'jabatan', 'pengadaan', 'pembayaran', 'surat'));
+    }
+
+    public function normalisasiTipe()
+    {
+        $arr = array("pengadaan", "lainnya", "penghapusan", "maintenance");
+
+        $rolesAll = rolePengadaan::get();
+
+        foreach ($rolesAll as $rows) {
+            $strTipe = $arr[$rows->tipe_surat];
+            rolePengadaan::where("id", $rows->id)->update(array("tipe_surat_huruf" => $strTipe));
+        }
     }
 
     public function getDataAll(Request $request)

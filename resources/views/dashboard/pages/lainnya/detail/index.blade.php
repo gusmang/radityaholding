@@ -30,8 +30,8 @@
                         <div class="col-md-4"
                             style="display: flex; flex-direction: row; justify-content: flex-end; align-items: flex-end;">
 
-                            <a href="{{ route('addPengadaan') }}" class="mr-4" type="button">
-                                <button class="btn btn-primary-outlined">
+                            <a href="{{ route('lainnya') }}" class="mr-4" type="button">
+                                <button class="btn btn-primary-outlined" type="button">
                                     Batalkan
                                 </button>
                             </a>
@@ -161,7 +161,7 @@
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Unit Usaha</h5>
                             <div class="mt-2">
-                                {{ app('App\Helpers\Str')->getUserLog()->name }}
+                                {{ app('App\Helpers\Str')->getUserUnit() }}
                                 <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
                                     value={{ app('App\Helpers\Str')->getUserLog()->id }} />
                                 <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"

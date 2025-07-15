@@ -5176,6 +5176,11 @@ input[type=checkbox] {
     height: 30px;
     padding: 5px;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #666666;
 }
 
 .container-semi-lg-icon {
@@ -5184,6 +5189,11 @@ input[type=checkbox] {
     height: 45px;
     padding: 5px;
     border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: #666666;
 }
 
 .small-text {

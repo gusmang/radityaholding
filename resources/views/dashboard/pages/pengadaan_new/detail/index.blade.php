@@ -21,7 +21,7 @@
                             <div style="margin-left: 20px;">
                                 <h4 class="font-20 weight-500 text-capitalize">
                                     <div class="weight-600 font-24">
-                                        <div> Pengajuan Permohonan Petty Cash </div>
+                                        <div> Pengajuan Permohonan </div>
                                         <div> <small> Lengkapi formulir dibawah untuk mengajukan dokumen </small> </div>
                                     </div>
                                 </h4>
@@ -30,18 +30,29 @@
                         <div class="col-md-4"
                             style="display: flex; flex-direction: row; justify-content: flex-end; align-items: flex-end;">
 
-                            <a href="{{ route('addPengadaan') }}" class="mr-4" type="button">
-                                <button class="btn btn-primary-outlined">
+                            <a href="{{ route('pengadaan') }}" class="mr-4" type="button">
+                                <button class="btn btn-primary-outlined" type="button">
                                     Batalkan
                                 </button>
                             </a>
-
-                            <a href="{{ route('addPengadaan') }}" type="button">
+                                {{-- 
                                 <button class="btn btn-primary" type="submit">
                                     <i class="fa fa-plus"></i>&nbsp; Simpan
-                                </button>
-                            </a>
+                                </button> --}}
+
+                                <div class="disabled-button">
+                                    <button class="btn btn-primary disabled-btn" type="submit" style="margin-left: 20px; margin-top: 20px;">
+                                        <i class="fas fa-spinner fa-spin"></i>&nbsp; Please Wait ...
+                                    </button>
+                                </div>
+                            
+                                <div class="shows-button">
+                                    <button class="btn btn-primary" type="submit">
+                                        <i class="fa fa-plus"></i>&nbsp; Simpan
+                                    </button>
+                                </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -74,7 +85,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0; display: none;">
+                            <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
                                     <div class="col-md-12 font-500">
                                         <label class="required-label"> Tipe Surat </label>
@@ -83,8 +94,9 @@
                                         <div>
                                             <select class="form-control" name="cmbTipeSurat" id="cmbTipeSurat" required>
                                                 <option value="">- Pilih Tipe -</option>
-                                                <option value="0" selected="selected">Pembayaran</option>
-                                                <option value="1">Pengadaan</option>
+                                                <option value="1">Pengadaan Aset</option>
+                                                <option value="3">Penghapusan Aset</option>
+                                                <option value="4">Maintenance</option>
                                             </select>
                                         </div>
                                     </div>
@@ -110,8 +122,10 @@
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
                                         <div>
-                                            <input type="number" class="form-control" name="nominalPengajuan"
+                                            <input type="text" class="form-control rupiahInput" name="nominalPengajuan"
                                                 id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required />
+                                                {{-- <input type="text" class="form-control" name="nominalPengajuan"
+                                                id="nominalPengajuan" placeholder="Nominal Pengajuan ..." required onChange="this.value = formatRupiah(this.value)" /> --}}
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +136,8 @@
                                         <label class="required-label"> Detail Isi Surat </label>
                                     </div>
                                     <div class="col-md-12" style="color: #444444;">
-                                        <div id="detailIsiSurat"></div>
+                                        {{-- <input type="file" name="word_file" id="word_file" />  --}}
+                                        <textarea name="editor1" id="editor1" rows="10" cols="80"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -148,7 +163,7 @@
                         <div style="clear: both;"></div>
                         <div style="width: 100%; margin-top: 10px;">
                             <h5 class="small-text">Diajukan Oleh</h5>
-                            <h3 class="sub-title-text">Goesmang Asmara</h3>
+                            <h3 class="sub-title-text">{{ Auth::user()->name }}</h3>
                             <input type="hidden" class="form-control mt-2" name="inp_diajukan" id="inp_diajukan"
                                 placeholder="Input Diajukan ..." required />
                         </div>
@@ -156,7 +171,7 @@
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Unit Usaha</h5>
                             <div class="mt-2">
-                                {{ app('App\Helpers\Str')->getUserLog()->name }}
+                                {{ $usahaBr->name }}
                                 <input type="hidden" name="cmbUnitUsaha" id="cmbUnitUsaha"
                                     value={{ app('App\Helpers\Str')->getUserLog()->id }} />
                                 <input type="hidden" name="cmbUnitUsahaName" id="cmbUnitUsahaName"
@@ -166,9 +181,17 @@
 
                         <div style="width: 100%; margin-top: 30px;">
                             <h5 class="small-text">Nomor Surat</h5>
-                            <div>
-                                <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
-                                    placeholder="Input No. Surat ..." required />
+                            <div class="col-12" style="margin:0; padding: 0;">
+                                <div class="row">
+                                    <div class="col-4" style="display: none;">
+                                            <input type="text" class="form-control mt-2" name="inp_invoice_no" id="inp_invoice_no"
+                                            placeholder="Input No. Surat ..." required disabled="disabled" value="{{ $codeLast }}" />
+                                    </div>
+                                    <div class="col-12">
+                                        <input type="text" class="form-control mt-2" name="inp_invoice" id="inp_invoice"
+                                            placeholder="Input No. Surat ..." required value="" />
+                                    </div>
+                                </div>
                                 {{-- <h3 class="sub-title-text">INV/9019-2/9108932324</h3> --}}
                             </div>
                         </div>
@@ -193,12 +216,17 @@
                             <div class="col-md-12" style="padding:15px 0 15px 0; margin: 0;">
                                 <div class="row">
                                     <div class="col-md-12 font-500">
-                                        <label class="required-label"> Dokumen ( Pdf ) </label>
+                                        <label> Dokumen <small> ( Pdf, Jpg, Jpeg, Png , Xlsx , Docx ) </small> </label>
                                     </div>
-                                    <div class="col-md-12" style="color: #444444;">
-                                        <div>
-                                            <input type="file" multiple class="form-control" name="docFile[]"
-                                                id="docFile" placeholder="Pilih Dokumen ..." />
+                                    <div class="col-md-12 col-12" style="color: #444444;">
+                                        <div class="row">
+                                            <div class="col-md-11 col-10">
+                                                <input type="file"  class="form-control" name="docFile[]"
+                                                    id="docFile" placeholder="Pilih Dokumen ..." accept=".jpg,.png,.pdf,.docx,.jpeg,.xlsx" />
+                                            </div>
+                                            <div class="col-md-1 col-2">
+                                                <button class="btn btn-primary" id="button-plus" onClick="addTemplate()" type="button"> + </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -206,34 +234,15 @@
 
                             <div class="col-md-12">
 
-                                <div class="row">
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 500kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6" style="margin: 0;">
-                                        <div class="col-md-12 card" style="padding: 15px;">
-                                            <div class="row">
-                                                <div class="col-md-12 font-500">
-                                                    <label> Arsip_Invoice.pdf </label>
-                                                    <div style="margin-top: -10px; color: #666666;"> 200kb </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="row" id="uploaded-div">
 
                                 </div>
 
                             </div>
 
+                        </div>
+                        <div class="alert alert-success">
+                            <small> <b> *Setelah pilih file, klik tombol "+" utk menambahkan file tersebut </b></small>
                         </div>
                     </div>
                 </div>
@@ -246,19 +255,121 @@
 
 @section("footer_add_pengadaan")
 <script type="text/javascript">
+    let tempFiles = [];
+
+    CKEDITOR.replace('editor1', {
+        // Disable all notifications
+        disableNotifications: true,
+        
+        // Remove "Powered by CKEditor" from the bottom
+        removePlugins: 'about,notification',
+        
+        // Disable upgrade notifications
+        startupMode: 'wysiwyg',
+        
+        // Hide the "This document was saved from an older version" warning
+        ignoreEmptyParagraph: true,
+        
+        // Disable deprecated API warnings
+        on: {
+            instanceReady: function(ev) {
+                ev.editor.on('notificationShow', function(event) {
+                    event.cancel();
+                });
+            }
+        }
+    });
+
+    function loadStates(){
+        $("#disabled-button").show();
+        $("#shows-button").hide();
+    }
+
+    function showStates(){
+        $("#disabled-button").hide();
+        $("#shows-button").show();
+    }
+
+    function addTemplate(){
+        const file = document.getElementById("docFile").files[0];
+
+        if (file) {
+            // Get the file size in bytes
+            const fileSizeInBytes = file.size;
+
+            // Convert the file size to a readable format (e.g., KB, MB)
+            let fileSizeReadable = fileSizeInBytes;
+            let unit = 'bytes';
+
+            if (fileSizeInBytes >= 1024) {
+                fileSizeReadable = (fileSizeInBytes / 1024).toFixed(2);
+                unit = 'KB';
+            }
+            if (fileSizeInBytes >= 1024 * 1024) {
+                fileSizeReadable = (fileSizeInBytes / (1024 * 1024)).toFixed(2);
+                unit = 'MB';
+            }
+
+            let templateAdded = '<div class="col-md-6" style="margin: 10px 0 0 0;">'+
+            '<div class="col-md-12 card" style="padding: 15px;">'+'<div class="row">'+
+            '<div><div class="col-md-12 font-500">'+
+            '<label> '+file.name+' </label>'+
+            '<div style="margin-top: -10px; color: #666666;"> '+fileSizeReadable + ' ' + unit+' </div>'+
+            '</div></div></div></div>';
+
+            document.getElementById("docFile").value = "";
+            tempFiles.push(file);
+
+            $("#uploaded-div").append(templateAdded);
+            document.getElementById("docFile").value = "";
+        } else {
+            alert("Tidak ada file dipilih.");
+        }
+
+    }
+
     $(document).ready(function() {
         // Attach event listener for form submission
-        const quill = new Quill('#detailIsiSurat', {
-            theme: 'snow'
-        });
+    
+        const defaultTemplate = templates();
+
+        const customTemplate = templates(
+        '20 Oktober 2024', 
+        '215/RDT/GYR/X/2024', 
+        'I Wayan Sudarma', 
+        'Marketing Officer', 
+        '15 Januari 2015',
+        'Ni Luh Suastini',
+        '18 Oktober 2024',
+        '648/Holding/HRD/VI/2023',
+        '750.000',
+        'Tujuh Ratus Lima Puluh Ribu Rupiah'
+        );
+
+        let editors = CKEDITOR.instances.editor1;
+
+        editors.setData(customTemplate);
 
         $('#formAddPengadaan').on('submit', function(event) {
             event.preventDefault();
 
-            const formData = new FormData(this);
-            formData.append("detailIsiSurat", quill.root.innerHTML);
+            loadStates();
 
-            const urlPengadaan = "{{ route('postPettyCashNew') }}";
+            let editor = CKEDITOR.instances.editor1;
+
+            // Get the HTML content
+            let htmlContent = editor.getData();
+
+            const formData = new FormData(this);
+            formData.append("detailIsiSurat", htmlContent);
+            //formData.append("word_file" , document.getElementById("word_file").files[0]);
+            
+            for(var ans = 0; ans < tempFiles.length; ans++){
+                formData.append("files"+ans, tempFiles[ans]);
+            }
+            formData.append("fileLength" , tempFiles.length);
+
+            const urlPengadaan = "{{ route('postPengadaanNew') }}";
 
             // Send AJAX request
             $.ajax({
@@ -267,22 +378,25 @@
                 data: formData,
                 processData: false, // Important for FormData
                 contentType: false, // Important for FormData
+                dataType: "json",
                 success: function(response) {
-                    //console.log('Success:', response);
-                    //alert(response.status);
-                    if(response.status !== 200){
+                    if(response.isDuplicate > 0 && status != "200"){
                         dialogError(response.message);
-                        return false;
                     }
-                    Swal.fire({
-                        icon: "success",
-                        title: "Success !",
-                        text: response.message
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            window.location = "{{ route('petty_cash') }}";
-                        }
-                    });
+                    else{
+                        Swal.fire({
+                            icon: "success",
+                            title: "Success !",
+                            text: response.message
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location = "{{ route('pengadaan') }}";
+                            }
+                            else{
+                                showStates();
+                            }
+                        });
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error:', xhr.responseText);

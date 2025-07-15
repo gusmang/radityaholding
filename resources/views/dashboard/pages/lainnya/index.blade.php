@@ -35,7 +35,7 @@ if(isset($_GET['tab'])){
                 <div class="row">
                     <div class="col-md-6 col-sm-12">
                         <div class="title">
-                            <h4>Pengajuan Pengadaan</h4>
+                            <h4>Pengajuan Surat Lainnya</h4>
                             <small>Atur dan lihat daftar pengadaan pada tabel di bawah</small>
                         </div>
                     </div>

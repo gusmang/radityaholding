@@ -13,7 +13,7 @@
                 <table style="height: 80px; border-bottom: 1px solid #DDDDDD;">
                     <tbody>
                         <td style="padding: 20px 10px 20px 30px;">
-                            <i class="fa fa-users"></i>
+                            {{-- <i class="fa fa-users"></i> --}}
                         </td>
                         <td style="padding: 20px 20px 20px 0;">
                             <div>
@@ -45,15 +45,15 @@
                     </div>
 
                     <div class="mt-4">
-                        <h5 style="font-size: 16px; font-weight: 500;"> {{ $row->title }} </h5>
+                        <h5 style="font-size: 16px; font-weight: 500;"> Perihal : {{ $row->title }} </h5>
                     </div>
 
-                    <div class="mt-2" style="height: 100px;">
+                    {{-- <div class="mt-2" style="height: 100px;">
                         <h5
                             style="font-size: 12px; font-weight: normal; line-height: 21px; letter-spacing: 2px">
                             {{ substr(strip_tags($row->detail),0,200)." ..." }}
                         </h5>
-                    </div>
+                    </div> --}}
                 </div>
 
                 <?php

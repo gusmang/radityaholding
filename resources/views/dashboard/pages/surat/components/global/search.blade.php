@@ -2,21 +2,11 @@
     <form method="get">
         <div class="row">
             <div class="col-12 col-md-2 mt-2">
-                {{-- if (!empty($_GET['search_surat'])) {
-                    $pengadaan = $pengadaan->where("no_surat", $_GET['search_surat']);
-                }
-                if (!empty($_GET['tanggal_surat'])) {
-                    $pengadaan = $pengadaan->where("tanggal", $_GET['tanggal_surat']);
-                }
-                if (!empty($_GET['unit_usaha'])) {
-                    $pengadaan = $pengadaan->where("id_unit_usaha", $_GET['unit_usaha']);
-                }
-                if ($_GET['status_surat'] == "0") {
-                    $pengadaan = $pengadaan->where("next_verifikator", Auth::user()->role);
-                } --}}
                 <input type="hidden" name="index" value="{{ $_GET['index'] }}" class="form-control" />
                 <input type="text" value="{{ isset($_GET['search_surat']) ? $_GET['search_surat'] : ""  }}" name="search_surat" id="search_surat" placeholder="Cari Surat ..." class="form-control" />
             </div>
+
+            @if(app("App\Helpers\Status")->isUnitUsaha() === false)
             <div class="col-12 col-md-3 mt-2">
                 <select name="unit_usaha" id="unit_usaha" placeholder="Status Surat ..." class="form-control">
                     <option value="">- Pilih Unit Usaha -</option>
@@ -25,6 +15,7 @@
                         @endforeach
                 </select>
             </div>
+            @endif
             <div class="col-12 col-md-2 mt-2">
                 <select name="status_surat" id="status_surat" placeholder="Status Surat ..." class="form-control">
                     <option value="">- Pilih Status Surat -</option>

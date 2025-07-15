@@ -40,37 +40,48 @@ class PembayaranController extends Controller
         $pengadaan  = "";
 
         if (Auth::user()->id_positions == "-1" || Auth::user()->id_positions == "0") {
-            $pengadaan = Pembayaran::where("deleted_at", null)
-                ->where("is_rejected", false)
-                ->where("position", 0)
-                ->orderBy("id", "desc");
+            $pengadaan = Pembayaran::select("pembayaran.*")->where("pembayaran.deleted_at", null)
+                // ->where("is_rejected", false)
+                // ->where("position", 0)
+                ->orderBy("pembayaran.id", "desc");
+
+            if (Auth::user()->id_positions == "0") {
+                $pengadaan = $pengadaan->join("approval_doc_pembayarans", "approval_doc_pembayarans.id_surat", "pembayaran.id")->where("approval_doc_pembayarans.id_jabatan", Auth::user()->role_id);
+            }
         } else {
-            $pengadaan = Pembayaran::where("deleted_at", null)
+            $pengadaan = Pembayaran::select("pembayaran.*")->where("pembayaran.deleted_at", null)
+                ->join("approval_doc_pembayarans", "approval_doc_pembayarans.id_surat", "pembayaran.id")
                 ->where("is_rejected", false)
                 ->where("id_unit_usaha", Auth::user()->id_positions)
-                ->where("position", 0)
-                ->orderBy("id", "desc");
+                ->where("approval_doc_pembayarans.id_jabatan", Auth::user()->role_id)
+                //->where("position", 0)
+                ->orderBy("pembayaran.id", "desc");
         }
 
         if (isset($_GET['btn-submit-new'])) {
             // die();
             if ($_GET['status_surat'] === "5") {
-                $pengadaan = Pembayaran::where("deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("is_rejected", true);
             } else if ($_GET['status_surat'] == "4") {
-                $pengadaan = Pembayaran::where("deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0);
             } else if ($_GET['status_surat'] == "1") {
-                $pengadaan = Pembayaran::where("deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->where('tanggal', '<=', $maxDate)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->whereDate('tanggal', '<=', $maxDate);
             } else if ($_GET['status_surat'] == "2") {
-                $pengadaan = Pembayaran::where("pembayaran.deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->join("approval_doc_pembayaran", "approval_doc_pembayaran.id_surat", "pembayaran.id")->where("approval_doc_pembayaran.id_jabatan", Auth::user()->role_id)->orderBy("pembayaran.id", "desc");
-            } else if ($_GET['status_surat'] == "3") {
-                $pengadaan = Pembayaran::where("deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->where('pembayaran.tanggal', '`>=', $maxDate)->orderBy("id", "desc");
+                if ((int) Auth::user()->id_positions === -1) {
+                    $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("approval_doc_pembayarans.is_next", 1)->where("is_rejected", false)->where("position", "!=", 0)->join("approval_doc_pembayaran", "approval_doc_pembayarans.id_surat", "pembayaran.id")->where("approval_doc_pembayarans.id_jabatan", Auth::user()->role_id);
+                } else {
+                    $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("approval_doc_pembayarans.is_next", 1)->where("is_rejected", false)->where("position", 0);
+                }
+            } else if ($_GET['status_surat'] == "3"  || !isset($_GET['status_surat']) || $_GET['status_surat'] == "") {
+                //$pengadaan = Pembayaran::where("deleted_at", null)->where("is_rejected", false)->where("position", "=", 0)->where('pembayaran.tanggal', '`>=', $maxDate)->orderBy("id", "desc");
+                $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0);
             }
 
             if (isset($_GET['tanggal_surat']) && $_GET['tanggal_surat'] !== "") {
                 //if ($_GET['search_surat'] != "") {
                 $ex_created = explode(" - ", $_GET['tanggal_surat']);
 
-                $pengadaan = $pengadaan->where("pembayaran.created_at", ">=", str_replace("/", "-", $ex_created[0]))->where("pembayaran.created_at", "<=", str_replace("/", "-", $ex_created[1]));
+                $pengadaan = $pengadaan->whereBetween(DB::raw('DATE(pembayaran.created_at)'), [str_replace("/", "-", $ex_created[0]), str_replace("/", "-", $ex_created[1])]);
                 //}
             }
 
@@ -80,9 +91,13 @@ class PembayaranController extends Controller
                 }
             }
         }
+
+        if (!isset($_GET['status_surat'])) {
+            $pengadaan = $pengadaan->where("pembayaran.deleted_at", null)->where("is_rejected", false)->where("position", "=", 0);
+        }
         //$pengadaan = $pengadaan->whereTrim("no_surat", " Inv/001/PTSIDDA");
 
-        $pengadaan = $pengadaan->paginate(10);
+        $pengadaan = $pengadaan->paginate(app("App\Helpers\Setting")->paginatorLimit());
         //$pengadaan_rj = Pembayaran::where("deleted_at", null)->where("is_rejected", true)->orderBy("id", "desc")->paginate(10);
         //$pengadaan_appr = Pembayaran::where("deleted_at", null)->where("is_rejected", false)->where("position", "!=", 0)->where('updated_at', '<=', $maxDate)->orderBy("id", "desc")->paginate(10);
 
@@ -98,6 +113,25 @@ class PembayaranController extends Controller
         $approvalDoc = approvalDocument::where("id_surat", $index)->orderBy("id", "asc")->get();
         $pengadaan = Pembayaran::where("id", $index)->first();
 
+        if ($pengadaan && $pengadaan->id_unit_usaha !== null) {
+            if (app("App\Helpers\Setting")->checkValidate($pengadaan->id_unit_usaha) === false) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
+        $cnPengadaan = Pembayaran::where("id", $index)->count();
+        $approvalCount = approval_surat_pembayaran::where("id_surat", $index)->where("id_jabatan", Auth::user()->role_id)->count();
+
+        // if ($cnPengadaan === 0) {
+        //     return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+        // }
+
+        if ((int) Auth::user()->id_positions !== -1) {
+            if ($cnPengadaan === 0 || $approvalCount === 0) {
+                return \Redirect::route('dashboard')->with('message', 'UnAuthenticated!!!');
+            }
+        }
+
         $user = User::where("id", $pengadaan->id_unit_usaha)->first();
         $setuju = Pembayaran::where("id", $index)->get();
 
@@ -110,6 +144,8 @@ class PembayaranController extends Controller
         $hasApproved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $index)->where("status", 1)->get();
         $notApproved = approval_surat_pembayaran::join("positions", "positions.id", "approval_doc_pembayarans.id_jabatan")->select("approval_doc_pembayarans.*", "positions.name")->where("id_surat", $index)->where("status", 0)->get();
 
+        $historyPembayaran = historyPembayaran::where("id_surat_pembayaran", $index)->get();
+
         $dokumen = DocPembayaran::where("id_surat", $index)->get();
 
         $lastApprove = !isset($currentApproval->id_jabatan) ? $jabatan[count($jabatan) - 1]->id_jabatan : $currentApproval->id_jabatan;
@@ -117,7 +153,7 @@ class PembayaranController extends Controller
         $diajukan = $jabatan[0]->name;
         $lastHistory = historyPembayaran::where("id_surat_pembayaran", $index)->orderBy("id", "desc")->first();
 
-        return view('dashboard.pages.pembayaran_new.detail.sub.index', compact('lastHistory', 'jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
+        return view('dashboard.pages.pembayaran_new.detail.sub.index', compact('historyPembayaran', 'lastHistory', 'jabatanApproval', 'notApproved', 'hasApproved', 'jabatan', 'diajukan', 'approvalNext', 'beforeApproval', 'lastApprove', 'unitUsaha', 'dokumen', 'pengadaan', 'approvalDoc', 'setuju'));
     }
 
     public function tolakPembayaran(Request $request)
@@ -302,7 +338,7 @@ class PembayaranController extends Controller
                 $historyPengadaan->save();
 
                 if (Auth::user()->id_positions == "0") {
-                    $ptCashRole = rolePembayaran::where("aktif", 1)->orderBy("urutan", "asc")->get();
+                    $ptCashRole = rolePembayaran::where("aktif", 1)->where("id_unit_usaha", Auth::user()->id_positions)->where("aktif", 1)->orderBy("urutan", "asc")->get();
                 }
                 $pos = 1;
                 foreach ($ptCashRole as $rows) {
@@ -410,6 +446,7 @@ class PembayaranController extends Controller
                     "is_before" => 1,
                     "status" => 1,
                     "is_next" => 0,
+                    'note' => trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas),
                     "nama" => "Surat telah disetujui oleh " . Auth::user()->role,
                     "approved_by" => Auth::user()->id
                 ));
@@ -451,6 +488,15 @@ class PembayaranController extends Controller
                         'note' => !isset($request->verifikasi_berkas) ? "-" : $request->verifikasi_berkas
                     ));
 
+                    $historyPengadaan = new historyPembayaran();
+                    $historyPengadaan->title = "Surat telah disetujui oleh " . Auth::user()->role;
+                    $historyPengadaan->note = trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas);
+                    $historyPengadaan->tanggal = date("Y-m-d");
+                    $historyPengadaan->id_surat_pembayaran =  $request->t_index;
+                    $historyPengadaan->id_user = Auth::user()->id;
+
+                    $historyPengadaan->save();
+
                     $is_current = false;
 
                     $posi = Position::where("id", $rows->id_jabatan)->first();
@@ -469,6 +515,7 @@ class PembayaranController extends Controller
                         "status" => 1,
                         "is_next" => 0,
                         'title' => Auth::user()->name,
+                        'note' => trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas),
                         "nama" => "Surat telah disetujui oleh " . Auth::user()->role,
                         "approved_by" => Auth::user()->id
                     ));
@@ -495,6 +542,22 @@ class PembayaranController extends Controller
                 $historyTrans->kategori_surat = "";
 
                 $historyTrans->save();
+
+                $historyPengadaan = new historyPembayaran();
+                $historyPengadaan->title = "Surat telah disetujui oleh " . Auth::user()->role;
+                $historyPengadaan->note = trim(strip_tags($request->verifikasi_berkas)) == "" ? "-" : strip_tags($request->verifikasi_berkas);
+                $historyPengadaan->tanggal = date("Y-m-d");
+                $historyPengadaan->id_surat_pembayaran =  $request->t_index;
+                $historyPengadaan->id_user = Auth::user()->id;
+
+                if ($request->file("files") !== null) {
+                    $fileName = $request->file("files")->hashName();
+                    $path = $request->file("files")->storeAs('note', $fileName, 'public');
+
+                    $historyPengadaan->file = $path;
+                }
+
+                $historyPengadaan->save();
 
                 unitUsaha::where("id", $idUnitUsaha)->update(array(
                     "limit_petty_cash" => $lastBalance

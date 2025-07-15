@@ -7,7 +7,9 @@
             <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
                 <div class="pd-20">
                     <div style="float:left; width: 50px; height: 50px;">
-                        <div class="container-icon"></div>
+                        <div class="container-icon">
+                            <i class="fa fa-file"></i>
+                        </div>
                         <div style="clear: both;"></div>
                     </div>
                     <div style="float:left;">
@@ -139,7 +141,7 @@
                                 </div>
                                 <div class="col-md-7" style="color: #444444;">
                                     <div>
-                                        Pengadaan
+                                        Pembayaran
                                     </div>
                                 </div>
                             </div>
@@ -229,7 +231,9 @@
                 <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
                     <div class="pd-20">
                         <div style="float:left; width: 50px; height: 50px;">
-                            <div class="container-icon"></div>
+                            <div class="container-icon">
+                                <i class="fa fa-file"></i>
+                            </div>
                             <div style="clear: both;"></div>
                         </div>
                         <div style="float:left;">
@@ -311,7 +315,9 @@
             <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
                 <div class="pd-20">
                     <div style="float:left; width: 50px; height: 50px;">
-                        <div class="container-icon"></div>
+                        <div class="container-icon">
+                            <i class="fa fa-file"></i>
+                        </div>
                         <div style="clear: both;"></div>
                     </div>
                     <div style="float:left;">
@@ -361,7 +367,9 @@
         <div class="card-box mb-20" style="padding: 20px 20px 30px 10px;">
             <div class="pd-20">
                 <div style="float:left; width: 50px; height: 50px;">
-                    <div class="container-icon"></div>
+                    <div class="container-icon">
+                        <i class="fa fa-file"></i>
+                    </div>
                     <div style="clear: both;"></div>
                 </div>
                 <div style="float:left;">

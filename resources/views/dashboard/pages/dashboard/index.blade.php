@@ -19,7 +19,7 @@
                     <div style="padding: 15px;">
                         <div class="row">
                             <div class="col-md-10 col-10">
-                                <div class="weight-500 font-18 mt-2">Total Surat Pengadaan</div>
+                                <div class="weight-500 font-18 mt-2">Total Pengadaan Selesai</div>
                                 <div class="mt-4">
                                     <div class="h4 mb-0">{{ $jmlPengadaan }}</div>
                                     <div class="mt-2 font-14">
@@ -28,7 +28,9 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-2">
-                                <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                <div style="width: 35px; height: 35px; color: #FFFFFF; background: green; display: flex; align-items:center; justify-content: center; border-radius: 5px;">
+                                    <i class="fa fa-check"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -56,7 +58,7 @@
                     <div style="padding: 15px;">
                         <div class="row">
                             <div class="col-md-10 col-10">
-                                <div class="weight-500 font-18 mt-2">Total Surat Pembayaran</div>
+                                <div class="weight-500 font-18 mt-2">Total Pembayaran Selesai</div>
                                 <div class="mt-4">
                                     <div class="h4 mb-0">{{ $jmlPengadaanPmb }}</div>
                                     <div class="mt-2 font-14">
@@ -66,7 +68,9 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-2">
-                                <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                <div style="width: 35px; height: 35px; color: #FFFFFF; background: green; display: flex; align-items:center; justify-content: center; border-radius: 5px;">
+                                    <i class="fa fa-check"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -94,7 +98,7 @@
                     <div style="padding: 15px;">
                         <div class="row">
                             <div class="col-md-10 col-10">
-                                <div class="weight-500 font-18 mt-2">Total Surat PettyCash</div>
+                                <div class="weight-500 font-18 mt-2">Total PettyCash Selesai</div>
                                 <div class="mt-4">
                                     <div class="h4 mb-0">{{ $jmlPengadaanPty }}</div>
                                     <div class="mt-2 font-14">
@@ -104,7 +108,9 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-2">
-                                <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                <div class="badge-icons">
+                                    <i class="fa fa-check"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -145,7 +151,9 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-2 d-flex justify-content-end">
-                                <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                <div class="badge-icons">
+                                    <i class="micon bi bi-cash-stack"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -183,7 +191,9 @@
                                 </div>
                             </div>
                             <div class="col-md-2 col-2 d-flex justify-content-end">
-                                <div style="width: 35px; height: 35px; background: green; border-radius: 5px;"></div>
+                                <div class="badge-icons">
+                                    <i class="micon bi bi-cash-stack"></i>
+                                </div>
                             </div>
                         </div>
                     </div>

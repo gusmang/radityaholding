@@ -151,6 +151,10 @@ function getNotif(){
     })
 }
 
+$('.dropdown-menu').on('click', 'select, input, label, button', function (e) {
+  e.stopPropagation();
+});
+
 function getNotifNew(event){
     $("#dis-notif-button").show();
     $("#shows-notif-button").hide();
@@ -161,7 +165,7 @@ function getNotifNew(event){
     $.ajax({
         type: "GET",
         url: "{{ route('getNotif') }}",
-        data: "",
+        data: "tipe="+$("#cmb-notif-type").val(),
         dataType: "json",
         success:function(response){
             $("#ul-notifications-new").html(response.data);

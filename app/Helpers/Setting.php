@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,22 @@ class Setting
                 return json_decode($setting->value);
             }
         });
+    }
+
+    public function paginatorLimit()
+    {
+        return 100;
+    }
+
+    public function checkValidate($id)
+    {
+        //return $id . "!==" . Auth::user()->id_positions;
+
+        if ((int)$id === (int)Auth::user()->id_positions || ((int)Auth::user()->id_positions === 0 || (int)Auth::user()->id_positions === -1)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function formatPrice($price)

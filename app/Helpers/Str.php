@@ -20,6 +20,14 @@ class Str
 		return Session::get("userLog");
 	}
 
+	public function getUserUnit()
+	{
+		$sess = Session::get("userLog")->id_positions;
+		$unitUsaha = UnitUsaha::where("id", $sess)->first();
+
+		return $unitUsaha->name;
+	}
+
 	public function getRomawi()
 	{
 		$bln = date("m");

@@ -15,12 +15,12 @@
             Your session has expired. Please refresh the page and try again.
         </div>
     @endif
-    <a href="https://wa.me/6282146335793" target="_blank">
+    {{-- <a href="https://wa.me/6282146335793" target="_blank">
         <div class="call-to-action-wa">
             <div> <i class="fab fa-whatsapp" style="font-size: 24px; color: #FFFFFF;"></i>  </div>
                 <div style="color: #FFFFFF; margin-left: 10px;"> Bantuan </div>
         </div>
-    </a>
+    </a> --}}
     @include("dashboard.global.top")
 
     @include("dashboard.global.sidebar")

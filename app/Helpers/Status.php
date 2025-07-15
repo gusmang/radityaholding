@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+
 class Status
 {
 
@@ -58,6 +61,12 @@ class Status
         return $unit;
     }
 
+    public function getAddDays($angka)
+    {
+        $addDate = Carbon::parse($angka)->addDay();
+        return $addDate;
+    }
+
     function terbilang($angka)
     {
         $angka = floatval($angka);
@@ -104,6 +113,22 @@ class Status
     public function tipe_surat_pengadaan($index)
     {
         $tipe = ["Pengadaan Aset", "Lainnya", "Penghapusan Aset", "Maintenance"];
+
+        return $tipe[$index];
+    }
+
+    public function isUnitUsaha()
+    {
+        if ((int)Auth::user()->id_positions !== -1 || (int)Auth::user()->id_positions !== -0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function tipe_surat_huruf($index)
+    {
+        $tipe = ["pengadaan", "lainnya", "penghapusan", "maintenance"];
 
         return $tipe[$index];
     }
